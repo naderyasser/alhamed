@@ -1,0 +1,1201 @@
+{% extends "shop/base.html" %} {% block content %}
+<style>
+     :root {
+        --orfe-primary: #8CA896;
+        --orfe-primary-dark: #788F82;
+        --orfe-primary-light: #A6BCAF;
+        --orfe-background: #F5F7F5;
+        --orfe-text: #333333;
+        --orfe-accent: #D2E1D9;
+    }
+    /* Promotional Banner */
+    
+    .promo-banner {
+        background: linear-gradient(135deg, var(--orfe-primary) 0%, var(--orfe-primary-dark) 100%);
+        color: white;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+        z-index: 5;
+    }
+    
+    .promo-container {
+        position: relative;
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .promo-timer {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    
+    .promo-timer-unit {
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+        padding: 0.2rem 0.4rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        font-size: 0.9rem;
+    }
+    
+    .promo-message {
+        font-weight: 500;
+        white-space: nowrap;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .promo-label {
+        background: rgba(255, 255, 255, 0.25);
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    
+    .promo-btn {
+        background: white;
+        color: var(--orfe-primary-dark);
+        border: none;
+        font-weight: 600;
+        padding: 0.25rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .promo-btn:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: translateY(-2px);
+        color: var(--orfe-text);
+    }
+    
+    .promo-close {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.3rem;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+    }
+    
+    .promo-close:hover {
+        opacity: 1;
+    }
+    
+    @media (max-width: 576px) {
+        .promo-container {
+            padding: 0.5rem;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .promo-timer,
+        .promo-message {
+            font-size: 0.85rem;
+        }
+        .promo-close {
+            top: 10px;
+            right: 10px;
+            transform: none;
+        }
+        .promo-label {
+            display: none;
+        }
+    }
+    /* Modern Hero Section Styling */
+    
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+    
+    .hero-slider {
+        position: relative;
+        height: 80vh;
+    }
+    /* On mobile, make the hero slider shorter */
+    
+    @media (max-width: 767px) {
+        .hero-slider {
+            height: 90vh;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-slider {
+            height: 95vh;
+        }
+        .hero-title {
+            font-size: 2rem !important;
+            line-height: 1.2;
+        }
+        .hero-subtitle {
+            font-size: 0.9rem;
+        }
+        .hero-buttons {
+            flex-direction: column;
+            width: 100%;
+            gap: 0.7rem;
+        }
+        .btn-shop {
+            width: 100%;
+        }
+    }
+    
+    .hero-slide {
+        position: relative;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+    
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    
+    .hero-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 30%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0) 100%);
+        z-index: 2;
+    }
+    
+    .hero-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        padding-left: 5%;
+        padding-right: 5%;
+        max-width: 700px;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        color: var(--orfe-primary-dark);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.5s ease forwards;
+        animation-delay: 0.3s;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        color: var(--orfe-text);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.5s ease forwards;
+        animation-delay: 0.5s;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #555;
+        max-width: 90%;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.5s ease forwards;
+        animation-delay: 0.7s;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.5s ease forwards;
+        animation-delay: 0.9s;
+    }
+    
+    .btn-shop {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-primary {
+        background: var(--orfe-primary);
+        color: white;
+        border: none;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--orfe-text);
+        border: 2px solid var(--orfe-primary);
+    }
+    
+    .btn-shop:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(140, 168, 150, 0.2);
+    }
+    
+    .btn-primary:hover {
+        background: var(--orfe-primary-dark);
+    }
+    
+    .btn-outline:hover {
+        background: rgba(140, 168, 150, 0.1);
+    }
+    
+    .product-highlight {
+        position: absolute;
+        bottom: 40px;
+        right: 5%;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        transform: translateX(100%);
+        animation: slideIn 0.8s ease forwards;
+        animation-delay: 1s;
+    }
+    
+    .product-highlight-image {
+        width: 70px;
+        height: 70px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    
+    .product-highlight-content {
+        flex: 1;
+    }
+    
+    .product-highlight-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: var(--orfe-text);
+    }
+    
+    .product-highlight-price {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .product-old-price {
+        font-size: 0.9rem;
+        text-decoration: line-through;
+        color: #999;
+    }
+    
+    .product-current-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--orfe-primary-dark);
+    }
+    
+    .product-discount {
+        background: var(--orfe-primary);
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        margin-left: 0.5rem;
+    }
+    
+    .swiper-pagination-bullet {
+        width: 30px;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(140, 168, 150, 0.5);
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+    
+    .swiper-pagination-bullet-active {
+        width: 50px;
+        background: var(--orfe-primary);
+        opacity: 1;
+    }
+    
+    .swiper-button-prev,
+    .swiper-button-next {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+    
+    .swiper-button-prev:after,
+    .swiper-button-next:after {
+        font-size: 1.2rem;
+        color: var(--orfe-text);
+    }
+    
+    .swiper-button-prev:hover,
+    .swiper-button-next:hover {
+        background: var(--orfe-primary);
+    }
+    
+    .swiper-button-prev:hover:after,
+    .swiper-button-next:hover:after {
+        color: white;
+    }
+    
+    @keyframes fadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideIn {
+        0% {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @media (max-width: 991px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        .product-highlight {
+            bottom: 30px;
+            right: 50%;
+            transform: translateX(50%);
+            animation: none;
+            opacity: 1;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .hero-bg::before {
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0.4) 80%);
+        }
+        .hero-content {
+            text-align: center;
+            padding: 0 10%;
+            margin-top: -20px;
+        }
+        .hero-description {
+            max-width: 100%;
+        }
+        .hero-buttons {
+            justify-content: center;
+        }
+        .product-highlight {
+            bottom: 20px;
+            width: 90%;
+            max-width: 90%;
+        }
+    }
+    /* About Section Improvements */
+    
+    .about-section {
+        position: relative;
+        padding: 4rem 0;
+        background: linear-gradient(to right, var(--orfe-background), #ffffff);
+        overflow: hidden;
+    }
+    
+    .about-section .title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--orfe-text);
+        position: relative;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+    }
+    
+    .about-section .title:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: var(--orfe-primary);
+    }
+    
+    .about-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #555;
+    }
+    
+    @media (max-width: 767px) {
+        .about-section {
+            padding: 3rem 0;
+            text-align: center;
+        }
+        .about-section .title {
+            font-size: 2rem;
+        }
+        .about-section .title:after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+    /* Featured Set Section */
+    
+    .featured-set-section {
+        padding: 4rem 0;
+        background-color: var(--orfe-background);
+        position: relative;
+        overflow: hidden;
+        margin: 2rem 0;
+    }
+    
+    .featured-set-box {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.06);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .featured-set-img {
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 75%;
+    }
+    
+    .featured-set-img img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .featured-set-box:hover .featured-set-img img {
+        transform: scale(1.05);
+    }
+    
+    .limited-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--orfe-primary);
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        z-index: 2;
+        box-shadow: 0 3px 10px rgba(140, 168, 150, 0.3);
+        animation: pulse 2s infinite;
+    }
+    
+    .countdown-badge {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .countdown-badge i {
+        color: var(--orfe-primary-light);
+    }
+    
+    .featured-set-content {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+    
+    .featured-set-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--orfe-text);
+        margin-bottom: 0.8rem;
+        line-height: 1.3;
+    }
+    
+    .featured-set-description {
+        color: #666;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .featured-set-price {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .featured-set-old-price {
+        font-size: 1.2rem;
+        text-decoration: line-through;
+        color: #999;
+        font-weight: 500;
+    }
+    
+    .featured-set-current-price {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--orfe-primary-dark);
+    }
+    
+    .featured-set-discount {
+        background: var(--orfe-primary);
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.3rem 0.7rem;
+        border-radius: 4px;
+        margin-left: 0.5rem;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .featured-set-btn {
+        background: var(--orfe-primary);
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 4px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    
+    .featured-set-btn:hover {
+        background: var(--orfe-primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(140, 168, 150, 0.2);
+        color: white;
+    }
+    
+    .featured-set-includes {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .featured-set-includes h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+    
+    .featured-set-includes ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+    
+    .featured-set-includes li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        color: #555;
+        margin-bottom: 0.6rem;
+        font-size: 0.95rem;
+    }
+    
+    .featured-set-includes i {
+        color: var(--orfe-primary-dark);
+        font-size: 1.1rem;
+        margin-top: 0.1rem;
+    }
+    
+    @media (max-width: 991px) {
+        .featured-set-title {
+            font-size: 1.3rem;
+        }
+        .featured-set-description {
+            font-size: 0.95rem;
+        }
+        .featured-set-current-price {
+            font-size: 1.6rem;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .featured-set-section {
+            padding: 3rem 0;
+        }
+        .featured-set-content {
+            padding: 1.2rem;
+        }
+    }
+    /* Modern Reviews Section */
+    
+    .reviews-section {
+        background-color: var(--orfe-background);
+        padding: 5rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .reviews-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="2" cy="2" r="1" fill="%23E5E5E5"/></svg>') repeat;
+        opacity: 0.4;
+        z-index: 0;
+    }
+    
+    .reviews-section .container {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .reviews-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--orfe-text);
+        margin-bottom: 3rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .reviews-title:after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 0;
+        width: 80px;
+        height: 3px;
+        background: var(--orfe-primary);
+    }
+    
+    .review-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        height: 100%;
+        position: relative;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .review-card::before {
+        content: '"';
+        font-family: Georgia, serif;
+        position: absolute;
+        top: -15px;
+        left: 20px;
+        font-size: 5rem;
+        line-height: 1;
+        color: var(--orfe-primary);
+        opacity: 0.2;
+    }
+    
+    .review-rating {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        color: var(--orfe-primary-dark);
+        font-size: 1.2rem;
+    }
+    
+    .review-text {
+        color: #555;
+        line-height: 1.7;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+        font-style: italic;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .review-author {
+        border-top: 1px solid #eee;
+        padding-top: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .review-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: var(--orfe-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--orfe-primary-dark);
+    }
+    
+    .review-name {
+        font-weight: 600;
+        color: var(--orfe-text);
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+    
+    .review-date {
+        color: #999;
+        font-size: 0.85rem;
+    }
+    
+    .reviews-swiper {
+        padding-bottom: 50px;
+    }
+    
+    .reviews-swiper .swiper-pagination-bullet {
+        background: var(--orfe-primary-light);
+    }
+    
+    .reviews-swiper .swiper-pagination-bullet-active {
+        background: var(--orfe-primary);
+    }
+</style>
+
+<!-- Promotional Banner for Limited Time Offer -->
+<div class="promo-banner" id="promo-banner">
+    <div class="promo-container">
+        <div class="promo-timer">
+            <i class="bx bx-time"></i>
+            <span>Limited Time: </span>
+            <span class="promo-timer-unit" id="days">14</span>d <span class="promo-timer-unit" id="hours">00</span>h <span class="promo-timer-unit" id="minutes">00</span>m <span class="promo-timer-unit" id="seconds">00</span>s
+        </div>
+        <div class="promo-message">
+            <span class="promo-label"><i class="bx bx-gift"></i> Special Offer</span> <span>Save 35% on Orfe Total Hair & Lash Care Set</span>
+        </div>
+        <a href="/shop/4" class="promo-btn">Shop Now</a>
+    </div>
+    <button class="promo-close" id="close-promo">
+        <i class="bx bx-x"></i>
+    </button>
+</div>
+
+<!-- Modern Hero Section -->
+<section class="hero-section">
+    <div class="swiper hero-slider">
+        <div class="swiper-wrapper">
+            {% set banners = [ {'image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'title': 'Advanced Hair Care Formula', 'subtitle': 'Orfe Advanced Blends For Hair Spray', 'description': 'Achieve fuller, healthier hair with our innovative volume spray. Formulated
+            with natural ingredients to boost hair density and restore vitality.', 'highlight_image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'highlight_title': 'Volume Boost Hair Spray', 'regular_price': '438', 'sale_price': '350', 'discount': '20%'},
+            {'image': 'https://f.top4top.io/p_3399frbky2.jpg', 'title': 'Orfe Advanced Blends For Hair Oil', 'subtitle': 'Orfe Nourishing Hair Oil', 'description': 'Infused with powerful natural extracts to promote hair growth, reduce thinning, and add
+            incredible shine to every strand.', 'highlight_image': 'https://f.top4top.io/p_3399frbky2.jpg', 'highlight_title': 'Nourishing Hair Oil', 'regular_price': '469', 'sale_price': '375', 'discount': '20%'}, {'image': 'https://f.top4top.io/p_3396mbqvn1.jpg',
+            'title': 'Define Your Beauty Naturally', 'subtitle': 'Orfe Lash & Brow Serum', 'description': 'Enhance your natural beauty with our advanced growth serum. Clinically proven to deliver longer, fuller lashes and defined brows.', 'highlight_image':
+            'https://f.top4top.io/p_3396mbqvn1.jpg', 'highlight_title': 'Lash & Brow Growth Serum', 'regular_price': '165', 'sale_price': '135', 'discount': '20%'} ] %} {% for banner in banners %}
+            <div class="swiper-slide">
+                <div class="hero-slide">
+                    <div class="hero-bg">
+                        <img src="{{ banner.image }}" alt="{{ banner.title }}" loading="lazy">
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <div class="hero-content">
+                                    <p class="hero-subtitle">{{ banner.subtitle }}</p>
+                                    <h1 class="hero-title">{{ banner.title }}</h1>
+                                    <p class="hero-description">{{ banner.description }}</p>
+                                    <div class="hero-buttons">
+                                        <a href="/shop" class="btn-shop btn-primary">
+                      Shop Now
+                      <i class="bx bx-right-arrow-alt"></i>
+                    </a>
+                                        <a href="/shop" class="btn-shop btn-outline">
+                      Explore More
+                    </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-highlight">
+                        <img src="{{ banner.highlight_image }}" alt="{{ banner.highlight_title }}" class="product-highlight-image">
+                        <div class="product-highlight-content">
+                            <h3 class="product-highlight-title">{{ banner.highlight_title }}</h3>
+                            <div class="product-highlight-price">
+                                <span class="product-old-price">{{ banner.regular_price }} L.E</span>
+                                <span class="product-current-price">{{ banner.sale_price }} L.E</span>
+                                <span class="product-discount">-{{ banner.discount }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+</section>
+
+<!-- Featured Product Set Section -->
+<section class="featured-set-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-4 mb-3" style="font-weight: 800; color: var(--orfe-text);">Limited Time Offer</h2>
+                <p class="lead text-muted">Experience the complete Orfe beauty regimen with our exclusive bundle</p>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="featured-set-img mb-4 mb-lg-0">
+                    <img src="https://orfe-cosmetics.com/static/uploads/3f4d29833fd44e99b1bad0d8d7a52255_Photoroom_20250507_162816.jpg" alt="Orfe Total Hair & Lash Care Set" class="img-fluid rounded-4 shadow">
+                    <span class="limited-badge">Limited Time Offer</span>
+                    <div class="countdown-badge">
+                        <i class="bx bx-time"></i>
+                        <span id="featured-countdown">14 days left</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="featured-set-box h-100">
+                    <div class="featured-set-content">
+                        <div>
+                            <h3 class="featured-set-title">Orfe Total Hair & Lash Care Set | أورفي للعناية الكاملة بالشعر والرموش</h3>
+                            <p class="featured-set-description">Experience the full power of Orfe's premium beauty products with this exclusive set. Designed to transform both your hair and lashes, this complete care solution delivers salon-quality results at home.</p>
+
+                            <div class="featured-set-includes">
+                                <h4>This set includes:</h4>
+                                <ul>
+                                    <li><i class="bx bx-check-circle"></i> Orfe Hair Volume Spray for fuller hair</li>
+                                    <li><i class="bx bx-check-circle"></i> Orfe Nourishing Hair Oil for strength and shine</li>
+                                    <li><i class="bx bx-check-circle"></i> Orfe Lash & Brow Serum for dramatic growth</li>
+                                    <li><i class="bx bx-check-circle"></i> FREE Beauty Guide (ebook)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="featured-set-price">
+                                <span class="featured-set-old-price">1072 L.E</span>
+                                <span class="featured-set-current-price">725 L.E</span>
+                                <span class="featured-set-discount">-35%</span>
+                            </div>
+
+                            <a href="/shop/4" class="featured-set-btn">
+                                <i class="bx bx-cart-add"></i> Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Improved About Us Section -->
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h2 class="title">About Orfe</h2>
+                <div class="about-content">
+                    <p>At Orfe, we believe in the power of natural beauty enhanced through science. Our commitment to quality, innovation, and sustainability drives every product we create.</p>
+                    <p>Founded with a passion for helping people feel confident in their own skin, Orfe has quickly become a trusted name in beauty care across Egypt and beyond. We combine traditional ingredients with cutting-edge formulations to deliver
+                        real results you can see and feel.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                            <i class="bx bx-leaf mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <h5>Natural Ingredients</h5>
+                            <p class="small text-muted mb-0">Formulated with the finest natural extracts</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                            <i class="bx bx-check-shield mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <h5>Dermatologist Tested</h5>
+                            <p class="small text-muted mb-0">Safe and effective for all skin types</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                            <i class="bx bx-test-tube mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <h5>Science-backed</h5>
+                            <p class="small text-muted mb-0">Clinically proven results</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                            <i class="bx bx-world mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <h5>Cruelty-Free</h5>
+                            <p class="small text-muted mb-0">Never tested on animals</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include "shop/components/product_section.html" with context %} {% set reviews = [ {'rating': 5, 'comment': "Hello, I just wanted to give a review. The applicator is perfect and the product itself isn't oily and doesn't grease my hair at all. Also,
+no smell at all which is just amazing. I only used it for 4 days but so far it's perfect really."}, {'rating': 5, 'comment': "شكرا بجد ع ال جميل Packing والأسباراي ده الأسباراي بجد حلو جدا وضعي علي القشرة في وقت قليل والزيت قمر طلعلي بيبي هير بعد شهر
+استخدام وبالبيبي هير بدا يطول كمان ميرسي بجد ع الشحن السريع والتعامل الزوق جدا والمنتجات التحفة دي"}, {'rating': 5, 'comment': "المنتج جميل جدا ومتقافله بعد فترة النتيجة هتكون مرضيه بجد شكرا على المنتج له حق نديم يتكلم في الاستوري بجد يكلم ربنا يبارككم
+ويرزقكم يا رب"}, {'rating': 5, 'comment': "مساء الخير أولاً أحب أن أقول رأيي في المنتجات بتاعتكوا الصراحة المنتجات تحفه ف شعري جداااااااااااااااااااا"}, {'rating': 5, 'comment': "Hey there, I have been using this product for a week now and I must say,
+it’s absolutely non-greasy and has no smell, which is rare and awesome. My hair feels lighter and healthier already! Really happy with it."}, {'rating': 5, 'comment': "صباح الخير، الحمد لله على هذه المنتجات الممتازة اللي عملت فرق كبير معايا. تعبت من القشرة
+لسنين وده المنتج الأول اللي خلاني أحس بإني قربت من الحل النهائي. مرسي ليكم جداً جداً."}, {'rating': 5, 'comment': "بصراحة مش قادر أوصف كمية السعادة اللي حسيتها لما شفت النتيجة. الشعر بقى أكثر كثافة والنعومة زادت بشكل واضح. المنتج يستاهل كل فلوس إنك تشتريه
+بلا منازع."} ] %}
+
+<!-- Completely Redesigned Reviews Section -->
+<section id="customer-reviews" class="reviews-section mt-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-6">
+                <h2 class="reviews-title">What Our Customers Say</h2>
+            </div>
+        </div>
+
+        <div class="reviews-swiper">
+            <div class="swiper-wrapper">
+                {% set customers = ["Sarah", "مريم", "محمد", "نور", "Jessica", "هدى", "أحمد"] %} {% set reviews = [ {'name': 'Sarah', 'rating': 5, 'comment': "Hello, I just wanted to give a review. The applicator is perfect and the product itself isn't oily and doesn't
+                grease my hair at all. Also, no smell at all which is just amazing. I only used it for 4 days but so far it's perfect really.", 'date': 'May 2, 2025'}, {'name': 'مريم', 'rating': 5, 'comment': "شكرا بجد ع ال جميل Packing والأسباراي ده
+                الأسباراي بجد حلو جدا وضعي علي القشرة في وقت قليل والزيت قمر طلعلي بيبي هير بعد شهر استخدام وبالبيبي هير بدا يطول كمان ميرسي بجد ع الشحن السريع والتعامل الزوق جدا والمنتجات التحفة دي", 'date': 'April 28, 2025'}, {'name': 'محمد', 'rating':
+                5, 'comment': "المنتج جميل جدا ومتقافله بعد فترة النتيجة هتكون مرضيه بجد شكرا على المنتج له حق نديم يتكلم في الاستوري بجد يكلم ربنا يبارككم ويرزقكم يا رب", 'date': 'April 25, 2025'}, {'name': 'نور', 'rating': 5, 'comment': "مساء الخير
+                أولاً أحب أن أقول رأيي في المنتجات بتاعتكوا الصراحة المنتجات تحفه ف شعري جداااااااااااااااااااا", 'date': 'April 20, 2025'}, {'name': 'Jessica', 'rating': 5, 'comment': "Hey there, I have been using this product for a week now and I must
+                say, it's absolutely non-greasy and has no smell, which is rare and awesome. My hair feels lighter and healthier already! Really happy with it.", 'date': 'April 15, 2025'}, {'name': 'هدى', 'rating': 5, 'comment': "صباح الخير، الحمد لله
+                على هذه المنتجات الممتازة اللي عملت فرق كبير معايا. تعبت من القشرة لسنين وده المنتج الأول اللي خلاني أحس بإني قربت من الحل النهائي. مرسي ليكم جداً جداً.", 'date': 'April 10, 2025'}, {'name': 'أحمد', 'rating': 5, 'comment': "بصراحة مش قادر
+                أوصف كمية السعادة اللي حسيتها لما شفت النتيجة. الشعر بقى أكثر كثافة والنعومة زادت بشكل واضح. المنتج يستاهل كل فلوس إنك تشتريه بلا منازع.", 'date': 'April 5, 2025'} ] %} {% for review in reviews %}
+                <div class="swiper-slide">
+                    <div class="review-card">
+                        <div class="review-rating">
+                            {% for i in range(review.rating) %}
+                            <i class="bx bxs-star"></i> {% endfor %} {% for i in range(5 - review.rating) %}
+                            <i class="bx bx-star"></i> {% endfor %}
+                        </div>
+
+                        <p class="review-text">{{ review.comment }}</p>
+
+                        <div class="review-author">
+                            <div class="review-avatar">
+                                {{ review.name[0] }}
+                            </div>
+                            <div>
+                                <p class="review-name">{{ review.name }}</p>
+                                <p class="review-date">{{ review.date }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hero Slider
+        new Swiper('.hero-slider', {
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            speed: 1000,
+        });
+
+        // Reviews Slider
+        new Swiper('.reviews-swiper', {
+            loop: true,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            slidesPerView: 1,
+            spaceBetween: 30,
+            breakpoints: {
+                576: {
+                    slidesPerView: 1,
+                },
+                768: {
+                    slidesPerView: 2,
+                },
+                1200: {
+                    slidesPerView: 3,
+                },
+            },
+            speed: 800,
+        });
+
+        // Promo Banner Close
+        document.getElementById('close-promo').addEventListener('click', function() {
+            document.getElementById('promo-banner').style.display = 'none';
+        });
+
+        // Countdown Timer
+        function updateCountdown() {
+            // Set the end date (14 days from May 8, 2025)
+            const endDate = new Date('May 22, 2025 23:59:59').getTime();
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            // Time calculations
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the countdown
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            // Update the featured countdown text
+            document.getElementById('featured-countdown').textContent = `${days} days left`;
+
+            // If countdown is finished
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                document.getElementById('promo-banner').style.display = 'none';
+            }
+        }
+
+        // Update countdown every second
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    });
+</script>
+{% endblock %}

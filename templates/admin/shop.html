@@ -1,0 +1,184 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+<div id="addBannerModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 relative">
+            <span class="absolute top-4 right-4 text-gray-500 cursor-pointer"
+                  onclick="document.getElementById('addBannerModal').style.display='none'">&times;</span>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">إضافة بانر</h2>
+            <form action="/agent/add/Banner" method="post" enctype="multipart/form-data">
+                  <div class="mb-4">
+                        <label for="image" class="block text-sm font-medium text-gray-800">صورة البانر:</label>
+                        <input type="file" id="image" name="image" class="w-full p-2 border border-gray-300 rounded-lg">
+                  </div>
+                  <div class="mb-4">
+                        <label for="link" class="block text-sm font-medium text-gray-800">رابط البانر:</label>
+                        <input type="text" id="link" name="link" class="w-full p-2 border border-gray-300 rounded-lg">
+                  </div>
+                  <button type="submit"
+                        class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">إضافة</button>
+            </form>
+      </div>
+</div>
+<!-- addCategoryModal -->
+<div id="addCategoryModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 relative">
+            <span class="absolute top-4 right-4 text-gray-500 cursor-pointer"
+                  onclick="document.getElementById('addCategoryModal').style.display='none'">&times;</span>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">إضافة تصنيف</h2>
+            <form action="/agent/add/Category" method="post">
+                  <div class="mb-4">
+                        <label for="name" class="block text-sm font-medium text-gray-800">اسم التصنيف:</label>
+                        <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded-lg">
+                  </div>
+                  <button type="submit"
+                        class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">إضافة</button>
+            </form>
+      </div>
+</div>
+<div class="container mx-auto px-4 py-6">
+      <div class="flex items-center mb-4 gap-2">
+            <img src="{{ url_for('static', filename='uploads/' + shop.logo) }}" alt="Logo"
+                  class="w-8 h-8 object-cover rounded-full mr-2">
+            <h1 class="text-2xl font-bold text-gray-800">{{ shop.name }}</h1>
+      </div>
+
+      <!-- قسم البانرات -->
+      <div class="my-8">
+            <div class="flex justify-between items-center">
+                  <h2 class="text-xl font-semibold">البانرات</h2>
+                  <button onclick="openModal('addBannerModal')"
+                        class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[20%]">
+                        <i class="bx bx-plus"></i>
+                        إضافة بانر
+                  </button>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-4">
+                  {% for banner in shop.banners %}
+                  <div class="relative">
+                        <img src="{{ url_for('static', filename='uploads/' + banner.image) }}" alt="صورة البانر"
+                              class="w-full h-32 object-cover rounded-lg">
+                        <a href="{{ banner.link }}" class="absolute inset-0"></a>
+                        <button onclick="deleteBanner('{{ banner.id }}')"
+                              class="absolute bottom-0 center-0 w-[100%] text-white rounded-lg  hover:bg-red-700 transition duration-300 ease-in-out border-2 border-red-500 bg-red-500">
+                              <i class="bx bx-trash text-lg"></i>
+                        </button>
+                  </div>
+                  {% endfor %}
+                  <script>
+                        function deleteBanner(bannerId) {
+                              if (confirm('هل أنت متأكد من حذف البانر؟')) {
+                                    window.location.href = '/agent/delete/Banner/' + bannerId;
+                              }
+                        }
+                  </script>
+            </div>
+      </div>
+
+      <!-- قسم التصنيفات -->
+      <div class="my-8">
+            <div class="flex justify-between items-center">
+                  <h2 class="text-xl font-semibold">التصنيفات</h2>
+                  <button onclick="openModal('addCategoryModal')"
+                        class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[20%]">
+                        <i class="bx bx-plus"></i>
+                        إضافة تصنيف
+                  </button>
+            </div>
+            <div class="mt-4 grid grid-cols-4 gap-4">
+                  {% for category in shop.categories %}
+                  <div class="bg-gray-100 p-4 rounded hover:bg-gray-200 transition relative">
+                        <h3 class="font-medium text-gray-900">{{ category.name }}</h3>
+                        <button onclick="deleteCategory('{{ category.id }}')"
+                              class="absolute left-2 text-red-500 hover:text-red-700">
+                              <i class="bx bx-trash text-lg"></i>
+                        </button>
+                  </div>
+                  {% endfor %}
+                  <script>
+                        function deleteCategory(categoryId) {
+                              if (confirm('هل أنت متأكد من حذف التصنيف؟')) {
+                                    window.location.href = '/agent/delete/Category/' + categoryId;
+                              }
+                        }
+                  </script>
+            </div>
+      </div>
+
+      <!-- تفاصيل المتجر -->
+      <div class="my-8 p-6 bg-white shadow-lg rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4">معلومات عن المتجر</h2>
+            <!-- logo -->
+            <div class="flex items-center mb-4">
+                  <img src="{{ url_for('static', filename='uploads/' + shop.logo) }}" alt="Logo"
+                        class="w-32 h-32 object-cover rounded-lg mr-4">
+                  <p class="text-gray-700">{{ shop.about_us }}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                  <div><strong class="text-gray-800">العنوان:</strong> <span class="text-gray-600">{{ shop.address
+                              }}</span></div>
+                  <div><strong class="text-gray-800">البريد الإلكتروني:</strong> <span class="text-gray-600">{{
+                              shop.email }}</span></div>
+                  <!-- primary color -->
+                  <div><strong class="text-gray-800">اللون الأساسي:</strong> <span
+                              class="inline-block w-6 h-6 rounded-full"
+                              style="background-color: {{ shop.primary_color }}"></span></div>
+                  <!-- secondary color -->
+                  <div><strong class="text-gray-800">اللون الثانوي:</strong> <span
+                              class="inline-block w-6 h-6 rounded-full"
+                              style="background-color: {{ shop.secondary_color }}"></span></div>
+                  <div><strong class="text-gray-800">الهاتف:</strong> <span class="text-gray-600">{{ shop.phone
+                              }}</span></div>
+                  <div><strong class="text-gray-800">فيسبوك:</strong> <a href="{{ shop.facebook }}"
+                              class="text-blue-500 hover:underline">زيارة فيسبوك</a></div>
+                  <div><strong class="text-gray-800">إنستغرام:</strong> <a href="{{ shop.instagram }}"
+                              class="text-pink-500 hover:underline">زيارة إنستغرام</a></div>
+            </div>
+      </div>
+      <!-- tabel for last products -->
+      <div class="my-8">
+            <h2 class="text-2xl font-semibold mb-4">أحدث المنتجات</h2>
+            <div class="overflow-x-auto">
+                  <table class="w-full table-auto">
+                        <thead>
+                              <tr>
+                                    <th class="px-4 py-2 text-gray-800">الصورة</th>
+                                    <th class="px-4 py-2 text-gray-800">الاسم</th>
+                                    <th class="px-4 py-2 text-gray-800">السعر</th>
+                                    <th class="px-4 py-2 text-gray-800">التصنيف</th>
+                                    <th class="px-4 py-2 text-gray-800">التاريخ</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                                            {% for product in shop.products[-10:] %}
+                                            <tr>
+                                                      <td class="px-4 py-2"><img
+                                                                        src="{{ url_for('static', filename='uploads/' + product.image) }}"
+                                                                        alt="Product Image" class="w-16 h-16 object-cover rounded-lg"></td>
+                                                      <td class="px-4 py-2">{{ product.name }}</td>
+                                                      <td class="px-4 py-2">{{ product.price }}</td>
+                                                      <td class="px-4 py-2">{{ product.category.name }}</td>
+                                                      <td class="px-4 py-2">{{ product.created_at }}</td>
+                                                      <td class="px-4 py-2">
+                                                            <a href="{{ url_for('admin.edit_product_form', product_id=product.id) }}" class="btn btn-warning btn-sm">تعديل</a>
+                                                      </td>
+                                            </tr>
+                                            {% endfor %}
+                        </tbody>
+                  </table>
+            </div>
+      </div>
+</div>
+
+
+<script>
+      function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+      }
+
+      function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+      }
+</script>
+{% endblock %}

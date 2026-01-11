@@ -1,0 +1,40 @@
+<form method="POST" action="{{ url_for('admin.edit_product', product_id=product.id) }}" enctype="multipart/form-data" class="space-y-4">
+    <h2 class="text-xl font-bold mb-4">تعديل المنتج</h2>
+    <div>
+        <label class="block mb-1">اسم المنتج</label>
+        <input type="text" name="name" value="{{ product.name }}" class="form-control" required>
+    </div>
+    <div>
+        <label class="block mb-1">الوصف</label>
+        <textarea name="description" class="form-control" rows="3" required>{{ product.description }}</textarea>
+    </div>
+    <div>
+        <label class="block mb-1">السعر</label>
+        <input type="number" name="price" value="{{ product.price }}" class="form-control" step="0.01" required>
+    </div>
+    <div>
+        <label class="block mb-1">نسبة الخصم (%)</label>
+        <input type="number" name="discount" value="{{ product.discount }}" class="form-control" step="0.01">
+    </div>
+    <div>
+        <label class="block mb-1">الكمية في المخزون</label>
+        <input type="number" name="quantity" value="{{ product.stock }}" class="form-control" min="0" required>
+    </div>
+    <div>
+        <label class="block mb-1">التصنيف</label>
+        <select name="category" class="form-control" required>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id == product.category_id %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label class="block mb-1">الصورة الحالية</label><br>
+        <img src="/{{ product.image }}" alt="صورة المنتج" style="max-width:120px; max-height:120px; border-radius:8px; margin-bottom:8px;">
+    </div>
+    <div>
+        <label class="block mb-1">تغيير الصورة</label>
+        <input type="file" name="image" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">حفظ التعديلات</button>
+</form>

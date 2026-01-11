@@ -1,0 +1,796 @@
+{% extends 'admin/base.html' %} {% block content %}
+<div class="min-h-screen bg-gradient-to-br from-sage-50 to-white">
+    <!-- Enhanced Header Section -->
+    <div class="bg-white/80 backdrop-blur-sm border-b border-sage-100 sticky top-0 z-10 shadow-sm">
+        <div class="px-6 py-4">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sage-500 to-sage-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class='bx bx-map text-2xl'></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-sage-900">إدارة الشحن والمناطق</h1>
+                        <p class="text-sage-600 text-sm">إدارة المدن والمناطق وأسعار الشحن</p>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-sage-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class='bx bx-map text-blue-600'></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-600">إجمالي المدن</p>
+                                <p class="text-xl font-bold text-slate-800">{{ cities|length }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-sage-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class='bx bx-map-pin text-green-600'></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-600">المناطق</p>
+                                <p class="text-xl font-bold text-slate-800">{{ stats.total_zones }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-sage-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class='bx bx-building-house text-purple-600'></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-600">الأحياء</p>
+                                <p class="text-xl font-bold text-slate-800">{{ stats.total_districts }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-sage-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i class='bx bx-dollar text-orange-600'></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-600">متوسط الشحن</p>
+                                <p class="text-xl font-bold text-slate-800">
+                                    {{ "%.0f"|format(stats.avg_shipping_cost) }} ج.م
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="px-6 py-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-sage-100 p-6 mb-6">
+            <div class="flex flex-col lg:flex-row gap-4">
+                <!-- Search -->
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">البحث في المدن</label>
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="ابحث باسم المدينة أو المعرف..." class="w-full pl-12 pr-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200 bg-sage-50/50">
+                        <i class='bx bx-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-xl'></i>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-3">
+                    <button data-action="add-city" class="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        <i class='bx bx-plus text-lg'></i>
+                        <span class="font-medium">إضافة مدينة</span>
+                    </button>
+                    <button data-action="export" class="bg-white hover:bg-sage-50 text-sage-700 border border-sage-200 px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md">
+                        <i class='bx bx-export text-lg'></i>
+                        <span class="font-medium">تصدير البيانات</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cities Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="citiesGrid">
+            {% for city in cities %}
+            <div class="city-card bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 overflow-hidden group" data-city-name="{{ city.name|lower }}" data-city-id="{{ city.city_id|lower }}">
+
+                <!-- City Header -->
+                <div class="bg-gradient-to-br from-sage-50 to-sage-100 p-6 relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sage-500 to-sage-600 rounded-xl flex items-center justify-center text-white text-lg font-bold">
+                                {{ city.name[0] }}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">{{ city.name }}</h3>
+                                <p class="text-sm text-slate-500">المعرف: {{ city.city_id }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button data-action="edit-city" data-city-id="{{ city.id }}" class="city-action opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white text-slate-700 w-8 h-8 rounded-full flex items-center justify-center">
+                                <i class='bx bx-edit text-sm'></i>
+                            </button>
+                            <button data-action="delete-city" data-city-id="{{ city.id }}" data-city-name="{{ city.name }}" class="city-action opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white text-red-500 w-8 h-8 rounded-full flex items-center justify-center">
+                                <i class='bx bx-trash text-sm'></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-slate-800">{{ city.zones_count }}</div>
+                            <div class="text-sm text-slate-600">منطقة</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-slate-800">{{ city.districts_count }}</div>
+                            <div class="text-sm text-slate-600">حي</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-sage-600">{{ city.shipping_price }}</div>
+                            <div class="text-sm text-slate-600">ج.م</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- City Details -->
+                <div class="p-6">
+                    <!-- Zones Section -->
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-slate-700 flex items-center gap-2">
+                                <i class='bx bx-map-pin text-sage-600'></i> المناطق
+                            </h4>
+                            <button data-action="manage-zones" data-city-id="{{ city.id }}" class="text-sage-600 hover:text-sage-800 text-sm">
+                                <i class='bx bx-plus'></i>
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                            {% for zone in city.zones %}
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">{{ zone.name }}</span> {% endfor %} {% if not city.zones %}
+                            <span class="text-gray-400 text-sm italic">لا توجد مناطق</span> {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Districts Section -->
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-slate-700 flex items-center gap-2">
+                                <i class='bx bx-building-house text-sage-600'></i> الأحياء
+                            </h4>
+                            <button data-action="manage-districts" data-city-id="{{ city.id }}" class="text-sage-600 hover:text-sage-800 text-sm">
+                                <i class='bx bx-plus'></i>
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                            {% for district in city.districts %}
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-1 rounded-full">{{ district.name }}</span> {% endfor %} {% if not city.districts %}
+                            <span class="text-gray-400 text-sm italic">لا توجد أحياء</span> {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Shipping Cost Section -->
+                    <div class="bg-sage-50 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class='bx bx-truck text-sage-600'></i>
+                                <span class="font-medium text-slate-700">تكلفة الشحن:</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg font-bold text-sage-700">{{ city.shipping_price }} ج.م</span>
+                                <button type="button" data-action="edit-shipping-cost" data-city-id="{{ city.city_id }}" data-current-price="{{ city.shipping_price }}" class="text-sage-600 hover:text-sage-800">
+                                    <i class='bx bx-edit-alt text-sm'></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-2 mt-4">
+                        <button data-action="edit-city" data-city-id="{{ city.id }}" class="flex-1 bg-sage-100 hover:bg-sage-200 text-sage-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-1">
+                            <i class='bx bx-edit text-sm'></i>
+                            <span>تعديل</span>
+                        </button>
+                        <button data-action="view-details" data-city-id="{{ city.id }}" class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-1">
+                            <i class='bx bx-show text-sm'></i>
+                            <span>تفاصيل</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Empty State -->
+        {% if not cities %}
+        <div id="emptyState" class="text-center py-16">
+            <div class="w-24 h-24 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class='bx bx-map text-4xl text-sage-400'></i>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-700 mb-2">لا توجد مدن</h3>
+            <p class="text-slate-500 mb-6">لم يتم إضافة أي مدن بعد</p>
+            <button data-action="add-city" class="bg-sage-500 hover:bg-sage-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                إضافة مدينة جديدة
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add City Modal -->
+<div id="addCityModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl transform transition-all">
+        <div class="flex justify-between items-center p-6 border-b border-sage-100">
+            <h2 class="text-xl font-bold text-sage-900 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-sage-500 to-sage-600 rounded-xl flex items-center justify-center text-white">
+                    <i class='bx bx-plus text-lg'></i>
+                </div>
+                إضافة مدينة جديدة
+            </h2>
+            <button data-modal-close="addCityModal" class="text-2xl text-slate-500 hover:text-slate-700 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <form id="addCityForm" method="POST" action="/admin/add_city" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">اسم المدينة</label>
+                    <input type="text" name="name" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200" placeholder="أدخل اسم المدينة">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">المعرف الفني (API ID)</label>
+                    <input type="text" name="city_id" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200" placeholder="أدخل المعرف الفني">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">تكلفة الشحن (ج.م)</label>
+                    <input type="number" name="shipping_price" step="0.01" value="100" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200" placeholder="100">
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-sage-100">
+                    <button type="button" data-modal-close="addCityModal" class="px-6 py-3 border border-sage-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2">
+                        <i class='bx bx-save'></i>
+                        حفظ المدينة
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Shipping Cost Modal -->
+<div id="editShippingCostModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl transform transition-all">
+        <div class="flex justify-between items-center p-6 border-b border-sage-100">
+            <h2 class="text-xl font-bold text-sage-900 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white">
+                    <i class='bx bx-truck text-lg'></i>
+                </div>
+                تحديث تكلفة الشحن
+            </h2>
+            <button data-modal-close="editShippingCostModal" class="text-2xl text-slate-500 hover:text-slate-700 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <form id="editShippingCostForm" method="POST" action="/admin/update_shipping_cost" class="space-y-4">
+                <input type="hidden" id="editCityId" name="city_id">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">التكلفة الحالية</label>
+                    <div id="currentPrice" class="text-lg font-bold text-slate-900 bg-slate-100 p-3 rounded-lg"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">التكلفة الجديدة (ج.م)</label>
+                    <input type="number" id="newPrice" name="price" step="0.01" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200">
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-sage-100">
+                    <button type="button" data-modal-close="editShippingCostModal" class="px-6 py-3 border border-sage-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2">
+                        <i class='bx bx-save'></i>
+                        حفظ التحديث
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- City Details Modal -->
+<div id="cityDetailsModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-4xl shadow-2xl transform transition-all max-h-[90vh] overflow-hidden">
+        <div class="flex justify-between items-center p-6 border-b border-sage-100">
+            <h2 class="text-xl font-bold text-sage-900 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white">
+                    <i class='bx bx-show text-lg'></i>
+                </div>
+                <span id="cityDetailsTitle">تفاصيل المدينة</span>
+            </h2>
+            <button data-modal-close="cityDetailsModal" class="text-2xl text-slate-500 hover:text-slate-700 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div id="cityDetailsContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .city-card {
+        transform: translateY(0);
+        transition: all 0.3s ease;
+    }
+    
+    .city-card:hover {
+        transform: translateY(-2px);
+    }
+    /* Animation classes */
+    
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Scroll animations */
+    
+    .city-card {
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .city-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+    
+    .city-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .city-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+    
+    .city-card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+    
+    .city-card:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+    
+    .city-card:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Loading animation */
+    
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+    /* Modal animations */
+    
+    .modal-enter {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    
+    .modal-enter-active {
+        opacity: 1;
+        transform: scale(1);
+        transition: opacity 150ms ease-out, transform 150ms ease-out;
+    }
+    
+    .modal-exit {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    .modal-exit-active {
+        opacity: 0;
+        transform: scale(0.95);
+        transition: opacity 150ms ease-in, transform 150ms ease-in;
+    }
+    /* Custom scrollbar */
+    
+    .overflow-y-auto::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .overflow-y-auto::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 8px;
+    }
+    
+    .overflow-y-auto::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 8px;
+    }
+    
+    .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+</style>
+
+<script>
+    // Enhanced Search and Filter Functionality
+    const searchInput = document.getElementById('searchInput');
+    const citiesGrid = document.getElementById('citiesGrid');
+
+    // Filter cities client-side for better UX
+    function filterCities() {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const cityCards = document.querySelectorAll('.city-card');
+        let visibleCount = 0;
+
+        cityCards.forEach(card => {
+            const cityName = card.dataset.cityName;
+            const cityId = card.dataset.cityId;
+
+            const matchesSearch = !searchTerm ||
+                cityName.includes(searchTerm) ||
+                cityId.includes(searchTerm);
+
+            if (matchesSearch) {
+                card.style.display = 'block';
+                card.classList.add('fade-in');
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('fade-in');
+            }
+        });
+
+        // Show/hide empty state
+        const emptyState = document.getElementById('emptyState');
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    }
+
+    // Initialize search if element exists
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(filterCities, 300));
+    }
+
+    // Debounce function for search
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Modal Management
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) {
+            console.error('Modal not found:', modalId);
+            showNotification('حدث خطأ في فتح النافذة', 'error');
+            return;
+        }
+        
+        // Remove hidden class and ensure modal is visible
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        modal.classList.add('modal-enter');
+        
+        requestAnimationFrame(() => {
+            modal.classList.remove('modal-enter');
+            modal.classList.add('modal-enter-active');
+        });
+
+        // Focus first input
+        const firstInput = modal.querySelector('input, select, textarea');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 150);
+        }
+    }
+
+    function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('modal-exit');
+            modal.classList.remove('modal-enter-active');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+                modal.classList.remove('modal-exit', 'modal-exit-active');
+            }, 150);
+        }
+    }
+
+    // City Actions
+    function addCity() {
+        showModal('addCityModal');
+    }
+
+    function editShippingCost(cityId, currentPrice) {
+        try {
+            const cityIdInput = document.getElementById('editCityId');
+            const currentPriceDiv = document.getElementById('currentPrice');
+            const newPriceInput = document.getElementById('newPrice');
+            
+            if (!cityIdInput || !currentPriceDiv || !newPriceInput) {
+                console.error('Modal elements not found');
+                showNotification('حدث خطأ في تحميل النموذج', 'error');
+                return;
+            }
+            
+            cityIdInput.value = cityId || '';
+            currentPriceDiv.textContent = (currentPrice || '0') + ' ج.م';
+            newPriceInput.value = currentPrice || '0';
+            
+            showModal('editShippingCostModal');
+        } catch (error) {
+            console.error('Error in editShippingCost:', error);
+            showNotification('حدث خطأ في فتح نموذج التعديل', 'error');
+        }
+    }
+
+    function deleteCity(cityId, cityName) {
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: `سيتم حذف مدينة "${cityName}" وجميع البيانات المرتبطة بها!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'نعم، احذف!',
+            cancelButtonText: 'إلغاء',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/admin/delete_city/${cityId}`;
+            }
+        });
+    }
+
+    function viewCityDetails(cityId) {
+        // This would load detailed information about the city
+        showModal('cityDetailsModal');
+        document.getElementById('cityDetailsTitle').textContent = 'تفاصيل المدينة';
+        document.getElementById('cityDetailsContent').innerHTML = `
+            <div class="text-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-500 mx-auto"></div>
+                <p class="mt-4 text-slate-600">جاري تحميل التفاصيل...</p>
+            </div>
+        `;
+
+        // Simulate loading detailed data
+        setTimeout(() => {
+            document.getElementById('cityDetailsContent').innerHTML = `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-sage-50 rounded-xl p-4">
+                            <h3 class="font-semibold text-slate-700 mb-3">معلومات أساسية</h3>
+                            <div class="space-y-2 text-sm">
+                                <div><span class="font-medium">المعرف:</span> ${cityId}</div>
+                                <div><span class="font-medium">تاريخ الإضافة:</span> ${new Date().toLocaleDateString('ar-EG')}</div>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-4">
+                            <h3 class="font-semibold text-slate-700 mb-3">إحصائيات الطلبات</h3>
+                            <div class="space-y-2 text-sm">
+                                <div><span class="font-medium">إجمالي الطلبات:</span> 0</div>
+                                <div><span class="font-medium">الطلبات المكتملة:</span> 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }, 1000);
+    }
+
+    function exportData() {
+        showNotification('جاري تحضير ملف التصدير...', 'info');
+
+        // Simulate export process
+        setTimeout(() => {
+            showNotification('سيتم إضافة خاصية التصدير قريباً', 'info');
+        }, 2000);
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        toast.fire({
+            icon: type,
+            title: message
+        });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event delegation for city actions
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('[data-action]');
+            if (!target) return;
+
+            // Prevent default for buttons to avoid any unwanted behavior
+            if (target.tagName === 'BUTTON' || target.closest('button')) {
+                e.preventDefault();
+            }
+
+            const action = target.dataset.action;
+            const cityId = target.dataset.cityId;
+            const cityName = target.dataset.cityName;
+            const currentPrice = target.dataset.currentPrice;
+
+            switch (action) {
+                case 'add-city':
+                    addCity();
+                    break;
+                case 'edit-city':
+                    // This would open an edit modal for the city
+                    showNotification('سيتم إضافة خاصية تعديل المدينة قريباً', 'info');
+                    break;
+                case 'delete-city':
+                    deleteCity(cityId, cityName);
+                    break;
+                case 'edit-shipping-cost':
+                    if (cityId && currentPrice) {
+                        editShippingCost(cityId, currentPrice);
+                    } else {
+                        console.error('Missing cityId or currentPrice', { cityId, currentPrice });
+                        showNotification('حدث خطأ في تحميل بيانات المدينة', 'error');
+                    }
+                    break;
+                case 'view-details':
+                    viewCityDetails(cityId);
+                    break;
+                case 'manage-zones':
+                    showNotification('سيتم إضافة خاصية إدارة المناطق قريباً', 'info');
+                    break;
+                case 'manage-districts':
+                    showNotification('سيتم إضافة خاصية إدارة الأحياء قريباً', 'info');
+                    break;
+                case 'export':
+                    exportData();
+                    break;
+            }
+        });
+
+        // Modal close handlers
+        document.addEventListener('click', function(e) {
+            if (e.target.dataset.modalClose) {
+                hideModal(e.target.dataset.modalClose);
+            }
+
+            // Close modal when clicking backdrop
+            if (e.target.classList.contains('fixed') && e.target.classList.contains('bg-black/50')) {
+                const modal = e.target;
+                const modalId = modal.id;
+                hideModal(modalId);
+            }
+        });
+
+        // Form submission handlers
+        const addCityForm = document.getElementById('addCityForm');
+        if (addCityForm) {
+            addCityForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="bx bx-loader-alt animate-spin mr-2"></i>جاري الحفظ...';
+                }
+            });
+        }
+
+        const editShippingCostForm = document.getElementById('editShippingCostForm');
+        if (editShippingCostForm) {
+            editShippingCostForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="bx bx-loader-alt animate-spin mr-2"></i>جاري التحديث...';
+                }
+            });
+        }
+
+        // Add smooth scroll animation for cards
+        const cityCards = document.querySelectorAll('.city-card');
+        if (cityCards.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.target && entry.target.nodeType === Node.ELEMENT_NODE) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            });
+
+            cityCards.forEach(card => {
+                if (card && card.nodeType === Node.ELEMENT_NODE) {
+                    observer.observe(card);
+                }
+            });
+        }
+
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                const visibleModal = document.querySelector('.fixed.inset-0:not(.hidden)');
+                if (visibleModal) {
+                    hideModal(visibleModal.id);
+                }
+            }
+
+            // Ctrl+N for new city
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                addCity();
+            }
+        });
+    });
+</script>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

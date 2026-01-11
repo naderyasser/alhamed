@@ -1,0 +1,833 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<style>
+    /* ============================================
+       MODERN MINIMALIST SHOP DESIGN - 2025
+       ============================================ */
+    
+    /* CSS Variables for Shop Page */
+    .shop-page {
+        --shop-primary: #8CA896;
+        --shop-primary-dark: #6B8E6E;
+        --shop-primary-light: #B8D4A8;
+        --shop-accent: #F59E0B;
+        --shop-bg-primary: #FAFAFA;
+        --shop-bg-secondary: #FFFFFF;
+        --shop-bg-tertiary: #F5F7F5;
+        --shop-text-primary: #1A202C;
+        --shop-text-secondary: #4A5568;
+        --shop-text-tertiary: #718096;
+        --shop-border: #E8ECF0;
+        --shop-border-light: #F0F4F8;
+        --shop-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+        --shop-shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+        --shop-shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
+        --shop-shadow-hover: 0 20px 40px rgba(140, 168, 150, 0.15);
+        --shop-radius-sm: 8px;
+        --shop-radius-md: 12px;
+        --shop-radius-lg: 16px;
+        --shop-radius-xl: 24px;
+        --shop-radius-full: 9999px;
+        --shop-transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --shop-transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        --shop-font-heading: 'Playfair Display', Georgia, serif;
+        --shop-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    /* Hero Section - Minimalist Design */
+    .shop-page .hero-section {
+        position: relative;
+        padding: 4rem 0;
+        background: linear-gradient(135deg, var(--shop-bg-tertiary) 0%, var(--shop-bg-primary) 100%);
+        overflow: hidden;
+        margin-bottom: 3rem;
+    }
+    
+    .shop-page .hero-content {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .shop-page .hero-title {
+        font-family: var(--shop-font-heading);
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 700;
+        color: var(--shop-text-primary);
+        margin-bottom: 1rem;
+        letter-spacing: -0.03em;
+        animation: fadeInUp 0.8s ease forwards;
+    }
+    
+    .shop-page .hero-subtitle {
+        font-size: 1.125rem;
+        color: var(--shop-text-secondary);
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.8s ease 0.2s forwards;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Filter Sidebar - Modern Design */
+    .shop-page .sidebar {
+        position: sticky;
+        top: 100px;
+        background: var(--shop-bg-secondary);
+        border-radius: var(--shop-radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shop-shadow-md);
+        height: fit-content;
+    }
+    
+    .shop-page .widget {
+        margin-bottom: 3rem;
+    }
+    
+    .shop-page .widget-title {
+        font-family: var(--shop-font-heading);
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--shop-text-primary);
+        margin-bottom: 1rem;
+        position: relative;
+        padding-bottom: 0.75rem;
+    }
+    
+    .shop-page .widget-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: var(--shop-primary);
+        border-radius: 2px;
+    }
+    
+    /* Search Widget */
+    .shop-page .widget-search-bar {
+        position: relative;
+    }
+    
+    .shop-page .search-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 2px solid var(--shop-border);
+        border-radius: var(--shop-radius-md);
+        background: var(--shop-bg-primary);
+        color: var(--shop-text-primary);
+        transition: all var(--shop-transition-base);
+        font-family: var(--shop-font-body);
+    }
+    
+    .shop-page .search-field:focus {
+        outline: none;
+        border-color: var(--shop-primary);
+        box-shadow: 0 0 0 4px rgba(140, 168, 150, 0.1);
+    }
+    
+    .shop-page .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--shop-text-secondary);
+        transition: color var(--shop-transition-base);
+        background: var(--shop-primary);
+        width: 40px;
+        height: 40px;
+        border-radius: var(--shop-radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+    
+    /* Categories Widget */
+    .shop-page .product-categories {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .shop-page .cat-item {
+        margin-bottom: 0.5rem;
+    }
+    
+    .shop-page .category-filter {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: var(--shop-text-secondary);
+        border-radius: var(--shop-radius-md);
+        transition: all var(--shop-transition-base);
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+        font-family: var(--shop-font-body);
+    }
+    
+    .shop-page .category-filter::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 3px;
+        background: var(--shop-primary);
+        border-radius: 50%;
+        transition: all var(--shop-transition-base);
+    }
+    
+    .shop-page .category-filter:hover {
+        color: var(--shop-primary);
+        background: var(--shop-bg-tertiary);
+    }
+    
+    .shop-page .category-filter:hover::before {
+        width: 100%;
+    }
+    
+    .shop-page .category-filter.active {
+        color: var(--shop-primary);
+        background: var(--shop-bg-tertiary);
+    }
+    
+    .shop-page .category-filter.active::before {
+        width: 100%;
+    }
+    
+    /* Price Filter Widget */
+    .shop-page .price-filter {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: var(--shop-text-secondary);
+        border-radius: var(--shop-radius-md);
+        transition: all var(--shop-transition-base);
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+        font-family: var(--shop-font-body);
+    }
+    
+    .shop-page .price-filter::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 3px;
+        background: var(--shop-primary);
+        border-radius: 50%;
+        transition: all var(--shop-transition-base);
+    }
+    
+    .shop-page .price-filter:hover {
+        color: var(--shop-primary);
+        background: var(--shop-bg-tertiary);
+    }
+    
+    .shop-page .price-filter:hover::before {
+        width: 100%;
+    }
+    
+    .shop-page .price-filter.active {
+        color: var(--shop-primary);
+        background: var(--shop-bg-tertiary);
+    }
+    
+    .shop-page .price-filter.active::before {
+        width: 100%;
+    }
+    
+    /* Sort Widget */
+    .shop-page .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 2px solid var(--shop-border);
+        border-radius: var(--shop-radius-md);
+        background: var(--shop-bg-primary);
+        color: var(--shop-text-primary);
+        transition: all var(--shop-transition-base);
+        font-weight: 500;
+        font-family: var(--shop-font-body);
+    }
+    
+    .shop-page .form-control:focus {
+        outline: none;
+        border-color: var(--shop-primary);
+        box-shadow: 0 0 0 4px rgba(140, 168, 150, 0.1);
+    }
+    
+    /* Product Grid - Modern Card Design */
+    .shop-page .product-grid {
+        padding: 4rem 0;
+    }
+    
+    .shop-page .filter-shop {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--shop-border-light);
+    }
+    
+    .shop-page .showing-product {
+        font-size: 0.95rem;
+        color: var(--shop-text-secondary);
+        font-weight: 500;
+        font-family: var(--shop-font-body);
+    }
+    
+    .shop-page .sort-by {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Product Card - Minimalist Design */
+    .shop-page .card {
+        background: var(--shop-bg-secondary);
+        border-radius: var(--shop-radius-lg);
+        border: 1px solid var(--shop-border-light);
+        box-shadow: var(--shop-shadow-md);
+        overflow: hidden;
+        transition: all var(--shop-transition-slow);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .shop-page .card:hover {
+        transform: translateY(-12px);
+        box-shadow: var(--shop-shadow-hover);
+        border-color: var(--shop-primary-light);
+    }
+    
+    .shop-page .card-img-container {
+        position: relative;
+        overflow: hidden;
+        background: var(--shop-bg-tertiary);
+        aspect-ratio: 1;
+    }
+    
+    .shop-page .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: transform var(--shop-transition-slow);
+    }
+    
+    .shop-page .card:hover .product-image {
+        transform: scale(1.08);
+    }
+    
+    .shop-page .card-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+    
+    .shop-page .card-title {
+        font-family: var(--shop-font-heading);
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--shop-text-primary);
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+    }
+    
+    .shop-page .card-title a {
+        color: var(--shop-text-primary);
+        transition: color var(--shop-transition-base);
+    }
+    
+    .shop-page .card-title a:hover {
+        color: var(--shop-primary);
+    }
+    
+    .shop-page .card-text {
+        font-size: 0.9rem;
+        color: var(--shop-text-secondary);
+        line-height: 1.6;
+    }
+    
+    /* Price Display */
+    .shop-page .product-price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .shop-page .old-price {
+        font-size: 1rem;
+        text-decoration: line-through;
+        color: var(--shop-text-tertiary);
+        font-weight: 500;
+    }
+    
+    .shop-page .current-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--shop-primary-dark);
+    }
+    
+    .shop-page .discount-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.5rem;
+        background: var(--shop-accent);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border-radius: var(--shop-radius-sm);
+        letter-spacing: 0.05em;
+        box-shadow: var(--shop-shadow-sm);
+    }
+    
+    /* Buttons */
+    .shop-page .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: var(--shop-radius-md);
+        border: none;
+        cursor: pointer;
+        transition: all var(--shop-transition-base);
+        text-decoration: none;
+        box-shadow: var(--shop-shadow-sm);
+        font-family: var(--shop-font-body);
+    }
+    
+    .shop-page .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shop-shadow-md);
+    }
+    
+    .shop-page .btn:active {
+        transform: translateY(-1px);
+    }
+    
+    .shop-page .btn-primary {
+        background: linear-gradient(135deg, var(--shop-primary) 0%, var(--shop-primary-dark) 100%);
+        color: white;
+    }
+    
+    .shop-page .btn-primary:hover {
+        background: linear-gradient(135deg, var(--shop-primary-dark) 0%, #5A7A5E 100%);
+        box-shadow: 0 8px 20px rgba(140, 168, 150, 0.25);
+    }
+    
+    .shop-page .btn-outline {
+        background: transparent;
+        color: var(--shop-text-primary);
+        border: 2px solid var(--shop-primary);
+        box-shadow: none;
+    }
+    
+    .shop-page .btn-outline:hover {
+        background: var(--shop-primary);
+        color: white;
+        border-color: var(--shop-primary);
+    }
+    
+    .shop-page .btn-pill {
+        border-radius: var(--shop-radius-full);
+    }
+    
+    /* Pagination - Modern Design */
+    .shop-page .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 4rem;
+        list-style: none;
+        padding: 0;
+    }
+    
+    .shop-page .page-item {
+        display: flex;
+        align-items: center;
+    }
+    
+    .shop-page .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: var(--shop-radius-md);
+        border: 2px solid var(--shop-border);
+        background: var(--shop-bg-secondary);
+        color: var(--shop-text-secondary);
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all var(--shop-transition-base);
+        font-family: var(--shop-font-body);
+    }
+    
+    .shop-page .page-link:hover {
+        background: var(--shop-primary);
+        color: white;
+        border-color: var(--shop-primary);
+    }
+    
+    .shop-page .page-link.active {
+        background: var(--shop-primary);
+        color: white;
+        border-color: var(--shop-primary);
+    }
+    
+    .shop-page .page-item.disabled .page-link {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    
+    .shop-page .arrow-left,
+    .shop-page .arrow-right {
+        width: 20px;
+        height: 20px;
+        transition: transform var(--shop-transition-base);
+    }
+    
+    .shop-page .page-link:hover .arrow-left,
+    .shop-page .page-link:hover .arrow-right {
+        transform: scale(1.1);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .shop-page .sidebar {
+            position: relative;
+            top: 0;
+            margin-bottom: 2rem;
+        }
+        
+        .shop-page .filter-shop {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .shop-page .product-grid {
+            padding: 2rem 0;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .shop-page .hero-section {
+            padding: 2rem 0;
+        }
+        
+        .shop-page .hero-title {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+        }
+        
+        .shop-page .card-body {
+            padding: 1rem;
+        }
+        
+        .shop-page .btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .shop-page .product-price {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .shop-page .card-title {
+            font-size: 1.125rem;
+        }
+        
+        .shop-page .card-text {
+            font-size: 0.875rem;
+        }
+        
+        .shop-page .pagination {
+            gap: 0.25rem;
+        }
+        
+        .shop-page .page-link {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+    }
+    
+    /* Loading Animation */
+    @keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+        100% {
+            background-position: 200% 0;
+        }
+    }
+    
+    .shop-page .loading-skeleton {
+        background: linear-gradient(90deg, 
+            var(--shop-bg-primary) 25%, 
+            var(--shop-bg-tertiary) 50%, 
+            var(--shop-bg-primary) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: var(--shop-radius-md);
+    }
+    
+    /* Smooth Scrollbar */
+    .shop-page ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .shop-page ::-webkit-scrollbar-track {
+        background: var(--shop-bg-primary);
+    }
+    
+    .shop-page ::-webkit-scrollbar-thumb {
+        background: var(--shop-border);
+        border-radius: 4px;
+    }
+    
+    .shop-page ::-webkit-scrollbar-thumb:hover {
+        background: var(--shop-text-secondary);
+    }
+</style>
+
+<!-- Shop Page Content -->
+<div class="shop-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container-fluid">
+            <div class="hero-content">
+                <h1 class="hero-title">اكتشف جمالك الطبيعي</h1>
+                <p class="hero-subtitle">منتجات تجميلية فاخرة مصنوعة من أجود المكونات الطبيعية</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="product-grid">
+        <div class="container-fluid">
+            <div class="row flex-row-reverse g-md-5">
+                <!-- Products Grid -->
+                <main class="col-md-9 col-sm-12">
+                    <!-- Filter Bar -->
+                    <div class="filter-shop">
+                        <div class="showing-product">
+                            <p>عرض <span id="product-count">{{ products|length }}</span> منتج</p>
+                        </div>
+                        <div class="sort-by">
+                            <select id="input-sort" class="form-control bg-transparent" onchange="applySort(this)">
+                                <option value="default" {% if current_filters.sort=='default' %}selected{% endif %}>الافتراضي</option>
+                                <option value="name-asc" {% if current_filters.sort=='name-asc' %}selected{% endif %}>الاسم (أ-ي)</option>
+                                <option value="name-desc" {% if current_filters.sort=='name-desc' %}selected{% endif %}>الاسم (ي-أ)</option>
+                                <option value="price-asc" {% if current_filters.sort=='price-asc' %}selected{% endif %}>السعر (منخفض)</option>
+                                <option value="price-desc" {% if current_filters.sort=='price-desc' %}selected{% endif %}>السعر (من الأعلى)</option>
+                                <option value="rating-asc" {% if current_filters.sort=='rating-asc' %}selected{% endif %}>التقييم (الأعلى)</option>
+                                <option value="rating-desc" {% if current_filters.sort=='rating-desc' %}selected{% endif %}>التقييم (الأدنى)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Products Grid -->
+                    <div id="product-list" class="row g-4 mt-3">
+                        {% for product in products %}
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-4 product-item">
+                            <div class="card shadow-lg">
+                                <a href="/{{ product.id }}" class="card-img-container">
+                                    <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="/{{ product.id }}" class="text-decoration-none">
+                                            {{ product.name|truncate(35, true) }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text">{{ product.price }} ج.م</p>
+                                    
+                                    <div class="product-price">
+                                        {% if product.price == 135 %}
+                                            <span class="old-price">165 ج.م</span>
+                                            <span class="current-price">{{ product.price }} ج.م</span>
+                                            <span class="discount-badge">خصم 18%</span>
+                                        {% elif product.price == 375 %}
+                                            <span class="old-price">469 ج.م</span>
+                                            <span class="current-price">{{ product.price }} ج.م</span>
+                                            <span class="discount-badge">خصم 20%</span>
+                                        {% elif product.price == 350 %}
+                                            <span class="old-price">438 ج.م</span>
+                                            <span class="current-price">{{ product.price }} ج.م</span>
+                                            <span class="discount-badge">خصم 20%</span>
+                                        {% elif product.price == 860 %}
+                                            <span class="old-price">1072 ج.م</span>
+                                            <span class="current-price">{{ product.price }} ج.م</span>
+                                            <span class="discount-badge">خصم 20%</span>
+                                        {% elif product.id == 5 %}
+                                            <span class="old-price">225 ج.م</span>
+                                            <span class="current-price">{{ product.price }} ج.م</span>
+                                            <span class="discount-badge">خصم 18%</span>
+                                        {% else %}
+                                            <span class="current-price">{{ product.price }} ج.م</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <a href="/{{ product.id }}" class="btn btn-primary w-100 rounded-3 py-2">
+                                        عرض المنتج
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <nav aria-label="ترقيم الصفحات" class="d-flex justify-content-center mt-5">
+                        <ul class="pagination">
+                            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                                <a class="page-link" href="{{ url_for('shop.list', page=pagination.prev_num, sort=current_filters.sort, search=current_filters.search, category=current_filters.category, price=current_filters.price) }}" aria-label="السابق">
+                                    <svg class="arrow-left" width="18" height="20">
+                                        <use xlink:href="#arrow-left"></use>
+                                    </svg>
+                                </a>
+                            </li>
+                            {% for page_num in pagination.iter_pages() %}
+                            <li class="page-item">
+                                <a class="page-link {% if page_num == pagination.page %}active{% endif %}" href="{{ url_for('shop.list', page=page_num, sort=current_filters.sort, search=current_filters.search, category=current_filters.category, price=current_filters.price) }}">{{ page_num }}</a>
+                            </li>
+                            {% endfor %}
+                            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="{{ url_for('shop.list', page=pagination.next_num, sort=current_filters.sort, search=current_filters.search, category=current_filters.category, price=current_filters.price) }}" aria-label="التالي">
+                                    <svg class="arrow-right" width="18" height="20">
+                                        <use xlink:href="#arrow-right"></use>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </main>
+                
+                <!-- Sidebar -->
+                <aside class="col-md-3 col-sm-12">
+                    <div class="sidebar">
+                        <!-- Search Widget -->
+                        <div class="widget">
+                            <div class="widget-search-bar">
+                                <form role="search" method="get" class="d-flex">
+                                    <input class="search-field ps-3 bg-transparent" placeholder="ابحث عن منتج..." type="search" id="search-query" onchange="applyFilters()">
+                                    <div class="search-icon">
+                                        <svg class="search" width="20" height="20" style="color: white;">
+                                            <use xlink:href="#search"></use>
+                                        </svg>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Categories Widget -->
+                        <div class="widget">
+                            <h5 class="widget-title">التصنيفات</h5>
+                            <ul class="product-categories">
+                                <li class="cat-item">
+                                    <a href="{{ url_for('shop.list', sort=current_filters.sort, search=current_filters.search, category='', price=current_filters.price) }}" class="category-filter {% if current_filters.category == '' %}active{% endif %}">
+                                        جميع المنتجات
+                                    </a>
+                                </li>
+                                {% for category in categories %}
+                                <li class="cat-item">
+                                    <a href="{{ url_for('shop.list', category=category.id, sort=current_filters.sort, search=current_filters.search, price=current_filters.price) }}" class="category-filter {% if current_filters.category == category.id|string %}active{% endif %}">
+                                        {{ category.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                        <!-- Price Filter Widget -->
+                        <div class="widget">
+                            <h5 class="widget-title">تصفية حسب السعر</h5>
+                            <ul class="list-unstyled">
+                                <li class="price-filter {% if current_filters.price == '0-50' %}active{% endif %}">
+                                    <a href="{{ url_for('shop.list', price='0-50', sort=current_filters.sort, search=current_filters.search, category=current_filters.category) }}">
+                                        أقل من 50 ج.م
+                                    </a>
+                                </li>
+                                <li class="price-filter {% if current_filters.price == '50-100' %}active{% endif %}">
+                                    <a href="{{ url_for('shop.list', price='50-100', sort=current_filters.sort, search=current_filters.search, category=current_filters.category) }}">
+                                        50 - 100 ج.م
+                                    </a>
+                                </li>
+                                <li class="price-filter {% if current_filters.price == '100-150' %}active{% endif %}">
+                                    <a href="{{ url_for('shop.list', price='100-150', sort=current_filters.sort, search=current_filters.search, category=current_filters.category) }}">
+                                        100 - 150 ج.م
+                                    </a>
+                                </li>
+                                <li class="price-filter {% if current_filters.price == '150-200' %}active{% endif %}">
+                                    <a href="{{ url_for('shop.list', price='150-200', sort=current_filters.sort, search=current_filters.search, category=current_filters.category) }}">
+                                        150 - 200 ج.م
+                                    </a>
+                                </li>
+                                <li class="price-filter {% if current_filters.price == '200+' %}active{% endif %}">
+                                    <a href="{{ url_for('shop.list', price='200+', sort=current_filters.sort, search=current_filters.search, category=current_filters.category) }}">
+                                        أكثر من 200 ج.م
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function applySort(select) {
+        const sort = select.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort', sort);
+        window.location.href = url.toString();
+    }
+    
+    function updateProductCount(count) {
+        const countElement = document.getElementById('product-count');
+        if (countElement) {
+            countElement.textContent = count;
+        }
+    }
+    
+    // Update product count on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateProductCount({{ products|length }});
+    });
+</script>
+{% endblock %}

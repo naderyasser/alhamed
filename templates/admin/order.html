@@ -1,0 +1,669 @@
+{% extends "admin/base.html" %} {% block content %}
+<div class="container mx-auto px-4 py-6">
+    <!-- Header Section with Breadcrumb -->
+    <div class="mb-6">
+        <nav class="flex mb-4" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="{{ url_for('admin.home') }}" class="text-gray-700 hover:text-rose-600 inline-flex items-center">
+                        <i class='bx bx-home mr-1'></i> الرئيسية
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class='bx bx-chevron-left text-gray-400'></i>
+                        <a href="{{ url_for('admin.orders') }}" class="mr-1 text-gray-700 hover:text-rose-600">الطلبات</a>
+                    </div>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class='bx bx-chevron-left text-gray-400'></i>
+                        <span class="mr-1 text-gray-500">طلب #{{ order.id }}</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+            <div class="flex items-center gap-4">
+                <h1 class="text-3xl font-bold text-gray-900">
+                    <i class='bx bx-receipt mr-2 text-rose-600'></i> تفاصيل الطلب #{{ order.id }}
+                </h1>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 rounded-full text-sm font-medium
+                        {% if order_summary.shipping_status == 'تم التوصيل' %}bg-green-100 text-green-800
+                        {% elif order_summary.shipping_status == 'ملغي' %}bg-red-100 text-red-800
+                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                        <i class='bx bx-package mr-1'></i>
+                        {{ order_summary.shipping_status }}
+                    </span>
+                    <span class="px-3 py-1 rounded-full text-sm font-medium
+                        {% if order_summary.payment_status == 'تم الدفع' %}bg-green-100 text-green-800
+                        {% elif order_summary.payment_status == 'فشل الدفع' %}bg-red-100 text-red-800
+                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                        <i class='bx bx-credit-card mr-1'></i>
+                        {{ order_summary.payment_status }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button data-action="print" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2 shadow-md">
+                    <i class='bx bx-printer'></i>
+                    طباعة الطلب
+                </button>
+                <a href="{{ url_for('admin.orders') }}" class="bg-rose-600 text-white px-4 py-2 rounded-lg hover:bg-rose-700 transition-colors flex items-center gap-2 shadow-md">
+                    <i class='bx bx-arrow-back'></i> العودة للطلبات
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+            <h2 class="text-lg font-semibold text-gray-900">
+                <i class='bx bx-cog mr-2 text-rose-600'></i> إجراءات الطلب
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                <!-- Status Update -->
+                <div class="flex items-center gap-2">
+                    <form data-form="status-update" action="{{ url_for('admin.update_shipping_status', order_id=order.id) }}" method="POST" class="flex gap-2">
+                        <select name="status" class="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors">
+                            <option value="pending" {% if order.shipping_status == 'pending' %}selected{% endif %}>قيد الانتظار</option>
+                            <option value="shipped" {% if order.shipping_status == 'shipped' %}selected{% endif %}>تم الشحن</option>
+                            <option value="delivered" {% if order.shipping_status == 'delivered' %}selected{% endif %}>تم التوصيل</option>
+                            <option value="cancelled" {% if order.shipping_status == 'cancelled' %}selected{% endif %}>ملغي</option>
+                        </select>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md">
+                            <i class='bx bx-refresh mr-2'></i> تحديث الحالة
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Delete Order -->
+                <form data-form="delete-order" action="{{ url_for('admin.delete_order', order_id=order.id) }}" method="POST">
+                    <button type="submit" data-confirm="هل أنت متأكد من حذف هذا الطلب؟" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors shadow-md">
+                        <i class='bx bx-trash mr-2'></i> حذف الطلب
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Customer Information -->
+        <div class="xl:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-900 border-b pb-3 flex items-center">
+                    <i class='bx bx-user mr-2 text-rose-600'></i> معلومات العميل
+                </h2>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium">الاسم:</span>
+                        <span class="font-medium text-gray-900">{{ order.name }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium">الهاتف:</span>
+                        <a href="tel:{{ order.phone }}" class="text-rose-600 hover:text-rose-800 font-medium transition-colors">
+                            <i class='bx bx-phone mr-1'></i>{{ order.phone }}
+                        </a>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium">البريد الإلكتروني:</span>
+                        <a href="mailto:{{ order.email }}" class="text-rose-600 hover:text-rose-800 font-medium transition-colors">
+                            <i class='bx bx-envelope mr-1'></i>{{ order.email }}
+                        </a>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium block mb-2">العنوان:</span>
+                        <span class="text-gray-900 block">{{ order.address }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium">المدينة:</span>
+                        <span class="font-medium text-gray-900">{{ city_name }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium">المنطقة:</span>
+                        <span class="font-medium text-gray-900">{{ order.zone_id }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium">الحي:</span>
+                        <span class="font-medium text-gray-900">{{ order.district_id }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600 font-medium">تاريخ الطلب:</span>
+                        <span class="font-medium text-gray-900">
+                            <i class='bx bx-calendar mr-1'></i>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="xl:col-span-2">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-900 border-b pb-3 flex items-center">
+                    <i class='bx bx-package mr-2 text-rose-600'></i> ملخص الطلب
+                </h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Payment & Shipping Info -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600 font-medium">طريقة الدفع:</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium text-gray-900">{{ order_summary.payment_method }}</span>
+                                <button data-modal="paymentMethodModal" class="text-rose-600 hover:text-rose-800 transition-colors">
+                                    <i class='bx bx-edit-alt'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600 font-medium">رقم التتبع:</span>
+                            <span class="font-medium text-gray-900">{{ order_summary.tracking_number }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600 font-medium">المرجع:</span>
+                            <span class="font-medium text-gray-900">{{ order_summary.business_reference }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600 font-medium">حجم الطرد:</span>
+                            <span class="font-medium text-gray-900">{{ order.package_size }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600 font-medium">نوع الطرد:</span>
+                            <span class="font-medium text-gray-900">{{ order.package_type }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Financial Summary -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600 font-medium">المجموع الفرعي:</span>
+                            <span class="font-semibold text-gray-900">{{ "%.2f"|format(order_summary.subtotal) }} ج.م</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600 font-medium">تكلفة الشحن:</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-gray-900">{{ "%.2f"|format(order_summary.shipping_cost) }} ج.م</span>
+                                <button data-modal="shippingPriceModal" class="text-rose-600 hover:text-rose-800 transition-colors">
+                                    <i class='bx bx-edit-alt'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                            <span class="text-green-600 font-medium">الخصم:</span>
+                            <span class="text-green-700 font-semibold">{{ "%.2f"|format(order_summary.subtotal + order_summary.shipping_cost - order.cod_amount) }} ج.م</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                            <span class="text-green-600 font-medium">نسبة الخصم:</span>
+                            <span class="text-green-700 font-semibold">{{ "%.1f"|format(((order_summary.subtotal + order_summary.shipping_cost - order.cod_amount) / (order_summary.subtotal + order_summary.shipping_cost)) * 100) }}%</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-rose-50 rounded-lg border-2 border-rose-200">
+                            <span class="text-rose-700 font-bold text-lg">المجموع الكلي:</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-rose-700 font-bold text-xl">{{ "%.2f"|format(order.cod_amount) }} ج.م</span>
+                                <button data-modal="codAmountModal" class="text-rose-600 hover:text-rose-800 transition-colors">
+                                    <i class='bx bx-edit-alt'></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="mt-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 p-6 border-b">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class='bx bx-list-ul mr-2 text-rose-600'></i> المنتجات المطلوبة
+                    <span class="bg-rose-100 text-rose-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">{{ order_summary.items_count }} منتج</span>
+                </h2>
+                <button data-action="print" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2 shadow-md">
+                    <i class='bx bx-printer'></i>
+                    طباعة قائمة المنتجات
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr class="text-sm text-gray-700">
+                            <th class="px-6 py-4 text-right font-semibold">المنتج</th>
+                            <th class="px-6 py-4 text-center font-semibold">التصنيف</th>
+                            <th class="px-6 py-4 text-center font-semibold">السعر</th>
+                            <th class="px-6 py-4 text-center font-semibold">الكمية</th>
+                            <th class="px-6 py-4 text-center font-semibold">المجموع</th>
+                            <th class="px-6 py-4 text-center font-semibold">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for item in order_items %}
+                        <tr class="text-sm hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-lg overflow-hidden border-2 border-gray-200">
+                                        <img src="/{{ item.product.image }}" class="w-full h-full object-cover" loading="lazy" alt="{{ item.product.name }}">
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900">{{ item.product.name }}</div>
+                                        <div class="text-gray-500 text-xs">#{{ item.product.id }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">{{ item.product.category }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-center font-medium text-gray-900">{{ "%.2f"|format(item.product.price) }} ج.م</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full font-medium">{{ item.order_item.quantity }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-center font-semibold text-rose-600">
+                                {{ "%.2f"|format(item.item_total) }} ج.م
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <form data-form="delete-item" action="{{ url_for('admin.delete_item_from_order', order_id=order.id, item_id=item.order_item.id) }}" method="POST">
+                                    <button type="submit" data-confirm="هل أنت متأكد من حذف هذا المنتج من الطلب؟" class="bg-red-100 text-red-700 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors">
+                                        <i class='bx bx-trash'></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="bg-gray-50">
+                        <tr class="font-semibold">
+                            <td colspan="4" class="px-6 py-4 text-right text-gray-700">المجموع الفرعي:</td>
+                            <td colspan="2" class="px-6 py-4 text-center text-gray-900">
+                                {{ "%.2f"|format(order_summary.subtotal) }} ج.م
+                            </td>
+                        </tr>
+                        <tr class="font-semibold">
+                            <td colspan="4" class="px-6 py-4 text-right text-gray-700">تكلفة الشحن:</td>
+                            <td colspan="2" class="px-6 py-4 text-center text-gray-900">
+                                {{ "%.2f"|format(order_summary.shipping_cost) }} ج.م
+                            </td>
+                        </tr>
+                        <tr class="font-bold bg-rose-50">
+                            <td colspan="4" class="px-6 py-4 text-right text-rose-700 text-lg">المجموع الكلي:</td>
+                            <td colspan="2" class="px-6 py-4 text-center text-rose-700 text-lg">
+                                {{ "%.2f"|format(order_summary.total_amount) }} ج.م
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Item -->
+    <div class="mt-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold mb-4 text-gray-900 border-b pb-3 flex items-center">
+                <i class='bx bx-plus-circle mr-2 text-rose-600'></i> إضافة منتج إلى الطلب
+            </h2>
+
+            <form data-form="add-item" action="{{ url_for('admin.add_item_to_order', order_id=order.id) }}" method="POST" class="flex flex-col lg:flex-row gap-4">
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">اختر المنتج</label>
+                    <select name="product_id" class="w-full border border-gray-300 px-3 py-3 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors" required>
+                        <option value="">اختر المنتج</option>
+                        {% for product in available_products %}
+                        <option value="{{ product.id }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}">
+                            {{ product.name }} - {{ "%.2f"|format(product.price) }} ج.م (متوفر: {{ product.stock }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="lg:w-32">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">الكمية</label>
+                    <input type="number" name="quantity" class="w-full border border-gray-300 px-3 py-3 rounded-lg text-center focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors" placeholder="الكمية" min="1" required>
+                </div>
+                <div class="lg:w-auto lg:pt-7">
+                    <button type="submit" class="w-full lg:w-auto bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors shadow-md flex items-center justify-center gap-2">
+                        <i class='bx bx-plus'></i> إضافة للطلب
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Shipping Price Update Modal -->
+    <div id="shippingPriceModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md transform transition-all">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class='bx bx-truck mr-2 text-rose-600'></i> تحديث تكلفة الشحن
+                </h2>
+                <button data-modal-close="shippingPriceModal" class="text-2xl text-gray-500 hover:text-gray-700 transition-colors">&times;</button>
+            </div>
+            <form action="{{ url_for('admin.update_order_shipping_price', order_id=order.id) }}" method="POST" class="p-6">
+                <div class="mb-4">
+                    <label class="block mb-2 font-medium text-gray-700">تكلفة الشحن الحالية</label>
+                    <div class="text-lg font-bold text-gray-900 bg-gray-100 p-3 rounded-lg">{{ "%.2f"|format(order_summary.shipping_cost) }} ج.م</div>
+                </div>
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium text-gray-700">تكلفة الشحن الجديدة</label>
+                    <input type="number" step="0.01" name="shipping_price" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors" value="{{ order_summary.shipping_cost }}">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" data-modal-close="shippingPriceModal" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors">
+                        تحديث
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- COD Amount Update Modal -->
+    <div id="codAmountModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md transform transition-all">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class='bx bx-money mr-2 text-rose-600'></i> تحديث المبلغ الكلي
+                </h2>
+                <button data-modal-close="codAmountModal" class="text-2xl text-gray-500 hover:text-gray-700 transition-colors">&times;</button>
+            </div>
+            <form action="{{ url_for('admin.update_order_cod_amount', order_id=order.id) }}" method="POST" class="p-6">
+                <div class="mb-4">
+                    <label class="block mb-2 font-medium text-gray-700">المبلغ الكلي الحالي</label>
+                    <div class="text-lg font-bold text-gray-900 bg-gray-100 p-3 rounded-lg">{{ "%.2f"|format(order.cod_amount) }} ج.م</div>
+                </div>
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium text-gray-700">المبلغ الكلي الجديد</label>
+                    <input type="number" step="0.01" name="cod_amount" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors" value="{{ order.cod_amount }}">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" data-modal-close="codAmountModal" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors">
+                        تحديث
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Method Update Modal -->
+    <div id="paymentMethodModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md transform transition-all">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class='bx bx-credit-card mr-2 text-rose-600'></i> تحديث طريقة الدفع
+                </h2>
+                <button data-modal-close="paymentMethodModal" class="text-2xl text-gray-500 hover:text-gray-700 transition-colors">&times;</button>
+            </div>
+            <form action="{{ url_for('admin.update_payment_method', order_id=order.id) }}" method="POST" class="p-6">
+                <div class="mb-4">
+                    <label class="block mb-2 font-medium text-gray-700">طريقة الدفع الحالية</label>
+                    <div class="text-lg font-bold text-gray-900 bg-gray-100 p-3 rounded-lg">{{ order_summary.payment_method }}</div>
+                </div>
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium text-gray-700">طريقة الدفع الجديدة</label>
+                    <select name="payment_method" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors" required>
+                        <option value="cash_on_delivery" {% if order.payment_method == 'cash_on_delivery' %}selected{% endif %}>الدفع عند الاستلام</option>
+                        <option value="vodafone_cash" {% if order.payment_method == 'vodafone_cash' %}selected{% endif %}>فودافون كاش</option>
+                        <option value="visa" {% if order.payment_method == 'visa' %}selected{% endif %}>الدفع بالفيزا</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" data-modal-close="paymentMethodModal" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors">
+                        تحديث
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .no-print,
+        .no-print * {
+            display: none !important;
+        }
+        .container {
+            padding: 0;
+            max-width: none;
+        }
+        .bg-white {
+            background: white !important;
+            box-shadow: none !important;
+        }
+        .rounded-xl,
+        .rounded-lg {
+            border-radius: 0 !important;
+        }
+        .shadow-sm,
+        .shadow-md {
+            box-shadow: none !important;
+        }
+        body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+    /* Loading animation */
+    
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+    /* Modal animations */
+    
+    .modal-enter {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    
+    .modal-enter-active {
+        opacity: 1;
+        transform: scale(1);
+        transition: opacity 150ms ease-out, transform 150ms ease-out;
+    }
+    
+    .modal-exit {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    .modal-exit-active {
+        opacity: 0;
+        transform: scale(0.95);
+        transition: opacity 150ms ease-in, transform 150ms ease-in;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize page functionality
+        initializeFormHandlers();
+        initializeModalHandlers();
+        initializeProductValidation();
+        initializePrintHandlers();
+
+        // Form handling with confirmation
+        function initializeFormHandlers() {
+            document.querySelectorAll('[data-form]').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const confirmMsg = this.querySelector('[data-confirm]')?.dataset.confirm;
+                    if (confirmMsg && !confirm(confirmMsg)) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // Add loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('loading');
+
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="bx bx-loader-alt animate-spin mr-2"></i>جاري التحديث...';
+
+                        // Reset after 3 seconds if form doesn't submit
+                        setTimeout(() => {
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('loading');
+                            submitBtn.innerHTML = originalText;
+                        }, 3000);
+                    }
+                });
+            });
+        }
+
+        // Modal handling
+        function initializeModalHandlers() {
+            // Open modals - using event delegation for better reliability
+            document.addEventListener('click', function(e) {
+                const trigger = e.target.closest('[data-modal]');
+                if (trigger) {
+                    e.preventDefault();
+                    const modalId = trigger.dataset.modal;
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        console.log('Opening modal:', modalId); // Debug log
+                        showModal(modal);
+                    } else {
+                        console.error('Modal not found:', modalId); // Debug log
+                    }
+                }
+            });
+
+            // Close modals - using event delegation
+            document.addEventListener('click', function(e) {
+                const closeBtn = e.target.closest('[data-modal-close]');
+                if (closeBtn) {
+                    e.preventDefault();
+                    const modalId = closeBtn.dataset.modalClose;
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        hideModal(modal);
+                    }
+                }
+            });
+
+            // Close modal on backdrop click
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+                    hideModal(e.target);
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const visibleModal = document.querySelector('.fixed.inset-0:not(.hidden)');
+                    if (visibleModal) {
+                        hideModal(visibleModal);
+                    }
+                }
+            });
+        }
+
+        // Product quantity validation
+        function initializeProductValidation() {
+            const quantityInput = document.querySelector('input[name="quantity"]');
+            const productSelect = document.querySelector('select[name="product_id"]');
+
+            if (quantityInput && productSelect) {
+                quantityInput.addEventListener('input', function() {
+                    validateQuantity();
+                });
+
+                productSelect.addEventListener('change', function() {
+                    validateQuantity();
+                    updateQuantityMax();
+                });
+
+                function validateQuantity() {
+                    const selectedOption = productSelect.options[productSelect.selectedIndex];
+                    if (selectedOption.value) {
+                        const maxStock = parseInt(selectedOption.dataset.stock) || 0;
+                        const currentValue = parseInt(quantityInput.value) || 0;
+
+                        if (currentValue > maxStock) {
+                            showNotification('الكمية المطلوبة غير متوفرة في المخزون', 'error');
+                            quantityInput.value = Math.min(currentValue, maxStock);
+                        }
+                    }
+                }
+
+                function updateQuantityMax() {
+                    const selectedOption = productSelect.options[productSelect.selectedIndex];
+                    if (selectedOption.value) {
+                        const maxStock = parseInt(selectedOption.dataset.stock) || 0;
+                        quantityInput.max = maxStock;
+                        quantityInput.placeholder = `الحد الأقصى: ${maxStock}`;
+                    }
+                }
+            }
+        }
+
+        // Print functionality
+        function initializePrintHandlers() {
+            document.querySelectorAll('[data-action="print"]').forEach(printBtn => {
+                printBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.print();
+                });
+            });
+        }
+
+        // Utility functions
+        function showModal(modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('modal-enter');
+            requestAnimationFrame(() => {
+                modal.classList.remove('modal-enter');
+                modal.classList.add('modal-enter-active');
+            });
+
+            // Focus first input
+            const firstInput = modal.querySelector('input, select, textarea');
+            if (firstInput) {
+                setTimeout(() => firstInput.focus(), 150);
+            }
+        }
+
+        function hideModal(modal) {
+            modal.classList.add('modal-exit');
+            modal.classList.remove('modal-enter-active');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-exit', 'modal-exit-active');
+            }, 150);
+        }
+
+        function showNotification(message, type = 'info') {
+            // Simple notification system
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white ${
+            type === 'error' ? 'bg-red-500' : 
+            type === 'success' ? 'bg-green-500' : 
+            'bg-blue-500'
+        }`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    });
+</script>
+{% endblock %}

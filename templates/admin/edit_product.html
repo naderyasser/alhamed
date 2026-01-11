@@ -1,0 +1,151 @@
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.edit_product', product_id=product.id) }}" class="space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Column -->
+        <div class="space-y-6">
+            <!-- Product Name -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">اسم المنتج <span class="text-red-500">*</span></label>
+                <input type="text" name="name" value="{{ product.name|escapejs }}" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200">
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">التصنيف <span class="text-red-500">*</span></label>
+                <select name="category" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white">
+                    <option value="">اختر التصنيف</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == product.category_id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Price and Discount -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">السعر <span class="text-red-500">*</span></label>
+                    <input type="number" step="0.01" name="price" value="{{ product.price }}" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">الخصم (%)</label>
+                    <input type="number" name="discount" value="{{ product.discount }}" min="0" max="100" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <!-- Stock -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">الكمية في المخزون <span class="text-red-500">*</span></label>
+                <input type="number" name="quantity" value="{{ product.stock }}" required min="0" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent">
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">وصف المنتج</label>
+                <textarea name="description" rows="4" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent resize-none">{{ product.description|escapejs }}</textarea>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-6">
+            <!-- Current Product Image -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">الصورة الحالية</label>
+                <div class="border border-sage-200 rounded-xl p-4">
+                    <img src="/{{ product.image }}" alt="{{ product.name|escapejs }}" class="w-32 h-32 object-cover rounded-xl mx-auto">
+                </div>
+            </div>
+
+            <!-- New Product Image -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">تغيير الصورة (اختياري)</label>
+                <div class="border-2 border-dashed border-sage-200 rounded-xl p-8 text-center hover:border-sage-300 transition-colors">
+                    <div id="editImagePreview" class="hidden">
+                        <img id="editPreviewImg" src="" alt="Preview" class="w-32 h-32 object-cover rounded-xl mx-auto mb-4">
+                    </div>
+                    <div id="editUploadPlaceholder">
+                        <i class='bx bx-cloud-upload text-4xl text-sage-400 mb-4'></i>
+                        <p class="text-slate-600 mb-2">اسحب وأفلت الصورة الجديدة هنا أو</p>
+                        <label for="editProductImage" class="bg-sage-100 hover:bg-sage-200 text-sage-700 px-4 py-2 rounded-lg cursor-pointer transition-colors">
+                            اختر ملف جديد
+                        </label>
+                    </div>
+                    <input type="file" id="editProductImage" name="image" accept="image/*" class="hidden">
+                    <p class="text-xs text-slate-500 mt-2">JPG, PNG أو GIF بحد أقصى 5MB</p>
+                </div>
+            </div>
+
+            <!-- Additional Images Section -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">الصور الإضافية الحالية</label>
+                {% if product.additional_images %}
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    {% for img in product.additional_images %}
+                    <div class="relative">
+                        <img src="/{{ img.image }}" alt="Additional image" class="w-full h-20 object-cover rounded-lg">
+                        <button type="button" onclick="removeAdditionalImage({{ img.id }})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                            ×
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <label class="block text-sm font-medium text-slate-700 mb-2">إضافة صور جديدة (اختياري)</label>
+                <input type="file" name="additional_images" multiple accept="image/*" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent">
+                <p class="text-xs text-slate-500 mt-1">يمكن اختيار عدة صور</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-sage-100">
+        <button type="button" onclick="closeEditProductModal()" class="px-6 py-3 border border-sage-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">
+            إلغاء
+        </button>
+        <button type="submit" class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2">
+            <i class='bx bx-save'></i>
+            حفظ التعديلات
+        </button>
+    </div>
+</form>
+
+<script>
+    // Image preview for edit product modal
+    document.getElementById('editProductImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('editPreviewImg').src = e.target.result;
+                document.getElementById('editImagePreview').classList.remove('hidden');
+                document.getElementById('editUploadPlaceholder').classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Function to remove additional images
+    function removeAdditionalImage(imageId) {
+        if (confirm('هل تريد حذف هذه الصورة؟')) {
+            fetch('/admin/delete_additional_image/' + imageId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    location.reload(); // Reload to update the form
+                } else {
+                    alert('حدث خطأ أثناء حذف الصورة');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء حذف الصورة');
+            });
+        }
+    }
+</script>

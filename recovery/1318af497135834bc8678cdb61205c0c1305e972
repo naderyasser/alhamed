@@ -1,0 +1,190 @@
+{% extends 'shop/base.html' %} {% block content %}
+<script>
+    fbq('track', 'ViewContent', {
+        content_ids: ["{{ product.id }}"],
+        content_name: "{{ product.name }}",
+        content_type: 'product',
+        value: parseFloat("{{ product.price }}"),
+        currency: 'EGP'
+    });
+</script>
+
+<section id="product-detail" class="single-product py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-7">
+                <div class="row">
+                    {% if product.additional_images %}
+                    <div class="col-3 d-none d-md-block">
+                        <div class="swiper product-thumbnail-slider swiper-vertical swiper-thumbs">
+                            <div class="swiper-wrapper">
+                                {% for thumbnail in product.additional_images %}
+                                <div class="swiper-slide">
+                                    <img src="{{ thumbnail.image }}" alt="Thumbnail" class="thumb-image img-fluid">
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="col-12 col-md-9">
+                        <div class="swiper product-large-slider swiper-fade swiper-watch-progress">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="{{ product.image }}" alt="{{ product.name }}" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-5">
+                <div class="product-info">
+
+                    <div class="element-header">
+                        <h2 class="product-title text-capitalize mb-3">{{ product.name }}</h2>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="product-price mb-4">
+                        <span class="fs-3">
+
+<!-- {% if product.price == 135 %}
+<div class="d-flex align-items-center gap-2">
+      <span class="badge bg-danger rounded-pill">خصم 18%</span>
+                        <span class="text-decoration-line-through text-muted small">165 L.E</span>
+                        <span class="text-success fw-bold">{{ product.price }} L.E</span>
+                    </div>
+                    {% else %} {{ product.price }} L.E {% endif %} -->
+
+
+                    <p class="card-text text-muted mb-3 fs-6">
+                        {% if product.price == 135 %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger rounded-pill">خصم 18%</span>
+                            <span class="text-decoration-line-through text-muted small">165 L.E</span>
+                            <span class="text-success fw-bold">{{ product.price }} L.E</span>
+                        </div>
+                        {% elif product.price == 375 %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger rounded-pill">خصم 20%</span>
+                            <span class="text-decoration-line-through text-muted small">469 L.E</span>
+                            <span class="text-success fw-bold">{{ product.price }} L.E</span>
+                        </div>
+                        {% elif product.price == 350 %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger rounded-pill">خصم 20%</span>
+                            <span class="text-decoration-line-through text-muted small">438 L.E</span>
+                            <span class="text-success fw-bold">{{ product.price }} L.E</span>
+                        </div>
+                        {% elif product.price == 860 %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger rounded-pill">خصم 35%</span>
+                            <span class="text-decoration-line-through text-muted small">1072 L.E</span>
+                            <span class="text-success fw-bold">{{ product.price }} L.E</span>
+                        </div>
+
+
+                        {% else %}
+
+                        <span class="text-dark fw-bold">{{ product.price }} L.E</span> {% endif %}
+                    </p>
+                </div>
+
+                <p class="mb-4">{{ product.description | safe }}</p>
+
+                <div class="product-action mt-4">
+
+                    <form action="/cart/add/{{ product.id }}" method="post">
+                        <div class="product-quantity d-flex flex-column flex-sm-row align-items-center mb-4">
+
+                            <!-- Quantity Selector -->
+                            <div class="input-group product-qty me-sm-3 mb-3 mb-sm-0" style="max-width: 150px;">
+                                <button type="button" class="btn btn-outline-secondary" data-type="minus">-</button>
+                                <input type="number" id="quantity" name="quantity" class="form-control text-center" value="1" min="1" max="{{ product.stock }}">
+                                <button type="button" class="btn btn-outline-secondary" data-type="plus">+</button>
+                            </div>
+                            <!-- Quantity Selector Script -->
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const quantityInput = document.getElementById('quantity');
+                                    const minusButton = document.querySelector('[data-type="minus"]');
+                                    const plusButton = document.querySelector('[data-type="plus"]');
+
+                                    minusButton.addEventListener('click', function() {
+                                        let currentValue = parseInt(quantityInput.value);
+                                        if (currentValue > 1) {
+                                            quantityInput.value = currentValue - 1;
+                                        }
+                                    });
+
+                                    plusButton.addEventListener('click', function() {
+                                        let currentValue = parseInt(quantityInput.value);
+                                        if (currentValue < parseInt(quantityInput.max)) {
+                                            quantityInput.value = currentValue + 1;
+                                        }
+                                    });
+                                });
+                            </script>
+
+                            <!-- Add to Cart Button -->
+                            <div class="d-flex flex-column flex-sm-row w-100">
+                                <button type="submit" name="add-to-cart" class="btn btn-primary btn-lg w-100 w-sm-auto mb-3 mb-sm-0">
+                                                            <span>Add to Cart</span>
+                                                      </button>
+                                <button type="submit" name="add-to-cart-checkout" class="btn btn-secondary btn-lg w-100 w-sm-auto ms-sm-3">
+                                                            <span>Add to Cart & Checkout</span>
+                                                      </button>
+
+                            </div>
+
+
+                        </div>
+
+                    </form>
+                    <!-- Wishlist Button -->
+                    <button class="btn btn-light wish-list-button d-block mx-auto">
+                                          <svg width="24" height="24" viewBox="0 0 24 24">
+                                                <use xlink:href="#heart"></use>
+                                          </svg>
+                                    </button>
+
+                </div>
+
+                <!-- Additional Info (SKU, Category, Tags) -->
+                <div class="detail-list mt-4">
+                    <ul class="list-unstyled">
+                        <li><strong>SKU:</strong> {{ product.sku }}</li>
+                        <li><strong>Category:</strong> <a href="#">{{ product.category.name }}</a>
+                        </li>
+                        <li><strong>Tags:</strong> {% if product.tags %} {% for tag in product.tags %}
+                            <a href="#">{{ tag }}</a>{% if not loop.last %}, {% endif %} {% endfor %} {% else %}
+                            <span class="text-muted">No tags</span> {% endif %}
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    </div>
+</section>
+
+<!-- Related Products Section -->
+{% set section_id = "similar" %} {% set section_title = "You may also like" %} {% include "shop/components/product_section.html" %}
+
+<script>
+    document.querySelector('form[action*="add_to_cart"]').addEventListener('submit', function(e) {
+        fbq('track', 'AddToCart', {
+            content_ids: ["{{ product.id }}"],
+            content_name: "{{ product.name }}",
+            content_type: 'product',
+            value: parseFloat("{{ product.price }}"),
+            currency: 'EGP'
+        });
+    });
+</script>
+{% endblock %}

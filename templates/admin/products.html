@@ -1,0 +1,817 @@
+{% extends 'admin/base.html' %} {% block content %}
+<div class="min-h-screen bg-gradient-to-br from-sage-50 to-white">
+    <!-- Enhanced Header Section -->
+    <div class="bg-white/80 backdrop-blur-sm border-b border-sage-100 sticky top-0 z-10 shadow-sm">
+        <div class="px-6 py-4">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sage-500 to-sage-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class='bx bx-package text-2xl'></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-sage-900">إدارة المنتجات</h1>
+                        <p class="text-sage-600 text-sm">إدارة وتنظيم جميع منتجات المتجر</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="toggleAddProductModal()" class="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        <i class='bx bx-plus text-lg'></i>
+                        <span class="font-medium">منتج جديد</span>
+                    </button>
+                    <button onclick="exportProducts()" class="bg-white hover:bg-sage-50 text-sage-700 border border-sage-200 px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md">
+                        <i class='bx bx-export text-lg'></i>
+                        <span class="font-medium">تصدير</span>
+                    </button>
+                    <button onclick="toggleBulkActions()" class="bg-white hover:bg-orange-50 text-orange-700 border border-orange-200 px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md">
+                        <i class='bx bx-select-multiple text-lg'></i>
+                        <span class="font-medium">إجراءات متعددة</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="px-6 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Products -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-package text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ products|length }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">إجمالي المنتجات</h3>
+                <p class="text-sm text-slate-500 mt-1">جميع المنتجات في المتجر</p>
+            </div>
+
+            <!-- Available Products -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-check-circle text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ products|selectattr('stock', 'gt', 0)|list|length }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">منتجات متوفرة</h3>
+                <p class="text-sm text-slate-500 mt-1">منتجات متاحة للبيع</p>
+            </div>
+
+            <!-- Low Stock -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-error text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ products|selectattr('stock', 'gt', 0)|selectattr('stock', 'le', 10)|list|length }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">مخزون منخفض</h3>
+                <p class="text-sm text-slate-500 mt-1">يحتاج إعادة تموين</p>
+            </div>
+
+            <!-- Out of Stock -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-x-circle text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ products|selectattr('stock', 'eq', 0)|list|length }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">نفد المخزون</h3>
+                <p class="text-sm text-slate-500 mt-1">غير متاح حالياً</p>
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-2xl shadow-lg border border-sage-100 p-6 mb-8">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Search -->
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">البحث في المنتجات</label>
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="ابحث بالاسم، الفئة، أو SKU..." class="w-full pl-12 pr-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200 bg-sage-50/50">
+                        <i class='bx bx-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-xl'></i>
+                    </div>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="lg:w-48">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">الفئة</label>
+                    <select id="categoryFilter" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                        <option value="">جميع الفئات</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Stock Filter -->
+                <div class="lg:w-48">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">المخزون</label>
+                    <select id="stockFilter" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                        <option value="">الكل</option>
+                        <option value="available">متوفر</option>
+                        <option value="low">مخزون منخفض</option>
+                        <option value="out">نفد المخزون</option>
+                    </select>
+                </div>
+
+                <!-- Sort -->
+                <div class="lg:w-48">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">ترتيب</label>
+                    <select id="sortProducts" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                        <option value="name">الاسم</option>
+                        <option value="price">السعر</option>
+                        <option value="stock">الكمية</option>
+                        <option value="created">تاريخ الإضافة</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productsGrid">
+            {% for product in products %}
+            <div class="product-card bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 overflow-hidden group" data-category="{{ product.category_id }}" data-stock="{{ product.stock }}" data-name="{{ product.name|lower }}"
+                data-price="{{ product.price }}" data-created="{{ product.created_at.strftime('%Y-%m-%d') }}">
+
+                <!-- Product Image -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-sage-50 to-sage-100">
+                    <img src="/{{  product.image }}" alt="{{ product.name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" data-fallback="{{ url_for('static', filename='images/placeholder-product.png') }}">
+
+                    <!-- Stock Badge -->
+                    {% if product.stock == 0 %}
+                    <div class="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                        نفد المخزون
+                    </div>
+                    {% elif product.stock
+                    <=1 %} <div class="absolute top-3 right-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                        مخزون منخفض
+                </div>
+                {% else %}
+                <div class="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                    متوفر
+                </div>
+                {% endif %}
+
+                <!-- Discount Badge -->
+                {% if product.discount > 0 %}
+                <div class="absolute top-3 left-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                    خصم {{ product.discount }}%
+                </div>
+                {% endif %}
+
+                <!-- Quick Actions Overlay -->
+                <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                    <button data-action="view" data-product-id="{{ product.id }}" class="product-action bg-white/90 hover:bg-white text-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110">
+                            <i class='bx bx-show text-lg'></i>
+                        </button>
+                    <button data-action="edit" data-product-id="{{ product.id }}" class="product-action bg-white/90 hover:bg-white text-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110">
+                            <i class='bx bx-edit text-lg'></i>
+                        </button>
+                    <button data-action="delete" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" class="product-action bg-white/90 hover:bg-white text-red-500 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110">
+                            <i class='bx bx-trash text-lg'></i>
+                        </button>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="p-5">
+                <!-- Category Badge -->
+                <div class="flex items-center justify-between mb-3">
+                    <span class="bg-sage-100 text-sage-700 px-3 py-1 rounded-full text-xs font-medium">
+                            {{ product.category.name }}
+                        </span>
+                    <div class="flex items-center gap-1">
+                        <input type="checkbox" class="product-checkbox rounded border-sage-300 text-sage-600 focus:ring-sage-500" value="{{ product.id }}">
+                    </div>
+                </div>
+
+                <!-- Product Name -->
+                <h3 class="font-bold text-slate-800 text-lg mb-2 line-clamp-2 group-hover:text-sage-700 transition-colors">
+                    {{ product.name }}
+                </h3>
+
+                <!-- Price Section -->
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        {% if product.discount > 0 %}
+                        <span class="text-lg font-bold text-green-600">
+                                {{ "%.2f"|format(product.price * (1 - product.discount/100)) }} ج.م
+                            </span>
+                        <span class="text-sm text-slate-400 line-through">
+                                {{ "%.2f"|format(product.price) }} ج.م
+                            </span> {% else %}
+                        <span class="text-lg font-bold text-slate-800">
+                                {{ "%.2f"|format(product.price) }} ج.م
+                            </span> {% endif %}
+                    </div>
+                </div>
+
+                <!-- Stock and Views -->
+                <div class="flex items-center justify-between text-sm text-slate-500 mb-4">
+                    <div class="flex items-center gap-1">
+                        <i class='bx bx-package text-sm'></i>
+                        <span>{{ product.stock }} قطعة</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <i class='bx bx-show text-sm'></i>
+                        <span>{{ product.views }} مشاهدة</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2">
+                    <button data-action="edit" data-product-id="{{ product.id }}" class="product-action flex-1 bg-sage-100 hover:bg-sage-200 text-sage-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-1">
+                            <i class='bx bx-edit text-sm'></i>
+                            <span>تعديل</span>
+                        </button>
+                    <button data-action="duplicate" data-product-id="{{ product.id }}" class="product-action bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center">
+                            <i class='bx bx-copy text-sm'></i>
+                        </button>
+                    <button data-action="delete" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" class="product-action bg-red-100 hover:bg-red-200 text-red-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center">
+                            <i class='bx bx-trash text-sm'></i>
+                        </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16">
+        <div class="w-24 h-24 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class='bx bx-package text-4xl text-sage-400'></i>
+        </div>
+        <h3 class="text-xl font-semibold text-slate-700 mb-2">لا توجد منتجات</h3>
+        <p class="text-slate-500 mb-6">لم يتم العثور على منتجات تطابق معايير البحث</p>
+        <button onclick="clearFilters()" class="bg-sage-500 hover:bg-sage-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                مسح الفلاتر
+            </button>
+    </div>
+</div>
+</div>
+
+<!-- Add Product Modal -->
+<div id="addProductModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div class="flex justify-between items-center p-6 border-b border-sage-100">
+            <h2 class="text-2xl font-bold text-sage-900 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-sage-500 to-sage-600 rounded-xl flex items-center justify-center text-white">
+                    <i class='bx bx-plus text-xl'></i>
+                </div>
+                إضافة منتج جديد
+            </h2>
+            <button onclick="closeAddProductModal()" class="text-2xl text-slate-500 hover:text-slate-700 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.add_product') }}" class="p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column -->
+                <div class="space-y-6">
+                    <!-- Product Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">اسم المنتج <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200" placeholder="أدخل اسم المنتج">
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">التصنيف <span class="text-red-500">*</span></label>
+                        <select name="category" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white">
+                            <option value="">اختر التصنيف</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Price and Discount -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">السعر <span class="text-red-500">*</span></label>
+                            <input type="number" step="0.01" name="price" required class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">الخصم (%)</label>
+                            <input type="number" name="discount" min="0" max="100" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent" placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- Stock -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">الكمية في المخزون <span class="text-red-500">*</span></label>
+                        <input type="number" name="quantity" required min="0" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent" placeholder="0">
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">وصف المنتج</label>
+                        <textarea name="description" rows="4" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent resize-none" placeholder="أدخل وصف تفصيلي للمنتج"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- Product Image -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">صورة المنتج <span class="text-red-500">*</span></label>
+                        <div class="border-2 border-dashed border-sage-200 rounded-xl p-8 text-center hover:border-sage-300 transition-colors">
+                            <div id="imagePreview" class="hidden">
+                                <img id="previewImg" src="" alt="Preview" class="w-32 h-32 object-cover rounded-xl mx-auto mb-4">
+                            </div>
+                            <div id="uploadPlaceholder">
+                                <i class='bx bx-cloud-upload text-4xl text-sage-400 mb-4'></i>
+                                <p class="text-slate-600 mb-2">اسحب وأفلت الصورة هنا أو</p>
+                                <label for="productImage" class="bg-sage-100 hover:bg-sage-200 text-sage-700 px-4 py-2 rounded-lg cursor-pointer transition-colors">
+                                    اختر ملف
+                                </label>
+                            </div>
+                            <input type="file" id="productImage" name="image" accept="image/*" required class="hidden">
+                            <p class="text-xs text-slate-500 mt-2">JPG, PNG أو GIF بحد أقصى 5MB</p>
+                        </div>
+                    </div>
+
+                    <!-- Additional Images -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">صور إضافية (اختياري)</label>
+                        <input type="file" name="additional_images" multiple accept="image/*" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent">
+                        <p class="text-xs text-slate-500 mt-1">يمكن اختيار عدة صور</p>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="bg-sage-50 rounded-xl p-4">
+                        <h3 class="font-medium text-slate-700 mb-3 flex items-center gap-2">
+                            <i class='bx bx-star text-sage-600'></i> ميزات إضافية
+                        </h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3">
+                                <input type="checkbox" name="featured" class="rounded border-sage-300 text-sage-600 focus:ring-sage-500">
+                                <span class="text-sm text-slate-700">منتج مميز</span>
+                            </label>
+                            <label class="flex items-center gap-3">
+                                <input type="checkbox" name="new_arrival" class="rounded border-sage-300 text-sage-600 focus:ring-sage-500">
+                                <span class="text-sm text-slate-700">وصل حديثاً</span>
+                            </label>
+                            <label class="flex items-center gap-3">
+                                <input type="checkbox" name="best_seller" class="rounded border-sage-300 text-sage-600 focus:ring-sage-500">
+                                <span class="text-sm text-slate-700">الأكثر مبيعاً</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-sage-100">
+                <button type="button" onclick="closeAddProductModal()" class="px-6 py-3 border border-sage-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">
+                    إلغاء
+                </button>
+                <button type="submit" class="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2">
+                    <i class='bx bx-plus'></i>
+                    إضافة المنتج
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div id="editProductModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div class="flex justify-between items-center p-6 border-b border-sage-100">
+            <h2 class="text-2xl font-bold text-sage-900 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white">
+                    <i class='bx bx-edit text-xl'></i>
+                </div>
+                تعديل المنتج
+            </h2>
+            <button onclick="closeEditProductModal()" class="text-2xl text-slate-500 hover:text-slate-700 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <div id="editProductForm" class="p-6">
+            <!-- Form will be loaded dynamically -->
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transform: translateY(0);
+        transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-2px);
+    }
+    
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    /* Animation classes */
+    
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Scroll animations */
+    
+    .product-card {
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .product-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+    
+    .product-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .product-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+    
+    .product-card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    // Enhanced Search and Filter Functionality
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const stockFilter = document.getElementById('stockFilter');
+    const sortSelect = document.getElementById('sortProducts');
+    const productsGrid = document.getElementById('productsGrid');
+    const emptyState = document.getElementById('emptyState');
+
+    // Initialize filters
+    function initializeFilters() {
+        searchInput.addEventListener('input', debounce(filterProducts, 300));
+        categoryFilter.addEventListener('change', filterProducts);
+        stockFilter.addEventListener('change', filterProducts);
+        sortSelect.addEventListener('change', sortProducts);
+    }
+
+    // Debounce function for search
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Filter products
+    function filterProducts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const categoryValue = categoryFilter.value;
+        const stockValue = stockFilter.value;
+        const productCards = document.querySelectorAll('.product-card');
+        let visibleCount = 0;
+
+        productCards.forEach(card => {
+            const productName = card.dataset.name;
+            const categoryId = card.dataset.category;
+            const stock = parseInt(card.dataset.stock);
+
+            const matchesSearch = productName.includes(searchTerm);
+            const matchesCategory = !categoryValue || categoryId === categoryValue;
+            const matchesStock = !stockValue ||
+                (stockValue === 'available' && stock > 10) ||
+                (stockValue === 'low' && stock > 0 && stock <= 10) ||
+                (stockValue === 'out' && stock === 0);
+
+            const isVisible = matchesSearch && matchesCategory && matchesStock;
+
+            if (isVisible) {
+                card.style.display = 'block';
+                card.classList.add('fade-in');
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('fade-in');
+            }
+        });
+
+        // Show/hide empty state
+        if (visibleCount === 0) {
+            emptyState.classList.remove('hidden');
+            emptyState.classList.add('slide-up');
+        } else {
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('slide-up');
+        }
+    }
+
+    // Sort products
+    function sortProducts() {
+        const sortBy = sortSelect.value;
+        const productCards = Array.from(document.querySelectorAll('.product-card'));
+
+        productCards.sort((a, b) => {
+            let valueA, valueB;
+
+            switch (sortBy) {
+                case 'name':
+                    valueA = a.dataset.name;
+                    valueB = b.dataset.name;
+                    return valueA.localeCompare(valueB);
+                case 'price':
+                    valueA = parseFloat(a.dataset.price);
+                    valueB = parseFloat(b.dataset.price);
+                    return valueA - valueB;
+                case 'stock':
+                    valueA = parseInt(a.dataset.stock);
+                    valueB = parseInt(b.dataset.stock);
+                    return valueB - valueA;
+                case 'created':
+                    valueA = new Date(a.dataset.created);
+                    valueB = new Date(b.dataset.created);
+                    return valueB - valueA;
+                default:
+                    return 0;
+            }
+        });
+
+        // Re-append sorted elements
+        productCards.forEach(card => productsGrid.appendChild(card));
+    }
+
+    // Clear filters
+    function clearFilters() {
+        searchInput.value = '';
+        categoryFilter.value = '';
+        stockFilter.value = '';
+        sortSelect.value = 'name';
+        filterProducts();
+    }
+
+    // Modal functions
+    function toggleAddProductModal() {
+        document.getElementById('addProductModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAddProductModal() {
+        document.getElementById('addProductModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function closeEditProductModal() {
+        document.getElementById('editProductModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Product functions
+    function viewProduct(productId) {
+        window.open(`/${productId}`, '_blank');
+    }
+
+    function editProduct(productId) {
+        // Load edit form via AJAX
+        fetch(`/admin/product/${productId}/edit`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('editProductForm').innerHTML = html;
+                document.getElementById('editProductModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            })
+            .catch(error => {
+                console.error('Error loading edit form:', error);
+                showNotification('حدث خطأ أثناء تحميل نموذج التعديل', 'error');
+            });
+    }
+
+    function deleteProduct(productId, productName) {
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: `سيتم حذف "${productName}" نهائياً!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'نعم، احذف!',
+            cancelButtonText: 'إلغاء',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/admin/delete_product/${productId}`;
+            }
+        });
+    }
+
+    function duplicateProduct(productId) {
+        Swal.fire({
+            title: 'نسخ المنتج',
+            text: 'هل تريد إنشاء نسخة من هذا المنتج؟',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'نعم، انسخ',
+            cancelButtonText: 'إلغاء'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Implement duplication logic
+                showNotification('سيتم إضافة خاصية النسخ قريباً', 'info');
+            }
+        });
+    }
+
+    // Image preview for add product modal
+    document.getElementById('productImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('uploadPlaceholder').classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Bulk actions
+    function toggleBulkActions() {
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        const selectedIds = [];
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedIds.push(checkbox.value);
+            }
+        });
+
+        if (selectedIds.length === 0) {
+            showNotification('يرجى اختيار منتج واحد على الأقل', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'إجراءات متعددة',
+            text: `تم اختيار ${selectedIds.length} منتج`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'حذف المحدد',
+            cancelButtonText: 'إلغاء',
+            confirmButtonColor: '#ef4444'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Implement bulk delete
+                console.log('Bulk delete:', selectedIds);
+            }
+        });
+    }
+
+    // Export functionality
+    function exportProducts() {
+        showNotification('جاري تحضير ملف التصدير...', 'info');
+
+        // Simulate export process
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = '/admin/export/products';
+            link.download = 'products.xlsx';
+            link.click();
+            showNotification('تم تصدير المنتجات بنجاح!', 'success');
+        }, 2000);
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        toast.fire({
+            icon: type,
+            title: message
+        });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeFilters();
+
+        // Event delegation for product actions
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.product-action')) {
+                const button = e.target.closest('.product-action');
+                const action = button.dataset.action;
+                const productId = button.dataset.productId;
+                const productName = button.dataset.productName;
+
+                switch (action) {
+                    case 'view':
+                        viewProduct(productId);
+                        break;
+                    case 'edit':
+                        editProduct(productId);
+                        break;
+                    case 'delete':
+                        deleteProduct(productId, productName);
+                        break;
+                    case 'duplicate':
+                        duplicateProduct(productId);
+                        break;
+                }
+            }
+        });
+
+        // Error handler for images
+        document.querySelectorAll('img[data-fallback]').forEach(img => {
+            img.addEventListener('error', function() {
+                this.src = this.dataset.fallback;
+            });
+        });
+
+        // Add smooth scroll animation for cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        });
+
+        document.querySelectorAll('.product-card').forEach(card => {
+            observer.observe(card);
+        });
+    });
+
+    // Close modals when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('fixed') && e.target.classList.contains('bg-black/50')) {
+            closeAddProductModal();
+            closeEditProductModal();
+        }
+    });
+</script>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% endblock %}

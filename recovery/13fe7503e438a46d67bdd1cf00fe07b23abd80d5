@@ -1,0 +1,327 @@
+{% extends "shop/base.html" %} 
+
+{% block content %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var cartItemsData = {{ cart_items_json|default('[]')|safe }};
+    
+    fbq('track', 'InitiateCheckout', {
+        content_type: 'product',
+        contents: cartItemsData,
+        num_items: cartItemsData.length,
+        value: parseFloat("{{ total }}"),
+        currency: 'EGP'
+    });
+});
+</script>
+
+<section class="hero-section d-flex align-items-center py-4" style="background: #f7f7f7;">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h1 class="display-4">Checkout</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{{ url_for('shop.home') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('shop.cart') }}">Cart</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <form id="checkoutForm" action="{{ url_for('shop.place_order') }}" method="POST">
+            <div class="row">
+                <!-- Shipping & Payment Details -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card p-4 shadow-sm">
+                        <h4 class="mb-4">Shipping Information</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address (optional)</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="address" class="form-label">Shipping Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="2" required></textarea>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="city" class="form-label">المدينة</label>
+                                <select class="form-select" id="city" name="city" required>
+                                                      <option value="">اختر المدينة</option>
+                                                      {% for city in cities %}
+                                                      <option value="{{ city.city_id }}">{{ city.name }}</option>
+                                                      {% endfor %}
+                                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="zone" class="form-label">المنطقة</label>
+                                <select class="form-select" id="zone" name="zone_id" required disabled>
+                                                      <option value="">اختر المنطقة</option>
+                                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3" style="display: none;">
+                                <label for="district" class="form-label">الحي</label>
+                                <select class="form-select" id="district" name="district_id" disabled>
+                                                      <option value="testtest">اختر الحي</option>
+                                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="total" value="{{ total }}">
+
+                        <hr class="my-4">
+                        <h4 class="mb-3">Payment Method</h4>
+                        <div class="row">
+                            <!-- الدفع عند الاستلام -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card shadow-sm p-3 text-center">
+                                    <img src="{{ url_for('static', filename='images/cashOnD.png') }}" alt="Cash on Delivery" class="img-fluid mb-2" width="60">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="cash_on_delivery" value="cash_on_delivery" required checked>
+                                        <label class="form-check-label fw-bold" for="cash_on_delivery">الدفع عند الاستلام</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- فودافون كاش + واتساب -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card shadow-sm p-3 text-center">
+                                    <img src="https://app.fawaterk.com/clients/payment_options/pay5png" alt="Vodafone Cash" class="img-fluid mb-2" width="100">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="vodafone_cash" value="vodafone_cash" required>
+                                        <label class="form-check-label fw-bold" for="vodafone_cash">
+                                                                فودافون كاش + واتساب
+                                                            </label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- الدفع بالفيزا -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card shadow-sm p-3 text-center">
+                                    <img src="https://app.fawaterk.com/clients/payment_options/Visa_mastercardpng" alt="Visa" class="img-fluid mb-2" width="100">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="visa" value="visa" required>
+                                        <label class="form-check-label fw-bold" for="visa">الدفع
+                                                                  بالفيزا</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="col-lg-4">
+                    <div class="card p-4 bg-light shadow-sm">
+                        <h4 class="text-dark pb-3 border-bottom">Order Summary</h4>
+                        <div class="order-items my-4">
+                            {% for item in cart_items %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h6 class="mb-0">{{ item.product.name }}</h6>
+                                    <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                </div>
+                                <span class="text-dark">{{ "%.2f"|format(item.product.price * item.quantity) }} L.E</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <table class="table">
+                            <tbody>
+                                <tr class="subtotal">
+                                    <th>Subtotal</th>
+                                    <td class="text-end" id="subtotalValue">{{ "%.2f"|format(total) }} L.E</td>
+                                </tr>
+                                <tr class="shipping">
+                                    <th>Shipping</th>
+                                    <td class="text-end text-muted" id="shippingCost">Calculated at checkout</td>
+                                </tr>
+                                <tr class="total border-top">
+                                    <th>Total</th>
+                                    <td class="text-end fw-bold" id="totalValue">{{ "%.2f"|format(total) }} L.E</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const citySelect = document.getElementById('city');
+        const zoneSelect = document.getElementById('zone');
+        const districtSelect = document.getElementById('district');
+        const shippingCostElement = document.getElementById('shippingCost');
+        const totalValueElement = document.getElementById('totalValue');
+        const subtotalValue = parseFloat(document.getElementById('subtotalValue').textContent);
+
+        // Function to update shipping cost and total
+        function updateShippingCost(cityId) {
+            fetch(`/get_shipping_cost/${cityId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    // Check if discount was applied
+                    if (data.discount_applied) {
+                        // Show standard cost as crossed out and free shipping message
+                        const standardCost = data.standard_cost;
+                        const discountMessage = data.discount_message || "Free Shipping";
+                        const shipping_cost = data.shipping_cost || 0;
+                        shippingCostElement.innerHTML = `
+                        <span class="text-decoration-line-through text-muted">${standardCost} L.E</span>
+                        <span class="ms-2 text-success">${shipping_cost} L.E</span>
+                        <div class="mt-1 text-success small"><i class="bi bi-gift me-1"></i>${discountMessage}</div>
+                    `;
+
+                        // Update total with discounted shipping cost
+                        const total = subtotalValue + shipping_cost;
+                        totalValueElement.textContent = `${total.toFixed(2)} L.E`;
+                    } else {
+                        // Regular shipping cost
+                        const shippingCost = data.shipping_cost;
+                        shippingCostElement.textContent = `${shippingCost} L.E`;
+                        const total = subtotalValue + shippingCost;
+                        totalValueElement.textContent = `${total.toFixed(2)} L.E`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching shipping cost:', error);
+                    shippingCostElement.textContent = 'Error calculating shipping';
+                });
+        }
+
+        // Handle city selection
+        citySelect.addEventListener('change', function() {
+            const cityId = this.value;
+
+            // Reset and disable zone and district selects
+            zoneSelect.innerHTML = '<option value="">اختر المنطقة</option>';
+            districtSelect.innerHTML = '<option value="testtest">اختر الحي</option>';
+            zoneSelect.disabled = true;
+            districtSelect.disabled = true;
+
+            if (cityId) {
+                // Fetch zones for selected city
+                fetch(`/get_zones/${cityId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        zoneSelect.innerHTML = '<option value="">اختر المنطقة</option>';
+                        data.zones.forEach(zone => {
+                            const option = document.createElement('option');
+                            option.value = zone.id;
+                            option.textContent = zone.name;
+                            zoneSelect.appendChild(option);
+                        });
+                        zoneSelect.disabled = false;
+
+                        // Fetch districts for the city
+                        fetch(`/get_districts/${cityId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.error) {
+                                    throw new Error(data.error);
+                                }
+                                districtSelect.innerHTML = '<option value="">اختر الحي</option>';
+                                data.districts.forEach(district => {
+                                    const option = document.createElement('option');
+                                    option.value = district.id;
+                                    option.textContent = district.name;
+                                    districtSelect.appendChild(option);
+                                });
+                                districtSelect.disabled = false;
+                            })
+                            .catch(error => {
+                                console.error('Error fetching districts:', error);
+                                districtSelect.innerHTML = '<option value="">Error loading districts</option>';
+                            });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching zones:', error);
+                        zoneSelect.innerHTML = '<option value="">Error loading zones</option>';
+                    });
+
+                // Update shipping cost
+                updateShippingCost(cityId);
+            }
+        });
+
+        // Remove zone selection handler since we're fetching districts with city_id
+        zoneSelect.addEventListener('change', function() {
+            // No need to fetch districts here anymore
+        });
+
+        // Handle Vodafone Cash payment
+        const vodafoneCashRadio = document.getElementById('vodafone_cash');
+        const checkoutForm = document.getElementById('checkoutForm');
+
+        vodafoneCashRadio.addEventListener('change', function() {
+            if (this.checked) {
+                // Submit the form first
+                checkoutForm.submit();
+
+                // After form submission, redirect to WhatsApp
+                setTimeout(function() {
+                    window.location.href = '{{ whatsapp_link }}';
+                }, 1000); // Small delay to ensure form submission completes
+            }
+        });
+
+        // Prevent default form submission for Vodafone Cash
+        checkoutForm.addEventListener('submit', function(e) {
+            if (vodafoneCashRadio.checked) {
+                e.preventDefault();
+                // The form will be submitted by the change event handler above
+            }
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        // Get form data
+        var formData = new FormData(this);
+        var cartItemsData = JSON.parse('{{ cart_items|tojson|safe }}');
+        var contents = cartItemsData.map(function(item) {
+            return {
+                id: item.product.id.toString(),
+                quantity: item.quantity,
+                price: parseFloat(item.product.price)
+            };
+        });
+
+        // Track Purchase event
+        fbq('track', 'Purchase', {
+            content_type: 'product',
+            contents: contents,
+            num_items: contents.length,
+            value: parseFloat('{{ total }}'),
+            currency: 'EGP'
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta Pixel Code -->
+    <script>
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '8768042333321647');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=8768042333321647&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Meta Pixel Code -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWQDXWLNWG"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-NWQDXWLNWG');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orfe Shop</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    <!-- Boxicons -->
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@300;400;500;600;700&family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Scripts -->
+    <script src="static/js/modernizr.js" defer></script>
+    <!-- Meta Data -->
+    <meta name="description" content="Orfe Shop - Your ultimate destination for premium cosmetics. Discover beauty that enhances your confidence and brings out the best in you.">
+    <meta name="keywords" content="Orfe, cosmetics, beauty, skincare, makeup, premium beauty products">
+    <meta name="author" content="Orfe Cosmetics">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#ffffff">
+    <!-- faveicon -->
+    <link rel="icon" href="static/images/main-logo.ico" type="image/x-icon">
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:title" content="Orfe Shop - Premium Cosmetics">
+    <meta property="og:description" content="Discover high-quality beauty products designed to enhance your confidence and bring out the best in you.">
+    <meta property="og:image" content="https://i.top4top.io/p_33209yqsf1.png">
+    <meta property="og:url" content="https://orfe-cosmetics.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="https://i.top4top.io/p_33209yqsf1.png">
+    <meta name="twitter:title" content="Orfe Shop - Premium Cosmetics">
+    <meta name="twitter:description" content="Shop premium beauty products at Orfe Cosmetics and elevate your look with top-quality skincare and makeup.">
+    <meta name="twitter:image" content="https://i.top4top.io/p_33209yqsf1.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.top4top.io/p_33209yqsf1.png">
+    <link rel="apple-touch-icon" href="https://i.top4top.io/p_33209yqsf1.png">
+
+</head>
+
+<body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-smooth-scroll="true">
+    <style>
+        .promo-banner {
+            background-color: #8B4513;
+            /* Changed to a festive brown color */
+            color: white;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            padding: 15px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        /* Background animation */
+        
+        .promo-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #D2691E;
+            opacity: 0.1;
+            animation: moveBg 10s linear infinite;
+        }
+        
+        .promo-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 18px;
+            gap: 10px;
+        }
+        
+        #countdown {
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        #countdown span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+        }
+        /* Keyframes for animations */
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes moveBg {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 100px 100px;
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+    <!-- Eid Al-Adha Promo Banner -->
+    <div class="promo-banner" dir="rtl">
+        <div class="promo-content">
+            <strong>🕌 عرض عيد الأضحى المبارك 🎉</strong>
+            <span>شحن مجاني لباقة العناية الكاملة للقاهرة والإسكندرية والجيزة والبحيرة • خصم 50% على الشحن لباقي المحافظات</span>
+            <span id="countdown"></span>
+        </div>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            // Set end date to June 11, 2025 (6 days from June 5)
+            const endDate = new Date('2025-06-11T23:59:59');
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = "انتهى العرض";
+                document.querySelector('.promo-banner').style.display = 'none';
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerHTML = `
+                <span>العرض ينتهي خلال: ${days} يوم</span> 
+                <span>${hours} ساعة</span> 
+                <span>${minutes} دقيقة</span> 
+                <span>${seconds} ثانية</span>`;
+
+            // Apply pulse animation when numbers change
+            document.querySelectorAll("#countdown span").forEach(el => {
+                el.style.animation = "pulse 0.5s";
+                setTimeout(() => el.style.animation = "", 500);
+            });
+        }
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+
+    <header id="header" class="site-header">
+        <nav class="navbar navbar-expand-lg px-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="static/images/main-logo.png" class="logo" alt="Orfe Logo" style="width: 80px; height: auto;">
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar">
+                              <i class="bx bx-menu" style="font-size: 40px;"></i>
+                        </button>
+
+                <div class="offcanvas offcanvas-end" id="bdNavbar">
+                    <div class="offcanvas-header">
+                        <a class="navbar-brand" href="index.html">
+                            <img src="static/images/main-logo.png" class="logo" alt="Orfe Logo" style="width: 80px; height: auto;">
+                        </a>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                    </div>
+
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav ms-auto align-items-center">
+                            <li class="nav-item"><a class="nav-link active" href="/">Home</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="/">About Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                            <li class="nav-item">
+                                <a href="/cart" class="position-relative d-flex align-items-center">
+                                    <i class="bx bx-cart" style="font-size: 20px;"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                            <!-- get cart-count from session -->
+                                                            {{ session.get('cart_count', 0) }}
+                                                      </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <script>
+            setTimeout(function() {
+                var alert = document.querySelector('.alert-{{ category }}');
+                if (alert) {
+                    alert.classList.remove('show');
+                    alert.classList.add('fade');
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500);
+                }
+            }, 5000);
+        </script>
+        {% endfor %} {% endif %} {% endwith %}
+    </div>
+    <!-- Page Content -->
+    {% block content %}{% endblock %}
+    <!-- make a watsapp bubel in the left of the screen  -->
+    <a href="https://wa.me/201030553029" class="whatsapp" target="_blank" style="position: fixed; bottom: 20px; left: 20px; z-index: 1000; font-size: 24px; color: #fff; 
+          background-color: #25D366; width: 50px; height: 50px; display: flex; align-items: center; 
+          justify-content: center; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+        <i class="bx bxl-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer id="footer" class="padding-large">
+        <div class="container">
+            <div class="row">
+                <!-- About -->
+                <div class="col-lg-3 col-sm-6 pb-3">
+                    <img src="static/images/logo.svg" alt="Orfe Logo" class="pb-3" style="width: 150px;">
+                    <p>Welcome to Orfe, your ultimate destination for premium cosmetics. Discover beauty that enhances your confidence and brings out the best in you.</p>
+                    <p>© 2024. Designed by <a href="https://orfe.com/" target="_blank">Orfe Cosmetics</a></p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-sm-6 pb-3">
+                    <h5 class="widget-title pb-2">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about-us">About Us</a></li>
+                        <li><a href="#products">Our Products</a></li>
+                        <li><a href="#blog">Beauty Blog</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social Links -->
+                <div class="col-lg-2 col-sm-6 pb-3">
+                    <h5 class="widget-title pb-2">Follow Us</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.facebook.com/share/15cWndCGap/?mibextid=wwXIfr">Facebook</a>
+                        </li>
+                        <li><a href="https://www.instagram.com/orfeee0?igsh=MXdybnNqbTdrZDNicw==">Instagram</a>
+                        </li>
+                        <li><a href="https://www.tiktok.com/@orfeee0?_t=ZS-8tYLp3QdQ9q&_r=1">TikTok</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-3 col-sm-6">
+                    <h5 class="widget-title pb-2">Contact Us</h5>
+                    <p><a href="tel:+201030553029">+201030553029</a></p>
+                    <p><a href="mailto:info@orfe-cosmetics.com">info@orfe-cosmetics.com</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Scripts -->
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

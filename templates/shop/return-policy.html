@@ -1,0 +1,317 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h1 class="mb-0">
+                        <i class="bx bx-package"></i>
+                        سياسة الإرجاع والاسترداد
+                    </h1>
+                    <p class="mb-0 mt-2">Orfe Cosmetics Return Policy</p>
+                </div>
+                
+                <div class="card-body p-5">
+                    <!-- Arabic Content -->
+                    <div class="text-end" dir="rtl">
+                        <section class="mb-5">
+                            <h2 class="text-primary mb-3">
+                                <i class="bx bx-info-circle"></i>
+                                معلومات عامة
+                            </h2>
+                            <p class="lead">نحن في أورف للمستحضرات التجميلية نسعى لضمان رضا عملائنا الكامل عن منتجاتنا. نقدم سياسة إرجاع واسترداد شاملة لحماية حقوق عملائنا.</p>
+                        </section>
+
+                        <section class="mb-5">
+                            <h3 class="text-success mb-3">
+                                <i class="bx bx-time"></i>
+                                فترة الإرجاع
+                            </h3>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bx bx-check text-success"></i> يحق للعميل إرجاع المنتج خلال <strong>7 أيام</strong> من تاريخ الاستلام</li>
+                                <li class="mb-2"><i class="bx bx-check text-success"></i> يجب أن يكون المنتج في حالته الأصلية وغير مستخدم</li>
+                                <li class="mb-2"><i class="bx bx-check text-success"></i> يجب الاحتفاظ بالعبوة الأصلية وجميع الملحقات</li>
+                            </ul>
+                        </section>
+
+                        <section class="mb-5">
+                            <h3 class="text-info mb-3">
+                                <i class="bx bx-check-shield"></i>
+                                شروط الإرجاع
+                            </h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="text-success">المنتجات القابلة للإرجاع:</h4>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bx bx-check text-success"></i> منتجات العناية بالبشرة غير المفتوحة</li>
+                                        <li><i class="bx bx-check text-success"></i> منتجات العناية بالأظافر غير المستخدمة</li>
+                                        <li><i class="bx bx-check text-success"></i> المنتجات المعيبة أو التالفة</li>
+                                        <li><i class="bx bx-check text-success"></i> المنتجات المرسلة بالخطأ</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="text-danger">المنتجات غير القابلة للإرجاع:</h4>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bx bx-x text-danger"></i> المنتجات المفتوحة أو المستخدمة</li>
+                                        <li><i class="bx bx-x text-danger"></i> المنتجات المخصصة حسب الطلب</li>
+                                        <li><i class="bx bx-x text-danger"></i> المنتجات التي انتهت فترة الإرجاع</li>
+                                        <li><i class="bx bx-x text-danger"></i> المنتجات التالفة بسبب سوء الاستخدام</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="mb-5">
+                            <h3 class="text-warning mb-3">
+                                <i class="bx bx-transfer"></i>
+                                إجراءات الإرجاع
+                            </h3>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100 border-warning">
+                                        <div class="card-body text-center">
+                                            <i class="bx bx-phone text-warning mb-3" style="font-size: 3rem;"></i>
+                                            <h5>الخطوة الأولى</h5>
+                                            <p>تواصل معنا عبر الهاتف أو واتساب على الرقم: <strong>01030553029</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100 border-warning">
+                                        <div class="card-body text-center">
+                                            <i class="bx bx-package text-warning mb-3" style="font-size: 3rem;"></i>
+                                            <h5>الخطوة الثانية</h5>
+                                            <p>تجهيز المنتج في العبوة الأصلية مع جميع الملحقات</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100 border-warning">
+                                        <div class="card-body text-center">
+                                            <i class="bx bx-car text-warning mb-3" style="font-size: 3rem;"></i>
+                                            <h5>الخطوة الثالثة</h5>
+                                            <p>سنقوم بترتيب استلام المنتج من العنوان المحدد</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="mb-5">
+                            <h3 class="text-primary mb-3">
+                                <i class="bx bx-money"></i>
+                                سياسة الاسترداد
+                            </h3>
+                            <div class="alert alert-info" role="alert">
+                                <i class="bx bx-info-circle"></i>
+                                <strong>مدة الاسترداد:</strong> يتم رد الأموال خلال 3-7 أيام عمل من تاريخ استلام المنتج المُرجع
+                            </div>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bx bx-credit-card text-primary"></i> للدفع الإلكتروني: يتم الرد على نفس وسيلة الدفع المستخدمة</li>
+                                <li class="mb-2"><i class="bx bx-money text-primary"></i> للدفع عند الاستلام: يتم الرد نقداً أو تحويل بنكي</li>
+                                <li class="mb-2"><i class="bx bx-gift text-primary"></i> أو يمكن استبدال المنتج بمنتج آخر من نفس القيمة</li>
+                            </ul>
+                        </section>
+
+                        <section class="mb-5">
+                            <h3 class="text-danger mb-3">
+                                <i class="bx bx-error"></i>
+                                حالات خاصة
+                            </h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card border-danger">
+                                        <div class="card-header bg-danger text-white">
+                                            <h5 class="mb-0">المنتجات المعيبة</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p>في حالة وصول منتج تالف أو معيب:</p>
+                                            <ul>
+                                                <li>يتم الاستبدال فوراً ومجاناً</li>
+                                                <li>نتحمل تكاليف الشحن كاملة</li>
+                                                <li>يحق للعميل طلب الاسترداد الكامل</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card border-success">
+                                        <div class="card-header bg-success text-white">
+                                            <h5 class="mb-0">الحساسية والتفاعلات</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p>في حالة حدوث تفاعل حساسية:</p>
+                                            <ul>
+                                                <li>توقف عن الاستخدام فوراً</li>
+                                                <li>تواصل معنا على الفور</li>
+                                                <li>استرداد كامل بدون شروط</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="mb-5">
+                            <h3 class="text-secondary mb-3">
+                                <i class="bx bx-support"></i>
+                                خدمة العملاء
+                            </h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bx bx-phone text-primary me-3" style="font-size: 2rem;"></i>
+                                        <div>
+                                            <h5 class="mb-0">الهاتف</h5>
+                                            <p class="mb-0">01030553029</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bx bxl-whatsapp text-success me-3" style="font-size: 2rem;"></i>
+                                        <div>
+                                            <h5 class="mb-0">واتساب</h5>
+                                            <p class="mb-0">01030553029</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bx bx-envelope text-info me-3" style="font-size: 2rem;"></i>
+                                        <div>
+                                            <h5 class="mb-0">البريد الإلكتروني</h5>
+                                            <p class="mb-0">info@orfe-cosmetics.com</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bx bx-time text-warning me-3" style="font-size: 2rem;"></i>
+                                        <div>
+                                            <h5 class="mb-0">ساعات العمل</h5>
+                                            <p class="mb-0">يومياً من 9 صباحاً إلى 10 مساءً</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- English Translation -->
+                    <hr class="my-5">
+                    
+                    <div class="text-start" dir="ltr">
+                        <h2 class="text-primary mb-4">English Translation - Return Policy</h2>
+                        
+                        <section class="mb-4">
+                            <h3 class="text-success">Return Period</h3>
+                            <p>Customers have <strong>7 days</strong> from the delivery date to return products in their original, unused condition with original packaging.</p>
+                        </section>
+
+                        <section class="mb-4">
+                            <h3 class="text-info">Return Conditions</h3>
+                            <p><strong>Returnable:</strong> Unopened skincare products, unused nail care products, defective items, or wrongly sent products.</p>
+                            <p><strong>Non-returnable:</strong> Opened/used products, custom-made items, expired return period items, or products damaged due to misuse.</p>
+                        </section>
+
+                        <section class="mb-4">
+                            <h3 class="text-warning">Return Process</h3>
+                            <ol>
+                                <li>Contact us via phone or WhatsApp: <strong>01030553029</strong></li>
+                                <li>Prepare product in original packaging with all accessories</li>
+                                <li>We will arrange pickup from your specified address</li>
+                            </ol>
+                        </section>
+
+                        <section class="mb-4">
+                            <h3 class="text-primary">Refund Policy</h3>
+                            <p>Refunds are processed within 3-7 business days after receiving the returned product. Electronic payments are refunded to the same payment method, while cash on delivery orders receive cash or bank transfer refunds.</p>
+                        </section>
+
+                        <section class="mb-4">
+                            <h3 class="text-secondary">Customer Service</h3>
+                            <p><strong>Phone/WhatsApp:</strong> 01030553029<br>
+                            <strong>Email:</strong> info@orfe-cosmetics.com<br>
+                            <strong>Working Hours:</strong> Daily 9 AM - 10 PM</p>
+                        </section>
+                    </div>
+
+                    <!-- Contact CTA -->
+                    <div class="text-center mt-5">
+                        <div class="bg-light p-4 rounded">
+                            <h4 class="text-primary mb-3">هل تحتاج مساعدة؟</h4>
+                            <p class="mb-3">فريق خدمة العملاء متاح للإجابة على جميع استفساراتك</p>
+                            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                <a href="tel:+201030553029" class="btn btn-primary">
+                                    <i class="bx bx-phone"></i> اتصل بنا
+                                </a>
+                                <a href="https://wa.me/201030553029" class="btn btn-success" target="_blank">
+                                    <i class="bx bxl-whatsapp"></i> واتساب
+                                </a>
+                                <a href="mailto:info@orfe-cosmetics.com" class="btn btn-info">
+                                    <i class="bx bx-envelope"></i> ارسل إيميل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        آخر تحديث: أغسطس 2025 | Last Updated: August 2025<br>
+                        جميع الحقوق محفوظة لشركة أورف للمستحضرات التجميلية
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.btn {
+    border-radius: 25px;
+    padding: 10px 25px;
+}
+
+.list-unstyled li {
+    padding: 5px 0;
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+section h3 {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 2rem 1rem !important;
+    }
+    
+    .d-flex.gap-3 {
+        gap: 0.5rem !important;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

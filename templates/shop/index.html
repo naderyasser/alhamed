@@ -1,0 +1,1461 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<style>
+    /* ============================================
+       HOME PAGE - MODERN DESIGN SYSTEM 2025
+       ============================================ */
+    
+    .home-page {
+        --home-primary: #8CA896;
+        --home-primary-dark: #6B8E6E;
+        --home-primary-light: #B8D4A8;
+        --home-accent: #F59E0B;
+        --home-bg-primary: #FAFAFA;
+        --home-bg-secondary: #FFFFFF;
+        --home-bg-tertiary: #F5F7F5;
+        --home-text-primary: #1A202C;
+        --home-text-secondary: #4A5568;
+        --home-text-tertiary: #718096;
+        --home-border: #E8ECF0;
+        --home-border-light: #F0F4F8;
+        --home-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+        --home-shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+        --home-shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
+        --home-shadow-hover: 0 20px 40px rgba(140, 168, 150, 0.15);
+        --home-radius-sm: 8px;
+        --home-radius-md: 12px;
+        --home-radius-lg: 16px;
+        --home-radius-xl: 24px;
+        --home-radius-full: 9999px;
+        --home-transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --home-transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        --home-font-heading: 'Playfair Display', Georgia, serif;
+        --home-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    /* ============================================
+       HERO SECTION - Modern Design
+       ============================================ */
+    
+    .home-page .hero-section {
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+        background: var(--home-bg-primary);
+    }
+    
+    .home-page .hero-slider {
+        position: relative;
+        height: 85vh;
+        min-height: 600px;
+    }
+    
+    .home-page .hero-slide {
+        position: relative;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+    
+    .home-page .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    
+    .home-page .hero-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            rgba(255, 255, 255, 0.95) 0%, 
+            rgba(255, 255, 255, 0.85) 30%, 
+            rgba(255, 255, 255, 0.5) 60%, 
+            rgba(255, 255, 255, 0.1) 100%);
+        z-index: 2;
+    }
+    
+    .home-page .hero-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+    
+    .home-page .hero-content {
+        position: relative;
+        z-index: 3;
+        max-width: 700px;
+        padding: 0 5%;
+    }
+    
+    .home-page .hero-subtitle {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        color: var(--home-primary-dark);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.6s ease forwards;
+        animation-delay: 0.3s;
+    }
+    
+    .home-page .hero-title {
+        font-family: var(--home-font-heading);
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        color: var(--home-text-primary);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.6s ease forwards;
+        animation-delay: 0.5s;
+    }
+    
+    .home-page .hero-description {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: var(--home-text-secondary);
+        max-width: 90%;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.6s ease forwards;
+        animation-delay: 0.7s;
+    }
+    
+    .home-page .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.6s ease forwards;
+        animation-delay: 0.9s;
+    }
+    
+    .home-page .btn-shop {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--home-radius-md);
+        transition: all var(--home-transition-base);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+        font-family: var(--home-font-body);
+    }
+    
+    .home-page .btn-primary {
+        background: linear-gradient(135deg, var(--home-primary) 0%, var(--home-primary-dark) 100%);
+        color: white;
+        border: none;
+        box-shadow: var(--home-shadow-sm);
+    }
+    
+    .home-page .btn-primary:hover {
+        background: linear-gradient(135deg, var(--home-primary-dark) 0%, #5A7A5E 100%);
+        transform: translateY(-3px);
+        box-shadow: var(--home-shadow-hover);
+    }
+    
+    .home-page .btn-outline {
+        background: transparent;
+        color: var(--home-text-primary);
+        border: 2px solid var(--home-primary);
+    }
+    
+    .home-page .btn-outline:hover {
+        background: rgba(140, 168, 150, 0.1);
+        transform: translateY(-3px);
+    }
+    
+    .home-page .product-highlight {
+        position: absolute;
+        bottom: 40px;
+        left: 5%;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: var(--home-radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--home-shadow-lg);
+        max-width: 400px;
+        transform: translateX(-100%);
+        animation: slideIn 0.8s ease forwards;
+        animation-delay: 1s;
+    }
+    
+    .home-page .product-highlight-image {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--home-radius-md);
+        object-fit: cover;
+        box-shadow: var(--home-shadow-sm);
+    }
+    
+    .home-page .product-highlight-content {
+        flex: 1;
+    }
+    
+    .home-page .product-highlight-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: var(--home-text-primary);
+        font-family: var(--home-font-body);
+    }
+    
+    .home-page .product-highlight-price {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .home-page .product-old-price {
+        font-size: 0.9rem;
+        text-decoration: line-through;
+        color: var(--home-text-tertiary);
+    }
+    
+    .home-page .product-current-price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--home-primary-dark);
+    }
+    
+    .home-page .product-discount {
+        background: var(--home-accent);
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.2rem 0.5rem;
+        border-radius: var(--home-radius-sm);
+        margin-right: 0.5rem;
+    }
+    
+    /* Swiper Custom Styles */
+    .home-page .swiper-pagination-bullet {
+        width: 30px;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(140, 168, 150, 0.5);
+        opacity: 0.5;
+        transition: all var(--home-transition-base);
+    }
+    
+    .home-page .swiper-pagination-bullet-active {
+        width: 50px;
+        background: var(--home-primary);
+        opacity: 1;
+    }
+    
+    .home-page .swiper-button-prev,
+    .home-page .swiper-button-next {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: var(--home-radius-full);
+        box-shadow: var(--home-shadow-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--home-text-primary);
+        transition: all var(--home-transition-base);
+    }
+    
+    .home-page .swiper-button-prev:hover,
+    .home-page .swiper-button-next:hover {
+        background: var(--home-primary);
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    @keyframes fadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideIn {
+        0% {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    /* ============================================
+       FEATURED SET SECTION - Modern Design
+       ============================================ */
+    
+    .home-page .featured-set-section {
+        padding: 5rem 0;
+        background: var(--home-bg-tertiary);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .home-page .featured-set-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 25%, rgba(140, 168, 150, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(140, 168, 150, 0.05) 0%, transparent 50%);
+        z-index: 0;
+    }
+    
+    .home-page .featured-set-box {
+        background: var(--home-bg-secondary);
+        border-radius: var(--home-radius-lg);
+        overflow: hidden;
+        box-shadow: var(--home-shadow-lg);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+        transition: all var(--home-transition-slow);
+    }
+    
+    .home-page .featured-set-box:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--home-shadow-hover);
+    }
+    
+    .home-page .featured-set-img {
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 75%;
+    }
+    
+    .home-page .featured-set-img img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform var(--home-transition-slow);
+    }
+    
+    .home-page .featured-set-box:hover .featured-set-img img {
+        transform: scale(1.05);
+    }
+    
+    .home-page .limited-badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: linear-gradient(135deg, var(--home-accent) 0%, var(--home-accent-dark) 100%);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border-radius: var(--home-radius-full);
+        z-index: 2;
+        box-shadow: var(--home-shadow-md);
+        animation: pulse 2s infinite;
+    }
+    
+    .home-page .countdown-badge {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(26, 32, 44, 0.9);
+        backdrop-filter: blur(10px);
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: var(--home-radius-md);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .home-page .featured-set-content {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+    
+    .home-page .featured-set-title {
+        font-family: var(--home-font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--home-text-primary);
+        margin-bottom: 1rem;
+        line-height: 1.3;
+    }
+    
+    .home-page .featured-set-description {
+        color: var(--home-text-secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+    }
+    
+    .home-page .featured-set-price {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .home-page .featured-set-old-price {
+        font-size: 1.2rem;
+        text-decoration: line-through;
+        color: var(--home-text-tertiary);
+        font-weight: 500;
+    }
+    
+    .home-page .featured-set-current-price {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--home-primary-dark);
+    }
+    
+    .home-page .featured-set-discount {
+        background: var(--home-primary);
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.3rem 0.7rem;
+        border-radius: var(--home-radius-sm);
+        margin-right: 0.5rem;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .home-page .featured-set-btn {
+        background: linear-gradient(135deg, var(--home-primary) 0%, var(--home-primary-dark) 100%);
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 1rem;
+        border-radius: var(--home-radius-md);
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all var(--home-transition-base);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        box-shadow: var(--home-shadow-sm);
+    }
+    
+    .home-page .featured-set-btn:hover {
+        background: linear-gradient(135deg, var(--home-primary-dark) 0%, #5A7A5E 100%);
+        transform: translateY(-3px);
+        box-shadow: var(--home-shadow-hover);
+    }
+    
+    .home-page .featured-set-includes {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .home-page .featured-set-includes h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--home-text-secondary);
+        margin-bottom: 0.75rem;
+    }
+    
+    .home-page .featured-set-includes ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .home-page .featured-set-includes li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        color: var(--home-text-secondary);
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+    }
+    
+    .home-page .featured-set-includes i {
+        color: var(--home-primary);
+        font-size: 1.1rem;
+        margin-top: 0.1rem;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    /* ============================================
+       ABOUT SECTION - Modern Design
+       ============================================ */
+    
+    .home-page .about-section {
+        position: relative;
+        padding: 5rem 0;
+        background: linear-gradient(to right, var(--home-bg-tertiary), var(--home-bg-secondary));
+        overflow: hidden;
+    }
+    
+    .home-page .about-section .title {
+        font-family: var(--home-font-heading);
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--home-text-primary);
+        position: relative;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+    }
+    
+    .home-page .about-section .title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--home-primary);
+        border-radius: 2px;
+    }
+    
+    .home-page .about-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--home-text-secondary);
+    }
+    
+    .home-page .feature-card {
+        background: var(--home-bg-secondary);
+        border-radius: var(--home-radius-lg);
+        padding: 2rem;
+        text-align: center;
+        box-shadow: var(--home-shadow-md);
+        transition: all var(--home-transition-base);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .home-page .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--home-shadow-hover);
+    }
+    
+    .home-page .feature-card i {
+        font-size: 2.5rem;
+        color: var(--home-primary);
+        margin-bottom: 1rem;
+        transition: transform var(--home-transition-base);
+    }
+    
+    .home-page .feature-card:hover i {
+        transform: scale(1.1);
+    }
+    
+    .home-page .feature-card h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--home-text-primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .home-page .feature-card p {
+        font-size: 0.9rem;
+        color: var(--home-text-tertiary);
+        margin-bottom: 0;
+    }
+    
+    /* ============================================
+       PRODUCT SHOWCASE - Modern Design
+       ============================================ */
+    
+    .home-page .product-showcase {
+        padding: 5rem 0;
+        background: var(--home-bg-primary);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .home-page .product-showcase::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(circle at 20% 25%, rgba(140, 168, 150, 0.05) 0%, transparent 50%),
+                          radial-gradient(circle at 75% 75%, rgba(140, 168, 150, 0.05) 0%, transparent 50%);
+        z-index: 0;
+    }
+    
+    .home-page .showcase-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .home-page .showcase-title {
+        font-family: var(--home-font-heading);
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: 800;
+        color: var(--home-text-primary);
+        margin-bottom: 1rem;
+    }
+    
+    .home-page .showcase-subtitle {
+        font-size: 1.2rem;
+        color: var(--home-text-secondary);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .home-page .product-card {
+        background: var(--home-bg-secondary);
+        border-radius: var(--home-radius-lg);
+        overflow: hidden;
+        box-shadow: var(--home-shadow-md);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: all var(--home-transition-slow);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .home-page .product-card:hover {
+        transform: translateY(-12px);
+        box-shadow: var(--home-shadow-hover);
+    }
+    
+    .home-page .product-image {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1;
+    }
+    
+    .home-page .product-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform var(--home-transition-slow);
+    }
+    
+    .home-page .product-card:hover .product-image img {
+        transform: scale(1.08);
+    }
+    
+    .home-page .product-tag {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: linear-gradient(135deg, var(--home-primary) 0%, var(--home-primary-dark) 100%);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.4rem 0.8rem;
+        border-radius: var(--home-radius-full);
+        z-index: 2;
+        box-shadow: var(--home-shadow-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .home-page .product-content {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    
+    .home-page .product-name {
+        font-family: var(--home-font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--home-text-primary);
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+    
+    .home-page .product-desc {
+        color: var(--home-text-secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+        flex-grow: 1;
+        font-size: 0.95rem;
+    }
+    
+    .home-page .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .home-page .product-price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.8rem;
+    }
+    
+    .home-page .price-current {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--home-primary-dark);
+    }
+    
+    .home-page .price-old {
+        font-size: 1rem;
+        text-decoration: line-through;
+        color: var(--home-text-tertiary);
+    }
+    
+    .home-page .product-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .home-page .product-rating i {
+        color: var(--home-accent);
+        font-size: 1.1rem;
+    }
+    
+    .home-page .product-rating span {
+        font-weight: 600;
+        color: var(--home-text-secondary);
+    }
+    
+    .home-page .product-features {
+        margin: 1.5rem 0;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--home-border-light);
+    }
+    
+    .home-page .product-features h6 {
+        font-weight: 600;
+        color: var(--home-text-secondary);
+        margin-bottom: 1rem;
+        font-size: 1rem;
+    }
+    
+    .home-page .features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
+    }
+    
+    .home-page .features-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--home-text-secondary);
+        width: calc(50% - 0.75rem);
+    }
+    
+    .home-page .features-list li i {
+        color: var(--home-primary);
+        font-size: 1rem;
+    }
+    
+    .home-page .product-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .home-page .btn-product {
+        flex: 1;
+        font-weight: 600;
+        padding: 0.8rem;
+        border-radius: var(--home-radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all var(--home-transition-base);
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+    
+    .home-page .btn-buy {
+        background: linear-gradient(135deg, var(--home-primary) 0%, var(--home-primary-dark) 100%);
+        color: white;
+        border: none;
+        box-shadow: var(--home-shadow-sm);
+    }
+    
+    .home-page .btn-buy:hover {
+        background: linear-gradient(135deg, var(--home-primary-dark) 0%, #5A7A5E 100%);
+        transform: translateY(-3px);
+        box-shadow: var(--home-shadow-hover);
+    }
+    
+    .home-page .btn-info {
+        border: 2px solid var(--home-primary);
+        background: transparent;
+        color: var(--home-primary-dark);
+    }
+    
+    .home-page .btn-info:hover {
+        background: rgba(140, 168, 150, 0.1);
+        transform: translateY(-3px);
+    }
+    
+    /* ============================================
+       RESPONSIVE DESIGN
+       ============================================ */
+    
+    @media (max-width: 992px) {
+        .home-page .hero-slider {
+            height: 75vh;
+        }
+        
+        .home-page .product-highlight {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            margin: 2rem auto;
+            transform: none;
+            animation: none;
+            opacity: 1;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .home-page .hero-slider {
+            height: 90vh;
+        }
+        
+        .home-page .hero-bg::before {
+            background: linear-gradient(0deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.85) 50%, 
+                rgba(255, 255, 255, 0.5) 80%);
+        }
+        
+        .home-page .hero-content {
+            text-align: center;
+            padding: 0 10%;
+            margin-top: -20px;
+        }
+        
+        .home-page .hero-description {
+            max-width: 100%;
+        }
+        
+        .home-page .hero-buttons {
+            justify-content: center;
+        }
+        
+        .home-page .product-highlight {
+            width: 90%;
+            max-width: 90%;
+        }
+        
+        .home-page .about-section {
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .home-page .about-section .title::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .home-page .product-actions {
+            flex-direction: column;
+        }
+        
+        .home-page .features-list li {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .home-page .hero-title {
+            font-size: clamp(1.75rem, 6vw, 2.25rem);
+        }
+        
+        .home-page .hero-subtitle {
+            font-size: 0.85rem;
+        }
+        
+        .home-page .hero-buttons {
+            flex-direction: column;
+            width: 100%;
+            gap: 0.75rem;
+        }
+        
+        .home-page .btn-shop {
+            width: 100%;
+        }
+        
+        .home-page .featured-set-title {
+            font-size: 1.3rem;
+        }
+        
+        .home-page .showcase-title {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+    }
+    
+    /* ============================================
+       UTILITY CLASSES
+       ============================================ */
+    
+    .home-page .display-4 {
+        font-family: var(--home-font-heading);
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        color: var(--home-text-primary);
+    }
+    
+    .home-page .lead {
+        font-size: 1.1rem;
+        color: var(--home-text-secondary);
+    }
+    
+    .home-page .text-muted {
+        color: var(--home-text-tertiary);
+    }
+    
+    .home-page .text-center {
+        text-align: center;
+    }
+    
+    .home-page .mb-3 {
+        margin-bottom: 1rem;
+    }
+    
+    .home-page .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .home-page .mb-5 {
+        margin-bottom: 3rem;
+    }
+    
+    .home-page .mb-lg-0 {
+        margin-bottom: 0;
+    }
+    
+    .home-page .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .home-page .mb-md-0 {
+        margin-bottom: 0;
+    }
+    
+    .home-page .shadow {
+        box-shadow: var(--home-shadow-md);
+    }
+    
+    .home-page .rounded-4 {
+        border-radius: var(--home-radius-lg);
+    }
+    
+    .home-page .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .home-page .h-100 {
+        height: 100%;
+    }
+    
+    .home-page .col-12 {
+        width: 100%;
+    }
+    
+    .home-page .col-lg-6 {
+        width: 50%;
+    }
+    
+    .home-page .col-md-6 {
+        width: 50%;
+    }
+    
+    .home-page .col-6 {
+        width: 50%;
+    }
+    
+    .home-page .col-lg-4 {
+        width: 33.333%;
+    }
+    
+    .home-page .col-md-6 {
+        width: 50%;
+    }
+    
+    .home-page .col-md-4 {
+        width: 33.333%;
+    }
+    
+    .home-page .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .home-page .align-items-center {
+        align-items: center;
+    }
+    
+    .home-page .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -1rem;
+    }
+    
+    .home-page .row > [class*="col-"] {
+        padding: 0 1rem;
+    }
+    
+    .home-page .g-4 {
+        gap: 1rem;
+    }
+    
+    .home-page .small {
+        font-size: 0.875rem;
+    }
+    
+    .home-page .bx {
+        display: inline-block;
+        font-size: 1.5rem;
+    }
+</style>
+
+<!-- Home Page Content -->
+<div class="home-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="swiper hero-slider">
+            <div class="swiper-wrapper">
+                {% set banners = [
+                    {
+                        'image': 'https://e.top4top.io/p_3399y42yj1.jpg',
+                        'title': 'Orfe Advanced Blends For Hair Spray',
+                        'subtitle': 'Premium Hair Care',
+                        'description': 'Achieve fuller, healthier hair with our innovative volume spray. Formulated with natural ingredients to boost hair density and restore vitality.',
+                        'highlight_image': 'https://e.top4top.io/p_3399y42yj1.jpg',
+                        'highlight_title': 'Orfe Advanced Blends For Hair Spray',
+                        'regular_price': '438',
+                        'sale_price': '350',
+                        'discount': '20%'
+                    },
+                    {
+                        'image': 'https://f.top4top.io/p_3399frbky2.jpg',
+                        'title': 'Orfe Advanced Blends For Hair Oil',
+                        'subtitle': 'Natural Hair Nourishment',
+                        'description': 'Infused with powerful natural extracts to promote hair growth, reduce thinning, and add incredible shine to every strand.',
+                        'highlight_image': 'https://f.top4top.io/p_3399frbky2.jpg',
+                        'highlight_title': 'Orfe Advanced Blends For Hair Oil',
+                        'regular_price': '469',
+                        'sale_price': '375',
+                        'discount': '20%'
+                    },
+                    {
+                        'image': 'https://f.top4top.io/p_3396mbqvn1.jpg',
+                        'title': 'Orfe Lashes and Eyebrow Serum',
+                        'subtitle': 'Enhance Your Natural Beauty',
+                        'description': 'Enhance your natural beauty with our advanced growth serum. Clinically proven to deliver longer, fuller lashes and defined brows.',
+                        'highlight_image': 'https://f.top4top.io/p_3396mbqvn1.jpg',
+                        'highlight_title': 'Orfe Lashes and Eyebrow Serum',
+                        'regular_price': '165',
+                        'sale_price': '135',
+                        'discount': '20%'
+                    }
+                ] %}
+                {% for banner in banners %}
+                <div class="swiper-slide">
+                    <div class="hero-slide">
+                        <div class="hero-bg">
+                            <img src="{{ banner.image }}" alt="{{ banner.title }}" loading="lazy">
+                        </div>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <div class="hero-content">
+                                        <p class="hero-subtitle">{{ banner.subtitle }}</p>
+                                        <h1 class="hero-title">{{ banner.title }}</h1>
+                                        <p class="hero-description">{{ banner.description }}</p>
+                                        <div class="hero-buttons">
+                                            <a href="/shop" class="btn-shop btn-primary">
+                                                تسوق الآن
+                                                <i class="bx bx-right-arrow-alt"></i>
+                                            </a>
+                                            <a href="/shop" class="btn-shop btn-outline">
+                                                استكشف المزيد
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-highlight">
+                            <img src="{{ banner.highlight_image }}" alt="{{ banner.highlight_title }}" class="product-highlight-image">
+                            <div class="product-highlight-content">
+                                <h3 class="product-highlight-title">{{ banner.highlight_title }}</h3>
+                                <div class="product-highlight-price">
+                                    <span class="product-old-price">{{ banner.regular_price }} ج.م</span>
+                                    <span class="product-current-price">{{ banner.sale_price }} ج.م</span>
+                                    <span class="product-discount">-{{ banner.discount }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Featured Product Set Section -->
+    <section class="featured-set-section">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="display-4 mb-3">عرض لفترة محدودة</h2>
+                    <p class="lead text-muted">استمتع بتجربة العناية الكاملة من Orfe مع حزمتنا الحصرية</p>
+                </div>
+
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="featured-set-img">
+                        <img src="https://j.top4top.io/p_341638uh21.png" alt="Orfe Total Hair & Lash Care Set" class="img-fluid rounded-4 shadow">
+                        <span class="limited-badge">عرض لفترة محدودة</span>
+                        <div class="countdown-badge">
+                            <i class="bx bx-time"></i>
+                            <span id="featured-countdown">وقت محدود</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="featured-set-box h-100">
+                        <div class="featured-set-content">
+                            <div>
+                                <h3 class="featured-set-title">Orfe Total Hair & Lash Care Set | أورفي للعناية الكاملة بالشعر والرموش</h3>
+                                <p class="featured-set-description">استمتع بالقوة الكاملة لمنتجات Orfe التجميلية الفاخرة مع هذه الحزمة الحصرية. مصممة لتحويل كل من شعرك ورموشك، توفر هذه الحلول الشاملة للعناية نتائج على مستوى الصالون في منزلك.</p>
+
+                                <div class="featured-set-includes">
+                                    <h4>تتضمن هذه الحزمة:</h4>
+                                    <ul>
+                                        <li><i class="bx bx-check-circle"></i> Orfe Advanced Blends For Hair Spray</li>
+                                        <li><i class="bx bx-check-circle"></i> Orfe Advanced Blends For Hair Oil</li>
+                                        <li><i class="bx bx-check-circle"></i> Orfe Lashes and Eyebrow Serum</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="featured-set-price">
+                                    <span class="featured-set-old-price">1072 ج.م</span>
+                                    <span class="featured-set-current-price">860 ج.م</span>
+                                    <span class="featured-set-discount">-20%</span>
+                                </div>
+
+                                <a href="/4" class="featured-set-btn">
+                                    <i class="bx bx-cart-add"></i> أضف للسلة
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about-section">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h2 class="title">عن Orfe</h2>
+                    <div class="about-content">
+                        <p>في Orfe، نؤمن بقوة الجمال الطبيعي المعزز بالعلم. التزامنا بالجودة والابتكار والاستدامة يحرك كل منتج ننشئه.</p>
+                        <p>تأسست بشغف لمساعدة الناس على الشعور بالثقة في بشرتهم، أصبحت Orfe بسرعة اسمًا موثوقًا به في مجال العناية بالجمال في مصر وخارجها. نجمع بين المكونات التقليدية والتركيبات المتطورة لتقديم نتائج حقيقية يمكنك رؤيتها والشعور بها.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <div class="feature-card">
+                                <i class="bx bx-leaf"></i>
+                                <h5>مكونات طبيعية</h5>
+                                <p class="small text-muted">مصنوعة من أفضل المستخلصات الطبيعية</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-card">
+                                <i class="bx bx-check-shield"></i>
+                                <h5>مختبرة طبيًا</h5>
+                                <p class="small text-muted">آمنة وفعالة لجميع أنواع البشرة</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-card">
+                                <i class="bx bx-test-tube"></i>
+                                <h5>مدعومة علميًا</h5>
+                                <p class="small text-muted">نتائج مثبتة سريريًا</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-card">
+                                <i class="bx bx-world"></i>
+                                <h5>خالية من القسوة</h5>
+                                <p class="small text-muted">لم يتم اختبارها على الحيوانات</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Showcase Section -->
+    <section class="product-showcase">
+        <div class="container-fluid">
+            <div class="showcase-header">
+                <h2 class="showcase-title">مجموعة العناية المتقدمة</h2>
+                <p class="showcase-subtitle">تركيبات فاخرة مصنوعة من مكونات طبيعية لتعزيز جمالك الطبيعي</p>
+            </div>
+
+            <div class="row">
+                <!-- Hair Spray Product -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://e.top4top.io/p_3399y42yj1.jpg" alt="Orfe Advanced Blends Hair Spray">
+                            <span class="product-tag">الأكثر مبيعًا</span>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Orfe Advanced Blends Hair Spray</h3>
+                            <p class="product-desc">
+                                قوي مصمم لتعزيز نمو الشعر، وزيادة كثافته، وتقليل تساقطه. يتميز بتركيبته غير الدهنية سريعة الامتصاص، مثالي للاستخدام اليومي.
+                            </p>
+
+                            <div class="product-features">
+                                <h6>المكونات الرئيسية:</h6>
+                                <ul class="features-list">
+                                    <li><i class="bx bx-check-circle"></i> إكليل الجبل</li>
+                                    <li><i class="bx bx-check-circle"></i> بذور الحبة السوداء</li>
+                                    <li><i class="bx bx-check-circle"></i> زيت بذور الخروع</li>
+                                    <li><i class="bx bx-check-circle"></i> مستخلص الجزر</li>
+                                    <li><i class="bx bx-check-circle"></i> الكافيين</li>
+                                    <li><i class="bx bx-check-circle"></i> أوراق السدر</li>
+                                </ul>
+                            </div>
+
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="price-current">350 ج.م</span>
+                                    <span class="price-old">438 ج.م</span>
+                                </div>
+                                <div class="product-rating">
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <span>5.0</span>
+                                </div>
+                            </div>
+
+                            <div class="product-actions">
+                                <a href="/1" class="btn-product btn-buy">
+                                    <i class="bx bx-cart-add"></i> أضف للسلة
+                                </a>
+                                <a href="/1" class="btn-product btn-info">
+                                    <i class="bx bx-info-circle"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hair Oil Product -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://f.top4top.io/p_3399frbky2.jpg" alt="Orfe Advanced Blends Hair Oil">
+                            <span class="product-tag">الأعلى تقييمًا</span>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Orfe Advanced Blends Hair Oil</h3>
+                            <p class="product-desc">
+                                تركيبة غنية بالمغذيات مصممة لتغذية بصيلات الشعر وتنعيم الأطراف المتقصفة وترطيب فروة الرأس الجافة، مع تحفيز نمو الشعر.
+                            </p>
+
+                            <div class="product-features">
+                                <h6>المكونات الرئيسية:</h6>
+                                <ul class="features-list">
+                                    <li><i class="bx bx-check-circle"></i> زيت بذور اليقطين</li>
+                                    <li><i class="bx bx-check-circle"></i> زيت إكليل الجبل</li>
+                                    <li><i class="bx bx-check-circle"></i> زيت الحبة السوداء</li>
+                                    <li><i class="bx bx-check-circle"></i> زيت بذور الكتان</li>
+                                    <li><i class="bx bx-check-circle"></i> زيت اللوز الحلو</li>
+                                    <li><i class="bx bx-check-circle"></i> الكافيين</li>
+                                </ul>
+                            </div>
+
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="price-current">375 ج.م</span>
+                                    <span class="price-old">469 ج.م</span>
+                                </div>
+                                <div class="product-rating">
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star-half"></i>
+                                    <span>4.7</span>
+                                </div>
+                            </div>
+
+                            <div class="product-actions">
+                                <a href="/2" class="btn-product btn-buy">
+                                    <i class="bx bx-cart-add"></i> أضف للسلة
+                                </a>
+                                <a href="/2" class="btn-product btn-info">
+                                    <i class="bx bx-info-circle"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lashes & Eyebrow Serum Product -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://f.top4top.io/p_3396mbqvn1.jpg" alt="Orfe Lashes & Eyebrow Serum">
+                            <span class="product-tag">جديد</span>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Orfe Lashes & Eyebrow Serum</h3>
+                            <p class="product-desc">
+                                تركيبة متطورة تعزز كثافة وقوة الحواجب والرموش بفضل مزيج فريد من المكونات الطبيعية المغذية لمظهر أكثر امتلاءً وصحة.
+                            </p>
+
+                            <div class="product-features">
+                                <h6>المكونات الرئيسية:</h6>
+                                <ul class="features-list">
+                                    <li><i class="bx bx-check-circle"></i> البيوتين</li>
+                                    <li><i class="bx bx-check-circle"></i> الكافيين</li>
+                                    <li><i class="bx bx-check-circle"></i> الروزماري</li>
+                                    <li><i class="bx bx-check-circle"></i> ساو بالميتو</li>
+                                    <li><i class="bx bx-check-circle"></i> فيتامين E</li>
+                                    <li><i class="bx bx-check-circle"></i> مستخلص الجزر</li>
+                                </ul>
+                            </div>
+
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="price-current">135 ج.م</span>
+                                    <span class="price-old">165 ج.م</span>
+                                </div>
+                                <div class="product-rating">
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <i class="bx bxs-star"></i>
+                                    <span>5.0</span>
+                                </div>
+                            </div>
+
+                            <div class="product-actions">
+                                <a href="/3" class="btn-product btn-buy">
+                                    <i class="bx bx-cart-add"></i> أضف للسلة
+                                </a>
+                                <a href="/3" class="btn-product btn-info">
+                                    <i class="bx bx-info-circle"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hero Slider
+        new Swiper('.hero-slider', {
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            speed: 1000,
+        });
+    });
+</script>
+{% endblock %}

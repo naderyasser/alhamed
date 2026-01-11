@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Flask
+instance/
+.webassets-cache
+
+# Database
+*.sqlite3
+*.db
+*.sqlite
+instance/orfe-shop.sqlite3
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+error.log
+sqlite-web.log
+
+# Backups
+backups/
+*.backup
+*.bak
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Session files
+*.session
+*.session-journal
+telegram_session.session
+
+# Node modules (if any admin-dashboard)
+node_modules/
+admin-dashboard/node_modules/
+admin-dashboard/.svelte-kit/
+admin-dashboard/build/
+admin-dashboard/dist/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Claude AI
+.claude/

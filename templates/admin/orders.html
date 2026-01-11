@@ -1,0 +1,744 @@
+{% extends 'admin/base.html' %} {% block content %}
+<div class="min-h-screen bg-gradient-to-br from-sage-50 to-white">
+    <!-- Enhanced Header Section -->
+    <div class="bg-white/80 backdrop-blur-sm border-b border-sage-100 sticky top-0 z-10 shadow-sm">
+        <div class="px-6 py-4">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sage-500 to-sage-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class='bx bx-cart text-2xl'></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-sage-900">إدارة الطلبات</h1>
+                        <p class="text-sage-600 text-sm">إدارة ومتابعة جميع طلبات العملاء</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="exportOrders()" class="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        <i class='bx bx-export text-lg'></i>
+                        <span class="font-medium">تصدير</span>
+                    </button>
+                    <button onclick="printOrders()" class="bg-white hover:bg-sage-50 text-sage-700 border border-sage-200 px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md">
+                        <i class='bx bx-printer text-lg'></i>
+                        <span class="font-medium">طباعة</span>
+                    </button>
+                    <button onclick="toggleBulkActions()" class="bg-white hover:bg-orange-50 text-orange-700 border border-orange-200 px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md">
+                        <i class='bx bx-select-multiple text-lg'></i>
+                        <span class="font-medium">إجراءات متعددة</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="px-6 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Orders -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-cart text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ total_filtered }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">إجمالي الطلبات</h3>
+                <p class="text-sm text-slate-500 mt-1">جميع الطلبات المسجلة</p>
+            </div>
+
+            <!-- Pending Orders -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-time text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ orders|selectattr('shipping_status', 'eq', 'pending')|list|length }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">قيد الانتظار</h3>
+                <p class="text-sm text-slate-500 mt-1">طلبات جديدة</p>
+            </div>
+
+            <!-- Shipped Orders -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-truck text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ orders|selectattr('shipping_status', 'eq', 'shipped')|list|length }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">تم الشحن</h3>
+                <p class="text-sm text-slate-500 mt-1">في الطريق للعميل</p>
+            </div>
+
+            <!-- Delivered Orders -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white">
+                        <i class='bx bx-check-circle text-xl'></i>
+                    </div>
+                    <span class="text-3xl font-bold text-slate-800">{{ orders|selectattr('shipping_status', 'eq', 'delivered')|list|length }}</span>
+                </div>
+                <h3 class="text-slate-600 font-medium">تم التوصيل</h3>
+                <p class="text-sm text-slate-500 mt-1">طلبات مكتملة</p>
+            </div>
+        </div>
+
+        <!-- Enhanced Filters Section -->
+        <form action="{{ url_for('admin.orders') }}" method="GET" id="filterForm">
+            <div class="bg-white rounded-2xl shadow-lg border border-sage-100 p-6 mb-8">
+                <div class="flex flex-col lg:flex-row gap-6">
+                    <!-- Search -->
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">البحث في الطلبات</label>
+                        <div class="relative">
+                            <input type="text" id="searchInput" name="search" value="{{ filters.search }}" placeholder="ابحث برقم الطلب، اسم العميل، أو رقم الهاتف..." class="w-full pl-12 pr-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200 bg-sage-50/50">
+                            <i class='bx bx-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-xl'></i>
+                        </div>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="lg:w-48">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">حالة الطلب</label>
+                        <select id="statusFilter" name="status" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                            <option value="">جميع الحالات</option>
+                            {% for option in options.status %}
+                            <option value="{{ option.value }}" {% if filters.status == option.value %}selected{% endif %}>{{ option.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Payment Filter -->
+                    <div class="lg:w-48">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">طريقة الدفع</label>
+                        <select id="paymentFilter" name="payment" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                            <option value="">جميع الطرق</option>
+                            {% for option in options.payment %}
+                            <option value="{{ option.value }}" {% if filters.payment == option.value %}selected{% endif %}>{{ option.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Shipping Filter -->
+                    <div class="lg:w-48">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">حالة الشحن</label>
+                        <select id="shippingFilter" name="shipping" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                            <option value="">جميع الحالات</option>
+                            {% for option in options.shipping %}
+                            <option value="{{ option.value }}" {% if filters.shipping == option.value %}selected{% endif %}>{{ option.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Date Range Filter -->
+                <div class="mt-6 pt-6 border-t border-sage-100">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">من تاريخ</label>
+                            <input type="date" name="start_date" value="{{ filters.start_date }}" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">إلى تاريخ</label>
+                            <input type="date" name="end_date" value="{{ filters.end_date }}" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-sage-50/50">
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <button type="submit" class="flex-1 bg-sage-500 hover:bg-sage-600 text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                                <i class='bx bx-filter'></i>
+                                تطبيق الفلتر
+                            </button>
+                            <a href="{{ url_for('admin.orders') }}" class="bg-gray-500 hover:bg-gray-600 text-white py-3 px-4 rounded-xl font-medium transition-colors">
+                                <i class='bx bx-refresh'></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Orders Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="ordersGrid">
+            {% for order in orders %}
+            <div class="order-card bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-sage-100 overflow-hidden group" data-order-id="{{ order.id }}" data-customer="{{ order.name|lower }}" data-phone="{{ order.phone }}" data-status="{{ order.shipping_status }}"
+                data-payment="{{ order.payment_method }}" data-created="{{ order.created_at.strftime('%Y-%m-%d') }}">
+
+                <!-- Order Header -->
+                <div class="bg-gradient-to-br from-sage-50 to-sage-100 p-6 relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-sage-500 to-sage-600 rounded-xl flex items-center justify-center text-white text-sm font-bold">
+                                #{{ order.id }}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">{{ order.name }}</h3>
+                                <p class="text-sm text-slate-500">{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <input type="checkbox" class="order-checkbox rounded border-sage-300 text-sage-600 focus:ring-sage-500" value="{{ order.id }}">
+                        </div>
+                    </div>
+
+                    <!-- Status Badges -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium
+                            {% if order.shipping_status == 'pending' %}bg-orange-100 text-orange-700
+                            {% elif order.shipping_status == 'shipped' %}bg-blue-100 text-blue-700
+                            {% elif order.shipping_status == 'delivered' %}bg-green-100 text-green-700
+                            {% elif order.shipping_status == 'returned' %}bg-red-100 text-red-700
+                            {% else %}bg-gray-100 text-gray-700{% endif %}">
+                            {% if order.shipping_status == 'pending' %}قيد الانتظار
+                            {% elif order.shipping_status == 'shipped' %}تم الشحن
+                            {% elif order.shipping_status == 'delivered' %}تم التوصيل
+                            {% elif order.shipping_status == 'returned' %}تم الإرجاع
+                            {% else %}{{ order.shipping_status }}{% endif %}
+                        </span> {% if order.payment_status %}
+                        <span class="px-3 py-1 rounded-full text-xs font-medium
+                            {% if order.payment_status == 'paid' %}bg-green-100 text-green-700
+                            {% elif order.payment_status == 'pending' %}bg-yellow-100 text-yellow-700
+                            {% else %}bg-red-100 text-red-700{% endif %}">
+                            {% if order.payment_status == 'paid' %}مدفوع
+                            {% elif order.payment_status == 'pending' %}في الانتظار
+                            {% else %}{{ order.payment_status }}{% endif %}
+                        </span> {% endif %}
+                    </div>
+
+                    <!-- Quick Actions Overlay -->
+                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
+                        <a href="{{ url_for('admin.order_detail', order_id=order.id) }}" class="bg-white/90 hover:bg-white text-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110">
+                            <i class='bx bx-show text-lg'></i>
+                        </a>
+                        <button data-action="edit-status" data-order-id="{{ order.id }}" data-current-status="{{ order.shipping_status }}" class="order-action bg-white/90 hover:bg-white text-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110">
+                            <i class='bx bx-edit text-lg'></i>
+                        </button>
+                        <button data-action="delete" data-order-id="{{ order.id }}" data-customer-name="{{ order.name }}" class="order-action bg-white/90 hover:bg-white text-red-500 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110">
+                            <i class='bx bx-trash text-lg'></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Order Details -->
+                <div class="p-6">
+                    <!-- Customer Info -->
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500 flex items-center gap-1">
+                                <i class='bx bx-phone text-sage-600'></i>
+                                الهاتف:
+                            </span>
+                            <a href="tel:{{ order.phone }}" class="font-medium text-slate-700 hover:text-sage-600">{{ order.phone }}</a>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500 flex items-center gap-1">
+                                <i class='bx bx-map text-sage-600'></i>
+                                المدينة:
+                            </span>
+                            <span class="font-medium text-slate-700">{{ order.city_name or 'غير معروف' }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-500 flex items-center gap-1">
+                                <i class='bx bx-package text-sage-600'></i>
+                                المنتجات:
+                            </span>
+                            <span class="font-medium text-slate-700">{{ order.items_count or 0 }} منتج</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="bg-sage-50 rounded-xl p-4 mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-slate-600">المبلغ الإجمالي:</span>
+                            <span class="text-lg font-bold text-slate-800">{{ order.cod_amount }} ج.م</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-slate-600">طريقة الدفع:</span>
+                            <div class="flex items-center gap-1">
+                                {% if order.payment_method == 'cash_on_delivery' %}
+                                <i class='bx bx-money text-green-600'></i>
+                                <span class="text-sm font-medium text-green-700">الدفع عند الاستلام</span> {% elif order.payment_method == 'vodafone_cash' %}
+                                <i class='bx bx-mobile-alt text-purple-600'></i>
+                                <span class="text-sm font-medium text-purple-700">فودافون كاش</span> {% elif order.payment_method == 'visa' %}
+                                <i class='bx bx-credit-card text-blue-600'></i>
+                                <span class="text-sm font-medium text-blue-700">فيزا</span> {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-2">
+                        <a href="{{ url_for('admin.order_detail', order_id=order.id) }}" class="flex-1 bg-sage-100 hover:bg-sage-200 text-sage-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-1">
+                            <i class='bx bx-show text-sm'></i>
+                            <span>عرض</span>
+                        </a>
+                        <button data-action="edit-status" data-order-id="{{ order.id }}" data-current-status="{{ order.shipping_status }}" class="order-action bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center">
+                            <i class='bx bx-edit text-sm'></i>
+                        </button>
+                        <button data-action="delete" data-order-id="{{ order.id }}" data-customer-name="{{ order.name }}" class="order-action bg-red-100 hover:bg-red-200 text-red-700 py-2 px-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center">
+                            <i class='bx bx-trash text-sm'></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Empty State -->
+        {% if not orders %}
+        <div id="emptyState" class="text-center py-16">
+            <div class="w-24 h-24 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class='bx bx-cart text-4xl text-sage-400'></i>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-700 mb-2">لا توجد طلبات</h3>
+            <p class="text-slate-500 mb-6">لم يتم العثور على طلبات تطابق معايير البحث</p>
+            <a href="{{ url_for('admin.orders') }}" class="bg-sage-500 hover:bg-sage-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                عرض جميع الطلبات
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Enhanced Pagination -->
+        {% if pagination.pages > 1 %}
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex items-center gap-2">
+                <!-- Previous Page -->
+                {% if pagination.has_prev %}
+                <a href="{{ url_for('admin.orders', page=pagination.prev_num, search=filters.search, status=filters.status, payment=filters.payment, shipping=filters.shipping, start_date=filters.start_date, end_date=filters.end_date) }}" class="px-4 py-2 bg-white border border-sage-200 text-sage-700 rounded-xl hover:bg-sage-50 transition-colors flex items-center gap-2">
+                    <i class='bx bx-chevron-right'></i> السابق
+                </a>
+                {% endif %}
+
+                <!-- Page Numbers -->
+                <div class="flex items-center gap-1">
+                    {% for page_num in pagination.iter_pages(left_edge=1, left_current=2, right_current=2, right_edge=1) %} {% if page_num %} {% if pagination.page == page_num %}
+                    <span class="px-4 py-2 bg-sage-500 text-white rounded-xl font-medium">{{ page_num }}</span> {% else %}
+                    <a href="{{ url_for('admin.orders', page=page_num, search=filters.search, status=filters.status, payment=filters.payment, shipping=filters.shipping, start_date=filters.start_date, end_date=filters.end_date) }}" class="px-4 py-2 bg-white border border-sage-200 text-sage-700 rounded-xl hover:bg-sage-50 transition-colors">{{ page_num }}</a>                    {% endif %} {% else %}
+                    <span class="px-2 py-2 text-slate-400">...</span> {% endif %} {% endfor %}
+                </div>
+
+                <!-- Next Page -->
+                {% if pagination.has_next %}
+                <a href="{{ url_for('admin.orders', page=pagination.next_num, search=filters.search, status=filters.status, payment=filters.payment, shipping=filters.shipping, start_date=filters.start_date, end_date=filters.end_date) }}" class="px-4 py-2 bg-white border border-sage-200 text-sage-700 rounded-xl hover:bg-sage-50 transition-colors flex items-center gap-2">
+                    التالي
+                    <i class='bx bx-chevron-left'></i>
+                </a> {% endif %}
+            </div>
+
+            <div class="text-center text-slate-500 text-sm">
+                عرض {{ (pagination.page - 1) * pagination.per_page + 1 }} إلى {{ (pagination.page - 1) * pagination.per_page + orders|length }} من {{ total_filtered }} طلب
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Edit Order Status Modal -->
+<div id="editStatusModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+        <div class="flex justify-between items-center p-6 border-b border-sage-100">
+            <h2 class="text-xl font-bold text-sage-900 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white">
+                    <i class='bx bx-edit text-lg'></i>
+                </div>
+                تحديث حالة الطلب
+            </h2>
+            <button onclick="closeEditStatusModal()" class="text-2xl text-slate-500 hover:text-slate-700 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <form id="statusUpdateForm" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">حالة الشحن الجديدة</label>
+                    <select id="newStatus" name="status" class="w-full px-4 py-3 border border-sage-200 rounded-xl focus:ring-2 focus:ring-sage-500 focus:border-transparent">
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="shipped">تم الشحن</option>
+                        <option value="delivered">تم التوصيل</option>
+                        <option value="returned">تم الإرجاع</option>
+                        <option value="cancelled">ملغي</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-sage-100">
+                    <button type="button" onclick="closeEditStatusModal()" class="px-6 py-3 border border-sage-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2">
+                        <i class='bx bx-save'></i>
+                        حفظ التحديث
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transform: translateY(0);
+        transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-2px);
+    }
+    /* Animation classes */
+    
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Scroll animations */
+    
+    .order-card {
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .order-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+    
+    .order-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .order-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+    
+    .order-card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+    
+    .order-card:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+    
+    .order-card:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Print styles */
+    
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #ordersGrid,
+        #ordersGrid * {
+            visibility: visible;
+        }
+        #ordersGrid {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        .no-print,
+        .no-print * {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+    // Enhanced Search and Filter Functionality
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const paymentFilter = document.getElementById('paymentFilter');
+    const shippingFilter = document.getElementById('shippingFilter');
+    const ordersGrid = document.getElementById('ordersGrid');
+
+    // Filter orders client-side for better UX
+    function filterOrders() {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const statusValue = statusFilter ? statusFilter.value : '';
+        const paymentValue = paymentFilter ? paymentFilter.value : '';
+        const shippingValue = shippingFilter ? shippingFilter.value : '';
+
+        const orderCards = document.querySelectorAll('.order-card');
+        let visibleCount = 0;
+
+        orderCards.forEach(card => {
+            const orderId = card.dataset.orderId;
+            const customer = card.dataset.customer;
+            const phone = card.dataset.phone;
+            const status = card.dataset.status;
+            const payment = card.dataset.payment;
+
+            const matchesSearch = !searchTerm ||
+                orderId.includes(searchTerm) ||
+                customer.includes(searchTerm) ||
+                phone.includes(searchTerm);
+            const matchesStatus = !statusValue || status === statusValue;
+            const matchesPayment = !paymentValue || payment === paymentValue;
+            const matchesShipping = !shippingValue || status === shippingValue;
+
+            const isVisible = matchesSearch && matchesStatus && matchesPayment && matchesShipping;
+
+            if (isVisible) {
+                card.style.display = 'block';
+                card.classList.add('fade-in');
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('fade-in');
+            }
+        });
+    }
+
+    // Initialize filters if elements exist
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(filterOrders, 300));
+    }
+
+    // Debounce function for search
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Modal functions
+    function closeEditStatusModal() {
+        document.getElementById('editStatusModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Order action functions
+    function editOrderStatus(orderId, currentStatus) {
+        const modal = document.getElementById('editStatusModal');
+        const form = document.getElementById('statusUpdateForm');
+        const statusSelect = document.getElementById('newStatus');
+
+        // Set form action
+        form.action = `/admin/update_shipping_status/${orderId}`;
+
+        // Set current status as selected
+        statusSelect.value = currentStatus;
+
+        // Show modal
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function deleteOrder(orderId, customerName) {
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: `سيتم حذف طلب "${customerName}" نهائياً!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'نعم، احذف!',
+            cancelButtonText: 'إلغاء',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/delete_order/${orderId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+
+    // Bulk actions
+    function toggleBulkActions() {
+        const checkboxes = document.querySelectorAll('.order-checkbox');
+        const selectedIds = [];
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedIds.push(checkbox.value);
+            }
+        });
+
+        if (selectedIds.length === 0) {
+            showNotification('يرجى اختيار طلب واحد على الأقل', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'إجراءات متعددة',
+            text: `تم اختيار ${selectedIds.length} طلب`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'حذف المحدد',
+            cancelButtonText: 'إلغاء',
+            confirmButtonColor: '#ef4444'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Implement bulk delete
+                console.log('Bulk delete:', selectedIds);
+                showNotification('سيتم إضافة خاصية الحذف المتعدد قريباً', 'info');
+            }
+        });
+    }
+
+    // Export functionality
+    function exportOrders() {
+        showNotification('جاري تحضير ملف التصدير...', 'info');
+
+        // Simulate export process
+        setTimeout(() => {
+            window.location.href = '/admin/export_orders';
+            showNotification('تم تصدير الطلبات بنجاح!', 'success');
+        }, 2000);
+    }
+
+    // Print functionality
+    function printOrders() {
+        window.print();
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        toast.fire({
+            icon: type,
+            title: message
+        });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event delegation for order actions
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.order-action')) {
+                const button = e.target.closest('.order-action');
+                const action = button.dataset.action;
+                const orderId = button.dataset.orderId;
+                const customerName = button.dataset.customerName;
+                const currentStatus = button.dataset.currentStatus;
+
+                switch (action) {
+                    case 'edit-status':
+                        editOrderStatus(orderId, currentStatus);
+                        break;
+                    case 'delete':
+                        deleteOrder(orderId, customerName);
+                        break;
+                }
+            }
+        });
+
+        // Add smooth scroll animation for cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        });
+
+        document.querySelectorAll('.order-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Select all functionality
+        const selectAllCheckbox = document.getElementById('selectAllOrders');
+        const orderCheckboxes = document.querySelectorAll('.order-checkbox');
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                orderCheckboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+            });
+        }
+
+        orderCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (!this.checked && selectAllCheckbox) {
+                    selectAllCheckbox.checked = false;
+                } else if (selectAllCheckbox) {
+                    if ([...orderCheckboxes].every(cb => cb.checked)) {
+                        selectAllCheckbox.checked = true;
+                    }
+                }
+            });
+        });
+    });
+
+    // Close modals when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('fixed') && e.target.classList.contains('bg-black/50')) {
+            closeEditStatusModal();
+        }
+    });
+
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Escape to close modals
+        if (e.key === 'Escape') {
+            closeEditStatusModal();
+        }
+
+        // Ctrl+P for print
+        if (e.ctrlKey && e.key === 'p') {
+            e.preventDefault();
+            printOrders();
+        }
+    });
+</script>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

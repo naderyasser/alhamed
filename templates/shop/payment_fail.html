@@ -1,0 +1,14 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+      <div class="alert alert-danger">
+            <h4 class="alert-heading">فشل الدفع!</h4>
+            <p>حدث خطأ أثناء معالجة دفعتك. يرجى المحاولة مرة أخرى.</p>
+            <hr>
+            <p class="mb-0">رقم الطلب: {{ order.id }}</p>
+            <p>يمكنك محاولة إعادة الدفع من <a href="{{ url_for('shop.order_detail', order_id=order.id) }}">تفاصيل
+                        الطلب</a></p>
+      </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+      <div class="alert alert-success">
+            <h4 class="alert-heading">تم الدفع بنجاح!</h4>
+            <p>شكراً لشرائك معنا. تمت معالجة دفعتك بنجاح.</p>
+            <hr>
+            <p class="mb-0">رقم الطلب: {{ order.id }}</p>
+            <p>يمكنك تتبع حالة الطلب في صفحة <a href="{{ url_for('shop.order_detail', order_id=order.id) }}">تفاصيل
+                        الطلب</a></p>
+      </div>
+</div>
+
+<!-- Facebook Pixel Purchase Event -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof fbq !== 'undefined') {
+        // Get order items data (you may need to pass this data from the backend)
+        {% if order and order.items %}
+        var contentIds = [{% for item in order.items %}'{{ item.product_id }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        var totalValue = {{ order.total_amount or 0 }};
+        var numItems = {{ order.items|length }};
+        {% else %}
+        var contentIds = [];
+        var totalValue = 0;
+        var numItems = 0;
+        {% endif %}
+        
+        fbq('track', 'Purchase', {
+            content_ids: contentIds,
+            content_type: 'product',
+            num_items: numItems,
+            value: totalValue,
+            currency: 'EGP'
+        });
+        
+        console.log('Facebook Pixel Purchase event fired on success page:', {
+            content_ids: contentIds,
+            value: totalValue,
+            num_items: numItems,
+            order_id: '{{ order.id if order else "unknown" }}'
+        });
+    }
+});
+</script>
+{% endblock %}

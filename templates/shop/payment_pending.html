@@ -1,0 +1,16 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+      <div class="alert alert-warning">
+            <h4 class="alert-heading">في انتظار الموافقة على الدفع!</h4>
+            <p>تم استلام طلبك وسيتم معالجة الدفع قريباً.</p>
+            <hr>
+            <p class="mb-0">رقم الطلب: {{ order.id }}</p>
+            <p>يمكنك تتبع حالة الطلب في صفحة <a href="{{ url_for('shop.order_detail', order_id=order.id) }}">تفاصيل
+                        الطلب</a></p>
+      </div>
+
+
+</div>
+{% endblock %}

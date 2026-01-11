@@ -1,0 +1,512 @@
+{% extends "shop/base.html" %} {% block content %}
+<style>
+  /* ============================================
+       ORDER CONFIRMATION PAGE - MODERN DESIGN SYSTEM 2025
+       ============================================ */
+
+  .order-confirmation-page {
+    --confirmation-primary: #8ca896;
+    --confirmation-primary-dark: #6b8e6e;
+    --confirmation-primary-light: #b8d4a8;
+    --confirmation-accent: #f59e0b;
+    --confirmation-bg-primary: #fafafa;
+    --confirmation-bg-secondary: #ffffff;
+    --confirmation-bg-tertiary: #f5f7f5;
+    --confirmation-text-primary: #1a202c;
+    --confirmation-text-secondary: #4a5568;
+    --confirmation-text-tertiary: #718096;
+    --confirmation-border: #e8ecf0;
+    --confirmation-border-light: #f0f4f8;
+    --confirmation-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --confirmation-shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+    --confirmation-shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
+    --confirmation-shadow-hover: 0 20px 40px rgba(140, 168, 150, 0.15);
+    --confirmation-radius-sm: 8px;
+    --confirmation-radius-md: 12px;
+    --confirmation-radius-lg: 16px;
+    --confirmation-radius-xl: 24px;
+    --confirmation-radius-full: 9999px;
+    --confirmation-transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --confirmation-transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --confirmation-font-heading: "Playfair Display", Georgia, serif;
+    --confirmation-font-body: "Inter", -apple-system, BlinkMacSystemFont,
+      "Segoe UI", sans-serif;
+  }
+
+  /* ============================================
+       CONFIRMATION SECTION
+       ============================================ */
+
+  .order-confirmation-page #order-confirmation {
+    padding: 4rem 0;
+    background: linear-gradient(
+      135deg,
+      var(--confirmation-bg-tertiary) 0%,
+      var(--confirmation-bg-primary) 100%
+    );
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .order-confirmation-page .confirmation-card {
+    background: var(--confirmation-bg-secondary);
+    border-radius: var(--confirmation-radius-xl);
+    box-shadow: var(--confirmation-shadow-lg);
+    max-width: 600px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .order-confirmation-page .card-body {
+    padding: 4rem 3rem;
+    text-align: center;
+  }
+
+  /* Success Icon */
+  .order-confirmation-page .success-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 2rem;
+    background: linear-gradient(
+      135deg,
+      var(--confirmation-primary) 0%,
+      var(--confirmation-primary-dark) 100%
+    );
+    border-radius: var(--confirmation-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--confirmation-shadow-md);
+    animation: scaleIn 0.6s ease forwards;
+  }
+
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .order-confirmation-page .success-icon i {
+    font-size: 3.5rem;
+    color: white;
+  }
+
+  /* Success Message */
+  .order-confirmation-page .success-title {
+    font-family: var(--confirmation-font-heading);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 800;
+    color: #059669;
+    margin-bottom: 1rem;
+    animation: fadeInUp 0.6s ease 0.2s forwards;
+    opacity: 0;
+  }
+
+  .order-confirmation-page .success-message {
+    font-size: 1.1rem;
+    color: var(--confirmation-text-secondary);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease 0.4s forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Order Details */
+  .order-confirmation-page .order-details {
+    background: var(--confirmation-bg-tertiary);
+    border-radius: var(--confirmation-radius-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease 0.6s forwards;
+    opacity: 0;
+  }
+
+  .order-confirmation-page .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--confirmation-border-light);
+  }
+
+  .order-confirmation-page .detail-item:last-child {
+    border-bottom: none;
+  }
+
+  .order-confirmation-page .detail-label {
+    font-weight: 600;
+    color: var(--confirmation-text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .order-confirmation-page .detail-value {
+    font-weight: 700;
+    color: var(--confirmation-text-primary);
+    font-size: 1.1rem;
+  }
+
+  /* Action Buttons */
+  .order-confirmation-page .action-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeInUp 0.6s ease 0.8s forwards;
+    opacity: 0;
+  }
+
+  .order-confirmation-page .btn-primary {
+    background: linear-gradient(
+      135deg,
+      var(--confirmation-primary) 0%,
+      var(--confirmation-primary-dark) 100%
+    );
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: var(--confirmation-radius-md);
+    transition: all var(--confirmation-transition-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: var(--confirmation-shadow-sm);
+    min-width: 180px;
+  }
+
+  .order-confirmation-page .btn-primary:hover {
+    background: linear-gradient(
+      135deg,
+      var(--confirmation-primary-dark) 0%,
+      #5a7a5e 100%
+    );
+    transform: translateY(-3px);
+    box-shadow: var(--confirmation-shadow-hover);
+  }
+
+  .order-confirmation-page .btn-outline {
+    background: transparent;
+    color: var(--confirmation-text-primary);
+    border: 2px solid var(--confirmation-primary);
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: var(--confirmation-radius-md);
+    transition: all var(--confirmation-transition-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 180px;
+  }
+
+  .order-confirmation-page .btn-outline:hover {
+    background: var(--confirmation-primary);
+    color: white;
+    transform: translateY(-3px);
+  }
+
+  /* ============================================
+       RESPONSIVE DESIGN
+       ============================================ */
+
+  @media (max-width: 768px) {
+    .order-confirmation-page #order-confirmation {
+      padding: 2rem 0;
+      min-height: auto;
+    }
+
+    .order-confirmation-page .card-body {
+      padding: 2.5rem 2rem;
+    }
+
+    .order-confirmation-page .success-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1.5rem;
+    }
+
+    .order-confirmation-page .success-icon i {
+      font-size: 2.5rem;
+    }
+
+    .order-confirmation-page .success-title {
+      font-size: 1.5rem;
+    }
+
+    .order-confirmation-page .success-message {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .order-confirmation-page .order-details {
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .order-confirmation-page .action-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .order-confirmation-page .btn-primary,
+    .order-confirmation-page .btn-outline {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .order-confirmation-page .success-title {
+      font-size: 1.25rem;
+    }
+
+    .order-confirmation-page .success-message {
+      font-size: 0.95rem;
+    }
+
+    .order-confirmation-page .detail-label {
+      font-size: 0.85rem;
+    }
+
+    .order-confirmation-page .detail-value {
+      font-size: 1rem;
+    }
+
+    .order-confirmation-page .btn-primary,
+    .order-confirmation-page .btn-outline {
+      padding: 0.875rem 1.5rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* ============================================
+       UTILITY CLASSES
+       ============================================ */
+
+  .order-confirmation-page .py-5 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .order-confirmation-page .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .order-confirmation-page .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1rem;
+  }
+
+  .order-confirmation-page .row > [class*="col-"] {
+    padding: 0 1rem;
+  }
+
+  .order-confirmation-page .justify-content-center {
+    justify-content: center;
+  }
+
+  .order-confirmation-page .col-md-8 {
+    width: 66.667%;
+  }
+
+  .order-confirmation-page .col-lg-6 {
+    width: 50%;
+  }
+
+  .order-confirmation-page .card {
+    background: var(--confirmation-bg-secondary);
+    border-radius: var(--confirmation-radius-lg);
+    box-shadow: var(--confirmation-shadow-md);
+  }
+
+  .order-confirmation-page .shadow-lg {
+    box-shadow: var(--confirmation-shadow-lg);
+  }
+
+  .order-confirmation-page .border-0 {
+    border: none;
+  }
+
+  .order-confirmation-page .card-body {
+    padding: 2rem;
+  }
+
+  .order-confirmation-page .text-center {
+    text-align: center;
+  }
+
+  .order-confirmation-page .py-5 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .order-confirmation-page .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+
+  .order-confirmation-page .text-success {
+    color: #059669;
+  }
+
+  .order-confirmation-page .fw-bold {
+    font-weight: 700;
+  }
+
+  .order-confirmation-page .text-muted {
+    color: var(--confirmation-text-tertiary);
+  }
+
+  .order-confirmation-page .mt-4 {
+    margin-top: 1.5rem;
+  }
+
+  .order-confirmation-page .mt-3 {
+    margin-top: 1rem;
+  }
+
+  .order-confirmation-page .fs-5 {
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
+
+  .order-confirmation-page .text-primary {
+    color: var(--confirmation-text-primary);
+  }
+
+  .order-confirmation-page .text-decoration-none {
+    text-decoration: none;
+  }
+
+  .order-confirmation-page .btn-primary {
+    background: var(--confirmation-primary);
+    color: white;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: var(--confirmation-radius-md);
+    transition: all var(--confirmation-transition-base);
+  }
+
+  .order-confirmation-page .btn-primary:hover {
+    background: var(--confirmation-primary-dark);
+  }
+
+  .order-confirmation-page .px-4 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .order-confirmation-page .mt-4 {
+    margin-top: 1.5rem;
+  }
+
+  .order-confirmation-page .d-flex {
+    display: flex;
+  }
+
+  .order-confirmation-page .align-items-center {
+    align-items: center;
+  }
+
+  .order-confirmation-page .justify-content-center {
+    justify-content: center;
+  }
+
+  .order-confirmation-page .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+
+  .order-confirmation-page .mb-0 {
+    margin-bottom: 0;
+  }
+</style>
+
+<!-- Order Confirmation Page Content -->
+<div class="order-confirmation-page">
+  <!-- Confirmation Section -->
+  <section id="order-confirmation" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="card shadow-lg border-0">
+            <div class="card-body text-center py-5">
+              <!-- Success Icon -->
+              <div class="success-icon">
+                <i class="bx bx-check"></i>
+              </div>
+
+              <!-- Success Message -->
+              <h2 class="success-title">تم استلام طلبك بنجاح!</h2>
+              <p class="success-message">
+                شكراً لشرائك معنا. تم استلام طلبك بنجاح وسيتم معالجته في أقرب
+                وقت.
+              </p>
+
+              <!-- Order Details -->
+              <div class="order-details">
+                <div class="detail-item">
+                  <span class="detail-label">رقم الطلب:</span>
+                  <span class="detail-value">{{ order.id }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">الحالة:</span>
+                  <span class="detail-value" style="color: #059669"
+                    >تم الاستلام</span
+                  >
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">التاريخ:</span>
+                  <span class="detail-value"
+                    >{{ order.created_at|default('الآن') }}</span
+                  >
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="action-buttons">
+                <a
+                  href="{{ url_for('shop.order_detail', order_id=order.id) }}"
+                  class="btn-primary"
+                >
+                  <i class="bx bx-show"></i>
+                  تفاصيل الطلب
+                </a>
+                <a href="{{ url_for('shop.home') }}" class="btn-outline">
+                  <i class="bx bx-home"></i>
+                  العودة إلى الرئيسية
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% endblock %}
