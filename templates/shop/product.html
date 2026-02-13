@@ -1,1212 +1,483 @@
-{% extends 'shop/base.html' %} {% block content %}
+{% extends 'shop/base.html' %}
+{% block content %}
+<!-- Google Fonts for Modern Arabic Look (Cairo) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-  /* ============================================
-       PRODUCT PAGE - MODERN DESIGN SYSTEM 2025
-       ============================================ */
-
-  .product-page {
-    --product-primary: #8ca896;
-    --product-primary-dark: #6b8e6e;
-    --product-primary-light: #b8d4a8;
-    --product-accent: #f59e0b;
-    --product-bg-primary: #fafafa;
-    --product-bg-secondary: #ffffff;
-    --product-bg-tertiary: #f5f7f5;
-    --product-text-primary: #1a202c;
-    --product-text-secondary: #4a5568;
-    --product-text-tertiary: #718096;
-    --product-border: #e8ecf0;
-    --product-border-light: #f0f4f8;
-    --product-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --product-shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
-    --product-shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
-    --product-shadow-hover: 0 20px 40px rgba(140, 168, 150, 0.15);
-    --product-radius-sm: 8px;
-    --product-radius-md: 12px;
-    --product-radius-lg: 16px;
-    --product-radius-xl: 24px;
-    --product-radius-full: 9999px;
-    --product-transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --product-transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    --product-font-heading: "Playfair Display", Georgia, serif;
-    --product-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-      sans-serif;
-  }
-
-  /* ============================================
-       PRODUCT DETAIL SECTION
-       ============================================ */
-
-  .product-page #product-detail {
-    padding: 4rem 0;
-    background: var(--product-bg-primary);
-  }
-
-  .product-page .product-info {
-    background: var(--product-bg-secondary);
-    border-radius: var(--product-radius-lg);
-    padding: 2rem;
-    box-shadow: var(--product-shadow-md);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .product-page .element-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .product-page .product-title {
-    font-family: var(--product-font-heading);
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
-    font-weight: 700;
-    color: var(--product-text-primary);
-    line-height: 1.3;
-    margin-bottom: 0;
-  }
-
-  /* Price Section */
-  .product-page .product-price {
-    margin-bottom: 1.5rem;
-  }
-
-  .product-page .price-display {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .product-page .current-price {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--product-primary-dark);
-    line-height: 1;
-  }
-
-  .product-page .old-price {
-    font-size: 1.25rem;
-    text-decoration: line-through;
-    color: var(--product-text-tertiary);
-    font-weight: 500;
-  }
-
-  .product-page .discount-badge {
-    background: linear-gradient(135deg, var(--product-accent) 0%, #d97706 100%);
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 0.4rem 0.8rem;
-    border-radius: var(--product-radius-full);
-    box-shadow: var(--product-shadow-sm);
-  }
-
-  /* Description */
-  .product-page .product-description {
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: var(--product-text-secondary);
-    margin-bottom: 2rem;
-  }
-
-  /* Quantity Selector */
-  .product-page .product-quantity {
-    margin-bottom: 2rem;
-  }
-
-  .product-page .input-group {
-    display: flex;
-    align-items: center;
-    border: 2px solid var(--product-border);
-    border-radius: var(--product-radius-md);
-    overflow: hidden;
-    max-width: 180px;
-    transition: all var(--product-transition-base);
-  }
-
-  .product-page .input-group:focus-within {
-    border-color: var(--product-primary);
-    box-shadow: 0 0 0 4px rgba(140, 168, 150, 0.1);
-  }
-
-  .product-page .btn-outline-secondary {
-    background: var(--product-bg-tertiary);
-    border: none;
-    color: var(--product-text-primary);
-    padding: 0.75rem 1rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    transition: all var(--product-transition-base);
-    width: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .product-page .btn-outline-secondary:hover {
-    background: var(--product-primary);
-    color: white;
-  }
-
-  .product-page .form-control {
-    border: none;
-    padding: 0.75rem 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    text-align: center;
-    width: 80px;
-    background: transparent;
-    color: var(--product-text-primary);
-  }
-
-  .product-page .form-control:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
-  /* Action Buttons */
-  .product-page .product-action {
-    margin-top: 1.5rem;
-  }
-
-  .product-page .action-buttons {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .product-page .btn-primary {
-    background: linear-gradient(
-      135deg,
-      var(--product-primary) 0%,
-      var(--product-primary-dark) 100%
-    );
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: var(--product-radius-md);
-    transition: all var(--product-transition-base);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    box-shadow: var(--product-shadow-sm);
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .product-page .btn-primary:hover {
-    background: linear-gradient(
-      135deg,
-      var(--product-primary-dark) 0%,
-      #5a7a5e 100%
-    );
-    transform: translateY(-3px);
-    box-shadow: var(--product-shadow-hover);
-  }
-
-  .product-page .btn-secondary {
-    background: var(--product-bg-tertiary);
-    color: var(--product-text-primary);
-    border: 2px solid var(--product-border);
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: var(--product-radius-md);
-    transition: all var(--product-transition-base);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .product-page .btn-secondary:hover {
-    background: var(--product-primary);
-    color: white;
-    border-color: var(--product-primary);
-    transform: translateY(-3px);
-  }
-
-  .product-page .btn-light {
-    background: var(--product-bg-tertiary);
-    color: var(--product-text-primary);
-    border: 2px solid var(--product-border);
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: var(--product-radius-md);
-    transition: all var(--product-transition-base);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .product-page .btn-light:hover {
-    background: var(--product-primary);
-    color: white;
-    border-color: var(--product-primary);
-  }
-
-  /* Detail List */
-  .product-page .detail-list {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--product-border-light);
-  }
-
-  .product-page .detail-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .product-page .detail-list li {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--product-border-light);
-    font-size: 0.95rem;
-  }
-
-  .product-page .detail-list li:last-child {
-    border-bottom: none;
-  }
-
-  .product-page .detail-list strong {
-    color: var(--product-text-primary);
-    font-weight: 600;
-    min-width: 80px;
-  }
-
-  .product-page .detail-list a {
-    color: var(--product-primary);
-    transition: color var(--product-transition-base);
-  }
-
-  .product-page .detail-list a:hover {
-    color: var(--product-primary-dark);
-  }
-
-  /* Image Gallery */
-  .product-page .product-large-slider {
-    border-radius: var(--product-radius-lg);
-    overflow: hidden;
-    box-shadow: var(--product-shadow-md);
-    background: var(--product-bg-secondary);
-  }
-
-  .product-page .product-large-slider img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: var(--product-radius-lg);
-  }
-
-  .product-page .product-thumbnail-slider {
-    border-radius: var(--product-radius-md);
-    overflow: hidden;
-    box-shadow: var(--product-shadow-sm);
-    background: var(--product-bg-secondary);
-  }
-
-  .product-page .thumb-image {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: var(--product-radius-md);
-    cursor: pointer;
-    transition: all var(--product-transition-base);
-    opacity: 0.6;
-  }
-
-  .product-page .thumb-image:hover,
-  .product-page .thumb-image.swiper-slide-thumb-active {
-    opacity: 1;
-    transform: scale(1.05);
-    box-shadow: var(--product-shadow-md);
-  }
-
-  /* ============================================
-       RESPONSIVE DESIGN
-       ============================================ */
-
-  @media (max-width: 992px) {
-    .product-page #product-detail {
-      padding: 3rem 0;
+    :root {
+        --orfe-primary: #8CA896;
+        --orfe-primary-dark: #788F82;
+        --orfe-primary-light: #A6BCAF;
+        --orfe-orange: #FF6B35;
+        --orfe-gold: #FFC107;
+        --orfe-black: #1A1A1A;
+        --orfe-gray-bg: #F8F9FA;
     }
 
-    .product-page .product-info {
-      padding: 1.5rem;
+    body {
+        font-family: 'Cairo', system-ui, -apple-system, sans-serif !important;
+        background-color: var(--orfe-gray-bg);
     }
 
-    .product-page .action-buttons {
-      flex-direction: column;
+    /* Modern Product Detail Page */
+    .modern-product-detail {
+        padding: 3rem 0;
+        direction: rtl;
     }
 
-    .product-page .btn-primary,
-    .product-page .btn-secondary {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .product-page #product-detail {
-      padding: 2rem 0;
+    .product-image-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
 
-    .product-page .product-info {
-      padding: 1.25rem;
+    .main-product-image {
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #f9f9f9;
+        padding: 2rem;
+        margin-bottom: 1rem;
     }
 
-    .product-page .current-price {
-      font-size: 2rem;
+    .main-product-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        max-height: 500px;
     }
 
-    .product-page .old-price {
-      font-size: 1.1rem;
+    .product-info-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
 
-    .product-page .detail-list li {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
+    .product-breadcrumb {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f5f5f5;
+        padding: 0.4rem 1rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+        color: #777;
     }
 
-    .product-page .detail-list strong {
-      min-width: auto;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .product-page .product-title {
-      font-size: 1.5rem;
+    .product-breadcrumb a {
+        color: var(--orfe-primary);
+        text-decoration: none;
     }
 
-    .product-page .current-price {
-      font-size: 1.75rem;
+    .modern-product-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--orfe-black);
+        margin-bottom: 1rem;
+        line-height: 1.3;
     }
 
-    .product-page .product-description {
-      font-size: 1rem;
+    .product-rating-box {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
     }
 
-    .product-page .btn-primary,
-    .product-page .btn-secondary {
-      padding: 0.875rem 1.5rem;
-      font-size: 1rem;
-    }
-  }
-
-  /* ============================================
-       UTILITY CLASSES
-       ============================================ */
-
-  .product-page .py-5 {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
-
-  .product-page .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  .product-page .row {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -1rem;
-  }
-
-  .product-page .row > [class*="col-"] {
-    padding: 0 1rem;
-  }
-
-  .product-page .g-4 {
-    gap: 1rem;
-  }
-
-  .product-page .col-md-6 {
-    width: 50%;
-  }
-
-  .product-page .col-lg-7 {
-    width: 58.333%;
-  }
-
-  .product-page .col-lg-5 {
-    width: 41.667%;
-  }
-
-  .product-page .col-12 {
-    width: 100%;
-  }
-
-  .product-page .col-3 {
-    width: 25%;
-  }
-
-  .product-page .col-9 {
-    width: 75%;
-  }
-
-  .product-page .col-md-9 {
-    width: 75%;
-  }
-
-  .product-page .d-none {
-    display: none;
-  }
-
-  .product-page .d-md-block {
-    display: none;
-  }
-
-  .product-page .d-flex {
-    display: flex;
-  }
-
-  .product-page .d-flex {
-    display: flex;
-  }
-
-  .product-page .align-items-center {
-    align-items: center;
-  }
-
-  .product-page .flex-column {
-    flex-direction: column;
-  }
-
-  .product-page .flex-sm-row {
-    flex-direction: column;
-  }
-
-  .product-page .w-100 {
-    width: 100%;
-  }
-
-  .product-page .mb-3 {
-    margin-bottom: 1rem;
-  }
-
-  .product-page .mb-4 {
-    margin-bottom: 1.5rem;
-  }
-
-  .product-page .mb-sm-0 {
-    margin-bottom: 0;
-  }
-
-  .product-page .me-sm-3 {
-    margin-right: 0;
-  }
-
-  .product-page .mb-sm-0 {
-    margin-bottom: 0;
-  }
-
-  .product-page .ms-sm-3 {
-    margin-right: 1rem;
-  }
-
-  .product-page .text-center {
-    text-align: center;
-  }
-
-  .product-page .text-capitalize {
-    text-transform: capitalize;
-  }
-
-  .product-page .text-muted {
-    color: var(--product-text-tertiary);
-  }
-
-  .product-page .text-success {
-    color: var(--product-primary-dark);
-  }
-
-  .product-page .text-dark {
-    color: var(--product-text-primary);
-  }
-
-  .product-page .fw-bold {
-    font-weight: 700;
-  }
-
-  .product-page .fs-3 {
-    font-size: 1.75rem;
-  }
-
-  .product-page .fs-6 {
-    font-size: 1rem;
-  }
-
-  .product-page .small {
-    font-size: 0.875rem;
-  }
-
-  .product-page .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: var(--product-radius-full);
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-
-  .product-page .bg-danger {
-    background: #ef4444;
-    color: white;
-  }
-
-  .product-page .rounded-pill {
-    border-radius: var(--product-radius-full);
-  }
-
-  .product-page .text-decoration-line-through {
-    text-decoration: line-through;
-  }
-
-  .product-page .gap-2 {
-    gap: 0.5rem;
-  }
-
-  .product-page .h-100 {
-    height: 100%;
-  }
-
-  .product-page .list-unstyled {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .product-page .mx-auto {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  @media (min-width: 768px) {
-    .product-page .d-md-block {
-      display: block;
+    .stars {
+        color: var(--orfe-gold);
+        font-size: 1.1rem;
     }
 
-    .product-page .flex-sm-row {
-      flex-direction: row;
+    .rating-text {
+        color: #666;
+        font-size: 0.9rem;
     }
 
-    .product-page .me-sm-3 {
-      margin-right: 1rem;
+    .modern-price-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
     }
 
-    .product-page .mb-sm-0 {
-      margin-bottom: 0;
+    .current-price-modern {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--orfe-primary-dark);
+        display: block;
     }
 
-    .product-page .ms-sm-3 {
-      margin-right: 1rem;
+    .old-price-modern {
+        font-size: 1.2rem;
+        color: #999;
+        text-decoration: line-through;
+        margin-right: 1rem;
     }
-  }
+
+    .discount-badge-modern {
+        display: inline-block;
+        background: #FF4757;
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-right: 1rem;
+    }
+
+    .product-description-modern {
+        color: #555;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+    }
+
+    /* Quantity Selector Modern */
+    .qty-box-modern {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .qty-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .qty-controls {
+        display: flex;
+        align-items: center;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .qty-btn {
+        background: #f8f9fa;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #333;
+        transition: all 0.2s;
+    }
+
+    .qty-btn:hover {
+        background: var(--orfe-primary);
+        color: white;
+    }
+
+    .qty-input {
+        border: none;
+        width: 60px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 0.8rem 0;
+    }
+
+    .qty-input:focus {
+        outline: none;
+    }
+
+    /* Modern Action Buttons */
+    .action-buttons-modern {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-add-cart-modern {
+        flex: 1;
+        background: var(--orfe-primary);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-add-cart-modern:hover {
+        background: var(--orfe-primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(140, 168, 150, 0.3);
+    }
+
+    .btn-buy-now {
+        flex: 1;
+        background: white;
+        color: var(--orfe-primary-dark);
+        border: 2px solid var(--orfe-primary);
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-buy-now:hover {
+        background: var(--orfe-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Product Meta Info */
+    .product-meta-modern {
+        border-top: 1px solid #eee;
+        padding-top: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    .meta-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .meta-value {
+        color: #666;
+    }
+
+    .meta-value a {
+        color: var(--orfe-primary);
+        text-decoration: none;
+    }
+
+    .meta-value a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .modern-product-title {
+            font-size: 1.4rem;
+        }
+        .action-buttons-modern {
+            flex-direction: column;
+        }
+    }
 </style>
 
-<!-- Product Page Content -->
-<div class="product-page">
-  <!-- Product Detail Section -->
-  <section id="product-detail" class="single-product py-5">
+<section class="modern-product-detail">
     <div class="container">
-      <div class="row g-4">
-        <!-- Product Images -->
-        <div class="col-md-6 col-lg-7">
-          <div class="row">
-            {% if product.additional_images %}
-            <div class="col-3 d-none d-md-block">
-              <div
-                class="swiper product-thumbnail-slider swiper-vertical swiper-thumbs"
-              >
-                <div class="swiper-wrapper">
-                  {% for thumbnail in product.additional_images %}
-                  <div class="swiper-slide">
-                    <img
-                      src="{{ thumbnail.image }}"
-                      alt="Thumbnail"
-                      class="thumb-image img-fluid"
-                    />
-                  </div>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
-            {% endif %}
-
-            <div class="col-12 col-md-9">
-              <div
-                class="swiper product-large-slider swiper-fade swiper-watch-progress"
-              >
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide">
-                    <img
-                      src="{{ product.image }}"
-                      alt="{{ product.name }}"
-                      class="img-fluid"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- Breadcrumb -->
+        <div class="product-breadcrumb">
+            <a href="/">الرئيسية</a>
+            <i class='bx bx-chevron-left' style="font-size: 1.1rem;"></i>
+            <a href="/shop">المتجر</a>
+            <i class='bx bx-chevron-left' style="font-size: 1.1rem;"></i>
+            <span>{{ product.name }}</span>
         </div>
 
-        <!-- Product Info -->
-        <div class="col-md-6 col-lg-5">
-          <div class="product-info">
-            <div class="element-header">
-              <h2 class="product-title text-capitalize mb-3">
-                {{ product.name }}
-              </h2>
-            </div>
-
-            <!-- Price -->
-            <div class="product-price mb-4">
-              <div class="price-display">
-                {% if product.price == 135 %}
-                <span class="current-price">{{ product.price }} ج.م</span>
-                <span class="old-price">165 ج.م</span>
-                <span class="discount-badge">خصم 18%</span>
-                {% elif product.price == 375 %}
-                <span class="current-price">{{ product.price }} ج.م</span>
-                <span class="old-price">469 ج.م</span>
-                <span class="discount-badge">خصم 20%</span>
-                {% elif product.price == 350 %}
-                <span class="current-price">{{ product.price }} ج.م</span>
-                <span class="old-price">438 ج.م</span>
-                <span class="discount-badge">خصم 20%</span>
-                {% elif product.price == 860 %}
-                <span class="current-price">{{ product.price }} ج.م</span>
-                <span class="old-price">1072 ج.م</span>
-                <span class="discount-badge">خصم 35%</span>
-                {% elif product.id == 5 %}
-                <span class="current-price">{{ product.price }} ج.م</span>
-                <span class="old-price">225 ج.م</span>
-                <span class="discount-badge">خصم 18%</span>
-                {% else %}
-                <span class="current-price">{{ product.price }} ج.م</span>
-                {% endif %}
-              </div>
-            </div>
-
-            <!-- Description -->
-            <div class="product-description">
-              {{ product.description | safe }}
-            </div>
-
-            <!-- Product Action -->
-            <div class="product-action mt-4">
-              <form action="/cart/add/{{ product.id }}" method="post">
-                <div
-                  class="product-quantity d-flex flex-column flex-sm-row align-items-center mb-4"
-                >
-                  <!-- Quantity Selector -->
-                  <div class="input-group product-qty me-sm-3 mb-3 mb-sm-0">
-                    <button
-                      type="button"
-                      class="btn btn-outline-secondary"
-                      data-type="minus"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      id="quantity"
-                      name="quantity"
-                      class="form-control text-center"
-                      value="1"
-                      min="1"
-                      max="{{ product.stock }}"
-                    />
-                    <button
-                      type="button"
-                      class="btn btn-outline-secondary"
-                      data-type="plus"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <!-- Quantity Selector Script -->
-                  <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                      const quantityInput = document.getElementById("quantity");
-                      const minusButton = document.querySelector(
-                        '[data-type="minus"]'
-                      );
-                      const plusButton =
-                        document.querySelector('[data-type="plus"]');
-
-                      minusButton.addEventListener("click", function () {
-                        let currentValue = parseInt(quantityInput.value);
-                        if (currentValue > 1) {
-                          quantityInput.value = currentValue - 1;
-                        }
-                      });
-
-                      plusButton.addEventListener("click", function () {
-                        let currentValue = parseInt(quantityInput.value);
-                        if (currentValue < parseInt(quantityInput.max)) {
-                          quantityInput.value = currentValue + 1;
-                        }
-                      });
-                    });
-                  </script>
-
-                  <!-- Action Buttons -->
-                  <div class="action-buttons">
-                    <button
-                      type="submit"
-                      name="add-to-cart"
-                      class="btn btn-primary btn-lg w-100 w-sm-auto mb-3 mb-sm-0"
-                    >
-                      <i class="bx bx-cart-add"></i>
-                      <span>أضف للسلة</span>
-                    </button>
-                    <button
-                      type="submit"
-                      name="add-to-cart-checkout"
-                      class="btn btn-secondary btn-lg w-100 w-sm-auto ms-sm-3"
-                    >
-                      <i class="bx bx-check-double"></i>
-                      <span>أضف للسلة واشتري</span>
-                    </button>
-                  </div>
+        <div class="row g-4">
+            <!-- Product Image Section -->
+            <div class="col-lg-6">
+                <div class="product-image-section">
+                    <div class="main-product-image">
+                        <img src="{{ product.image }}" alt="{{ product.name }}" id="mainImage">
+                    </div>
+                    {% if product.additional_images %}
+                    <div class="row g-2">
+                        {% for img in product.additional_images[:4] %}
+                        <div class="col-3">
+                            <div style="cursor: pointer; border: 2px solid transparent; border-radius: 10px; overflow: hidden; padding: 0.5rem; background: #f5f5f5;"
+                                 onclick="changeImage('{{ img.image }}')">
+                                <img src="{{ img.image }}" alt="Thumbnail" style="width: 100%; border-radius: 8px;">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
-              </form>
-
-              <!-- Wishlist Button -->
-              <button class="btn btn-light wish-list-button d-block mx-auto">
-                <i class="bx bx-heart"></i>
-                <span>أضف للمفضلة</span>
-              </button>
             </div>
 
-            <!-- Additional Info -->
-            <div class="detail-list mt-4">
-              <ul class="list-unstyled">
-                <li>
-                  <strong>رمز المنتج:</strong>
-                  <span>{{ product.sku }}</span>
-                </li>
-                <li>
-                  <strong>التصنيف:</strong>
-                  <a href="#">{{ product.category.name }}</a>
-                </li>
-                <li>
-                  <strong>الوسوم:</strong>
-                  {% if product.tags %} {% for tag in product.tags %}
-                  <a href="#">{{ tag }}</a>
-                  {% if not loop.last %}, {% endif %} {% endfor %} {% else %}
-                  <span class="text-muted">لا توجد وسوم</span>
-                  {% endif %}
-                </li>
-              </ul>
+            <!-- Product Info Section -->
+            <div class="col-lg-6">
+                <div class="product-info-section">
+                    <h1 class="modern-product-title">{{ product.name }}</h1>
+
+                    <!-- Rating -->
+                    <div class="product-rating-box">
+                        <div class="stars">
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star'></i>
+                            <i class='bx bxs-star-half'></i>
+                        </div>
+                        <span class="rating-text">(4.5 من 5) - {{ product.views }} مشاهدة</span>
+                    </div>
+
+                    <!-- Price -->
+                    <!-- Price -->
+                    <div class="modern-price-section">
+                        {% if product.price == 135 %}
+                        <span class="discount-badge-modern">خصم 18%</span>
+                        <span class="old-price-modern">165 ج.م</span>
+                        <span class="current-price-modern">{{ product.price }} ج.م</span>
+                        {% elif product.price == 375 %}
+                        <span class="discount-badge-modern">خصم 20%</span>
+                        <span class="old-price-modern">469 ج.م</span>
+                        <span class="current-price-modern">{{ product.price }} ج.م</span>
+                        {% elif product.price == 350 %}
+                        <span class="discount-badge-modern">خصم 20%</span>
+                        <span class="old-price-modern">438 ج.م</span>
+                        <span class="current-price-modern">{{ product.price }} ج.م</span>
+                        {% elif product.price == 860 %}
+                        <span class="discount-badge-modern">خصم 35%</span>
+                        <span class="old-price-modern">1072 ج.م</span>
+                        <span class="current-price-modern">{{ product.price }} ج.م</span>
+                        {% else %}
+                        <span class="current-price-modern">{{ product.price }} ج.م</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <p class="product-description-modern">{{ product.description | safe }}</p>
+
+                    <!-- Add to Cart Form -->
+                    <form action="/cart/add/{{ product.id }}" method="post">
+                        <!-- Quantity Selector -->
+                        <div class="qty-box-modern">
+                            <span class="qty-label">الكمية:</span>
+                            <div class="qty-controls">
+                                <button type="button" class="qty-btn" data-type="minus">-</button>
+                                <input type="number" id="quantity" name="quantity" class="qty-input" value="1" min="1" max="{{ product.stock }}">
+                                <button type="button" class="qty-btn" data-type="plus">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons-modern">
+                            <button type="submit" name="add-to-cart" class="btn-add-cart-modern">
+                                <i class='bx bx-cart-add' style="font-size: 1.3rem;"></i>
+                                <span>أضف للسلة</span>
+                            </button>
+                            <button type="submit" name="add-to-cart-checkout" class="btn-buy-now">
+                                <i class='bx bx-shopping-bag' style="font-size: 1.3rem;"></i>
+                                <span>اشتري الآن</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Product Meta Info -->
+                    <div class="product-meta-modern">
+                        <div class="meta-item">
+                            <span class="meta-label">📦 رقم المنتج:</span>
+                            <span class="meta-value">{{ product.sku }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">🏷️ الفئة:</span>
+                            <span class="meta-value">
+                                <a href="/shop?category={{ product.category.id }}">{{ product.category.name }}</a>
+                            </span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">📊 المخزون:</span>
+                            <span class="meta-value" style="color: {% if product.stock > 10 %}#28a745{% elif product.stock > 0 %}#ffc107{% else %}#dc3545{% endif %};">
+                                {% if product.stock > 10 %}
+                                متوفر ({{ product.stock }} قطعة)
+                                {% elif product.stock > 0 %}
+                                قطع محدودة ({{ product.stock }} فقط)
+                                {% else %}
+                                نفذت الكمية
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </section>
-</div>
-<!-- Rating Upload Section -->
-<div
-  class="rating-upload-section"
-  style="
-    margin-top: 3rem;
-    padding: 2rem;
-    background: var(--product-bg-secondary);
-    border-radius: var(--product-radius-lg);
-    box-shadow: var(--product-shadow-md);
-  "
->
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h4
-          class="section-title"
-          style="
-            font-family: var(--product-font-heading);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--product-text-primary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--product-border-light);
-            position: relative;
-          "
-        >
-          <i
-            class="bx bx-star"
-            style="
-              position: absolute;
-              left: 0;
-              bottom: -8px;
-              font-size: 1.5rem;
-              color: var(--product-accent);
-            "
-          ></i>
-          شارك تقييمك
-        </h4>
-        <p
-          class="text-muted"
-          style="
-            font-size: 1rem;
-            color: var(--product-text-secondary);
-            margin-bottom: 2rem;
-          "
-        >
-          شارك تجربتك مع المنتج وارفع صورة التقييم الخاصة بك
-        </p>
-
-        <div
-          class="rating-upload-form"
-          style="max-width: 600px; margin: 0 auto"
-        >
-          <form
-            id="ratingUploadForm"
-            action="/upload-rating/{{ product.id }}"
-            method="post"
-            enctype="multipart/form-data"
-            style="display: flex; flex-direction: column; gap: 1.5rem"
-          >
-            <!-- Rating Stars -->
-            <div style="text-align: center">
-              <label
-                style="
-                  font-weight: 600;
-                  color: var(--product-text-primary);
-                  margin-bottom: 1rem;
-                  display: block;
-                "
-                >تقييم المنتج</label
-              >
-              <div
-                class="rating-input"
-                style="display: flex; justify-content: center; gap: 0.75rem"
-              >
-                <span
-                  class="rating-star"
-                  data-value="1"
-                  style="
-                    font-size: 2rem;
-                    color: #ddd;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                  "
-                >
-                  <i class="bx bx-star"></i>
-                </span>
-                <span
-                  class="rating-star"
-                  data-value="2"
-                  style="
-                    font-size: 2rem;
-                    color: #ddd;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                  "
-                >
-                  <i class="bx bx-star"></i>
-                </span>
-                <span
-                  class="rating-star"
-                  data-value="3"
-                  style="
-                    font-size: 2rem;
-                    color: #ddd;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                  "
-                >
-                  <i class="bx bx-star"></i>
-                </span>
-                <span
-                  class="rating-star"
-                  data-value="4"
-                  style="
-                    font-size: 2rem;
-                    color: #ddd;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                  "
-                >
-                  <i class="bx bx-star"></i>
-                </span>
-                <span
-                  class="rating-star"
-                  data-value="5"
-                  style="
-                    font-size: 2rem;
-                    color: #ddd;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                  "
-                >
-                  <i class="bx bx-star"></i>
-                </span>
-              </div>
-              <input type="hidden" id="ratingValue" name="rating" value="5" />
-            </div>
-
-            <!-- Review Text -->
-            <div>
-              <label
-                for="reviewText"
-                style="
-                  font-weight: 600;
-                  color: var(--product-text-primary);
-                  margin-bottom: 0.5rem;
-                  display: block;
-                "
-                >كتابة تقييمك</label
-              >
-              <textarea
-                id="reviewText"
-                name="review"
-                rows="4"
-                placeholder="اكتب تجربتك مع هذا المنتج..."
-                style="
-                  width: 100%;
-                  padding: 1rem;
-                  border: 2px solid var(--product-border);
-                  border-radius: var(--product-radius-md);
-                  font-size: 1rem;
-                  font-family: var(--product-font-body);
-                  color: var(--product-text-primary);
-                  background: var(--product-bg-secondary);
-                  transition: all 0.3s ease;
-                  resize: vertical;
-                "
-              ></textarea>
-            </div>
-
-            <!-- Rating Image Upload -->
-            <div>
-              <label
-                for="ratingImage"
-                style="
-                  font-weight: 600;
-                  color: var(--product-text-primary);
-                  margin-bottom: 0.5rem;
-                  display: block;
-                "
-                >صورة التقييم (اختياري)</label
-              >
-              <input
-                type="file"
-                id="ratingImage"
-                name="rating_image"
-                accept="image/*"
-                style="
-                  width: 100%;
-                  padding: 1rem;
-                  border: 2px dashed var(--product-border);
-                  border-radius: var(--product-radius-md);
-                  font-size: 1rem;
-                  font-family: var(--product-font-body);
-                  color: var(--product-text-secondary);
-                  background: var(--product-bg-secondary);
-                  transition: all 0.3s ease;
-                "
-              />
-              <small
-                style="
-                  color: var(--product-text-tertiary);
-                  font-size: 0.85rem;
-                  margin-top: 0.5rem;
-                "
-              >
-                <i class="bx bx-image"></i> الصور المدعومة: JPG, PNG, WEBP (الحد
-                الأقصى: 5MB)
-              </small>
-            </div>
-
-            <!-- Submit Button -->
-            <button
-              type="submit"
-              class="btn-submit"
-              style="
-                background: linear-gradient(
-                  135deg,
-                  var(--product-primary) 0%,
-                  var(--product-primary-dark) 100%
-                );
-                color: white;
-                border: none;
-                padding: 1rem 2rem;
-                font-size: 1.1rem;
-                font-weight: 700;
-                border-radius: var(--product-radius-md);
-                transition: all 0.3s ease;
-                cursor: pointer;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
-                box-shadow: var(--product-shadow-sm);
-                width: 100%;
-              "
-            >
-              <i class="bx bx-upload"></i>
-              إرسال التقييم
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Rating Upload Script -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const ratingStars = document.querySelectorAll(".rating-star");
-    const ratingValue = document.getElementById("ratingValue");
-
-    ratingStars.forEach((star) => {
-      star.addEventListener("mouseover", function () {
-        const value = parseInt(this.getAttribute("data-value"));
-        updateStarsDisplay(value, "hover");
-      });
-
-      star.addEventListener("mouseleave", function () {
-        const currentRating = parseInt(ratingValue.value);
-        updateStarsDisplay(currentRating, "active");
-      });
-
-      star.addEventListener("click", function () {
-        const value = parseInt(this.getAttribute("data-value"));
-        ratingValue.value = value;
-        updateStarsDisplay(value, "active");
-      });
-    });
-
-    function updateStarsDisplay(value, state) {
-      ratingStars.forEach((star, index) => {
-        if (index < value) {
-          if (state === "hover") {
-            star.style.transform = "scale(1.1)";
-          }
-          star.innerHTML = '<i class="bx bxs-star"></i>';
-        } else {
-          if (state === "hover") {
-            star.style.transform = "scale(1)";
-          }
-          star.innerHTML = '<i class="bx bx-star"></i>';
-        }
-
-        if (state === "active") {
-          star.classList.toggle("active", index < value);
-          star.style.transform = "scale(1)";
-        }
-      });
-    }
-
-    // Form submission
-    const ratingUploadForm = document.getElementById("ratingUploadForm");
-    if (ratingUploadForm) {
-      ratingUploadForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const submitButton = this.querySelector(".btn-submit");
-        const originalButtonText = submitButton.innerHTML;
-        submitButton.innerHTML =
-          '<i class="bx bx-loader-alt bx-spin"></i> جاري الإرسال...';
-        submitButton.disabled = true;
-
-        const formData = new FormData(this);
-
-        fetch("/upload-rating/{{ product.id }}", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              submitButton.innerHTML =
-                '<i class="bx bx-check-circle"></i> تم الإرسال!';
-              submitButton.style.background =
-                "linear-gradient(135deg, #10B981 0%, #059669 100%)";
-
-              setTimeout(() => {
-                alert("شكراً لك! تم إرسال تقييمك بنجاح.");
-                ratingUploadForm.reset();
-                submitButton.innerHTML = originalButtonText;
-                submitButton.style.background = "";
-                submitButton.disabled = false;
-                updateStarsDisplay(5, "active");
-              }, 1500);
-            } else {
-              throw new Error(data.message || "حدث خطأ أثناء إرسال التقييم");
-            }
-          })
-          .catch((error) => {
-            console.error("Error submitting rating:", error);
-            submitButton.innerHTML = '<i class="bx bx-x-circle"></i> حدث خطأ';
-            submitButton.style.background =
-              "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)";
-
-            setTimeout(() => {
-              submitButton.innerHTML = originalButtonText;
-              submitButton.style.background = "";
-              submitButton.disabled = false;
-            }, 2000);
-          });
-      });
-    }
-  });
-</script>
+</section>
 
 <!-- Related Products Section -->
-{% set section_id = "similar" %} {% set section_title = "قد يعجبك أيضًا" %} {%
-include "shop/components/product_section.html" %}
+{% set section_id = "similar" %}
+{% set section_title = "منتجات مشابهة" %}
+{% include "shop/components/product_section.html" %}
+
+<!-- Quantity Selector Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const quantityInput = document.getElementById('quantity');
+        const minusButton = document.querySelector('[data-type="minus"]');
+        const plusButton = document.querySelector('[data-type="plus"]');
+
+        minusButton.addEventListener('click', function() {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+        });
+
+        plusButton.addEventListener('click', function() {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue < parseInt(quantityInput.max)) {
+                quantityInput.value = currentValue + 1;
+            }
+        });
+    });
+
+    function changeImage(imgSrc) {
+        document.getElementById('mainImage').src = imgSrc;
+    }
+</script>
 
 <!-- Facebook Pixel AddToCart Event -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const addToCartForm = document.querySelector('form[action="/cart/add/{{ product.id }}"]');
-
-      if (addToCartForm && typeof fbq !== 'undefined') {
-          addToCartForm.addEventListener('submit', function(e) {
-              const quantityInput = document.getElementById('quantity');
-              const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
-              const price = {{ product.price }};
-
-              fbq('track', 'AddToCart', {
-                  content_ids: ['{{ product.id }}'],
-                  content_type: 'product',
-                  content_name: '{{ product.name }}',
-                  content_category: '{{ product.category.name if product.category else "" }}',
-                  value: price * quantity,
-                  currency: 'EGP'
-              });
-
-              console.log('Facebook Pixel AddToCart event fired:', {
-                  product_id: '{{ product.id }}',
-                  product_name: '{{ product.name }}',
-                  quantity: quantity,
-                  price: price,
-                  total_value: price * quantity
-              });
-          });
-      }
-  });
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartForm = document.querySelector('form[action="/cart/add/{{ product.id }}"]');
+    
+    if (addToCartForm && typeof fbq !== 'undefined') {
+        addToCartForm.addEventListener('submit', function(e) {
+            const quantityInput = document.getElementById('quantity');
+            const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+            const price = {{ product.price }};
+            
+            fbq('track', 'AddToCart', {
+                content_ids: ['{{ product.id }}'],
+                content_type: 'product',
+                content_name: '{{ product.name }}',
+                content_category: '{{ product.category.name if product.category else "" }}',
+                value: price * quantity,
+                currency: 'EGP'
+            });
+            
+            console.log('Facebook Pixel AddToCart event fired:', {
+                product_id: '{{ product.id }}',
+                product_name: '{{ product.name }}',
+                quantity: quantity,
+                price: price,
+                total_value: price * quantity
+            });
+        });
+    }
+});
 </script>
 
 {% endblock %}

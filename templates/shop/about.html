@@ -1,0 +1,393 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<!-- Google Fonts for Modern Arabic Look (Cairo) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --orfe-primary: #8CA896;
+        --orfe-primary-dark: #788F82;
+        --orfe-primary-light: #A6BCAF;
+        --orfe-orange: #FF6B35;
+        --orfe-gold: #FFC107;
+        --orfe-black: #1A1A1A;
+        --orfe-gray-bg: #F8F9FA;
+    }
+
+    body {
+        font-family: 'Cairo', system-ui, -apple-system, sans-serif !important;
+        background-color: var(--orfe-gray-bg);
+    }
+
+    /* Hero Section */
+    .about-hero {
+        background: linear-gradient(135deg, var(--orfe-primary) 0%, var(--orfe-primary-dark) 100%);
+        color: white;
+        padding: 5rem 0 3rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+        background-size: cover;
+        opacity: 0.3;
+    }
+
+    .about-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-hero-title {
+        font-size: 3rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+    }
+
+    .about-hero-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Story Section */
+    .about-section {
+        padding: 4rem 0;
+        direction: rtl;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--orfe-black);
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .story-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+    }
+
+    .story-text {
+        font-size: 1.1rem;
+        line-height: 2;
+        color: #555;
+    }
+
+    /* Values Section */
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .value-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .value-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--orfe-primary-light), var(--orfe-primary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.5rem;
+        color: white;
+    }
+
+    .value-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--orfe-black);
+        margin-bottom: 0.8rem;
+    }
+
+    .value-text {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #666;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, var(--orfe-primary) 0%, var(--orfe-primary-dark) 100%);
+        padding: 4rem 0;
+        color: white;
+        margin: 3rem 0;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 900;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Team Section */
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .team-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .team-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    }
+
+    .team-info {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .team-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--orfe-black);
+        margin-bottom: 0.5rem;
+    }
+
+    .team-role {
+        font-size: 1rem;
+        color: var(--orfe-primary);
+        margin-bottom: 1rem;
+    }
+
+    .team-social {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .social-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--orfe-primary-dark);
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .social-link:hover {
+        background: var(--orfe-primary);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .about-hero-title {
+            font-size: 2rem;
+        }
+        .section-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="container">
+        <div class="about-hero-content">
+            <h1 class="about-hero-title">من نحن</h1>
+            <p class="about-hero-subtitle">
+                نحن أورف كوزمتيكس - رفيقك الموثوق في رحلة الجمال والعناية الشخصية
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="about-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">قصتنا</h2>
+            <p class="section-subtitle">رحلة بدأت بحلم وتحققت بشغف</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="story-card">
+                    <p class="story-text">
+                        بدأت قصة <strong>أورف كوزمتيكس</strong> من إيمان عميق بأن الجمال الحقيقي يبدأ من الداخل، 
+                        وأن العناية بالنفس ليست رفاهية بل ضرورة. انطلقنا برؤية واضحة: تقديم منتجات عناية شخصية 
+                        عالية الجودة تجمع بين الفعالية والأمان، مع الحفاظ على الأصالة والطبيعة.
+                    </p>
+                    <p class="story-text">
+                        اليوم، نفخر بكوننا وجهة موثوقة لآلاف العملاء الذين يثقون بنا لتلبية احتياجاتهم اليومية 
+                        من العناية بالبشرة والشعر والجسم. نختار بعناية كل منتج لضمان تحقيق أفضل النتائج، 
+                        ونقدمه لك بأسعار تنافسية وخدمة عملاء استثنائية.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="about-section" style="background: white;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">قيمنا</h2>
+            <p class="section-subtitle">المبادئ التي نؤمن بها ونعمل من خلالها</p>
+        </div>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">✨</div>
+                <h3 class="value-title">الجودة أولاً</h3>
+                <p class="value-text">
+                    نختار منتجاتنا بعناية فائقة لضمان حصولك على أفضل جودة ممكنة
+                </p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🤝</div>
+                <h3 class="value-title">الثقة والشفافية</h3>
+                <p class="value-text">
+                    نبني علاقاتنا مع عملائنا على الصدق والشفافية في كل تفاصيل التعامل
+                </p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🌿</div>
+                <h3 class="value-title">الطبيعة والأمان</h3>
+                <p class="value-text">
+                    نؤمن بقوة المكونات الطبيعية ونحرص على سلامة منتجاتنا لصحتك
+                </p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🎯</div>
+                <h3 class="value-title">التميز في الخدمة</h3>
+                <p class="value-text">
+                    نسعى دائماً لتقديم تجربة تسوق استثنائية تفوق توقعاتك
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number">5000+</span>
+                <span class="stat-label">عميل سعيد</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100+</span>
+                <span class="stat-label">منتج متميز</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">نسبة الرضا</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">دعم العملاء</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="about-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">رسالتنا</h2>
+            <p class="section-subtitle">ما نسعى لتحقيقه كل يوم</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="story-card" style="background: linear-gradient(135deg, #f8f9fa, white);">
+                    <p class="story-text" style="text-align: center; font-size: 1.2rem; font-weight: 600;">
+                        "مهمتنا هي تمكين كل امرأة من الاعتناء بنفسها بثقة، من خلال توفير منتجات عناية شخصية 
+                        عالية الجودة، بأسعار عادلة، وتجربة تسوق سلسة وممتعة. نؤمن بأن كل امرأة تستحق أن تشعر 
+                        بالجمال والراحة في بشرتها."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="about-section" style="background: white; padding: 3rem 0;">
+    <div class="container text-center">
+        <h2 class="section-title">تواصلي معنا</h2>
+        <p class="section-subtitle" style="margin-bottom: 2rem;">
+            هل لديك أي استفسار أو تحتاجين مساعدة؟ نحن هنا من أجلك!
+        </p>
+        <a href="https://wa.me/{{ admin_phone }}" class="btn btn-lg" style="background: var(--orfe-primary); color: white; padding: 1rem 3rem; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.7rem;">
+            <i class='bx bxl-whatsapp' style="font-size: 1.5rem;"></i>
+            تواصلي عبر واتساب
+        </a>
+    </div>
+</section>
+
+{% endblock %}

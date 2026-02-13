@@ -382,21 +382,7 @@ class Logs(db.Model):
     user_id = db.Column(db.Integer, nullable=True)
     session = db.Column(db.String(100), nullable=True)
     action = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-# Product Rating Model
-class ProductRating(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('gusts.id'), nullable=False)
-    rating = db.Column(db.Integer, nullable=False)  # 1-5 stars
-    review = db.Column(db.Text, nullable=True)
-    rating_image = db.Column(db.String(200), nullable=True)  # Optional image upload
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    
-    # Relationships
-    product = db.relationship('Product', backref='ratings')
-    user = db.relationship('Gusts', backref='ratings')
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  
 # shiping and city and zone and district and prices
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -656,83 +642,6 @@ def product(product_id):
     db.session.commit()
     random_products = Product.query.order_by(db.func.random()).limit(6).all()
     return render_template('shop/product.html', product=product, additional_images=additional_images, additional_data=additional_data, products=random_products)
-@shop.route('/upload-rating/<int:product_id>', methods=['POST'])
-def upload_rating(product_id):
-    """Handle product rating and review upload"""
-    try:
-        # Validate product exists
-        product = Product.query.get_or_404(product_id)
-        
-        # Get user session
-        user = Gusts.query.filter_by(session=session['session']).first()
-        if not user:
-            return jsonify({
-                'success': False,
-                'message': 'يجب تسجيل الدخول لإضافة تقييم'
-            }), 401
-        
-        # Check if user already rated this product
-        existing_rating = ProductRating.query.filter_by(
-            product_id=product_id,
-            user_id=user.id
-        ).first()
-        
-        if existing_rating:
-            return jsonify({
-                'success': False,
-                'message': 'لقد قمت بتقييم هذا المنتج مسبقاً'
-            }), 400
-        
-        # Get form data
-        rating = int(request.form.get('rating', 5))
-        review = request.form.get('review', '')
-        rating_image = request.files.get('rating_image')
-        
-        # Validate rating
-        if not 1 <= rating <= 5:
-            return jsonify({
-                'success': False,
-                'message': 'التقييم يجب أن يكون بين 1 و 5'
-            }), 400
-        
-        # Handle image upload if provided
-        image_filename = None
-        if rating_image and rating_image.filename:
-            if allowed_file(rating_image.filename):
-                image_filename = save_uploaded_file(rating_image)
-            else:
-                return jsonify({
-                    'success': False,
-                    'message': 'نوع الملف غير مسموح به'
-                }), 400
-        
-        # Create new rating
-        new_rating = ProductRating(
-            product_id=product_id,
-            user_id=user.id,
-            rating=rating,
-            review=review,
-            rating_image=image_filename
-        )
-        
-        db.session.add(new_rating)
-        db.session.commit()
-        
-        app.logger.info(f'New rating added for product {product_id} by user {user.id}: {rating} stars')
-        
-        return jsonify({
-            'success': True,
-            'message': 'تم إرسال تقييمك بنجاح!'
-        }), 200
-        
-    except Exception as e:
-        db.session.rollback()
-        app.logger.error(f'Error uploading rating: {str(e)}')
-        return jsonify({
-            'success': False,
-            'message': 'حدث خطأ أثناء إرسال التقييم'
-        }), 500
-
 @shop.route('/cart/add/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     try:
@@ -1486,6 +1395,13 @@ def cart():
 def return_policy():
     """Return policy page for Google Merchant Center verification"""
     return render_template('shop/return-policy.html')
+
+@shop.route('/about')
+def about():
+    """About us page"""
+    admin_phone = os.getenv('ADMIN_PHONE', '201234567890')
+    return render_template('shop/about.html', admin_phone=admin_phone)
+
 # chang-quantity/plus/1
 @shop.route('/cart/change-quantity/<action>/<int:item_id>')
 def change_quantity(action, item_id):
