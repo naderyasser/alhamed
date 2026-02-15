@@ -45,6 +45,10 @@ CSRF_EXEMPT_ENDPOINTS = {
     'shop.payment_webhook',
 }
 
+
+def utc_now():
+    return datetime.now(timezone.utc)
+
 # Configure Honeybadger only if successfully imported
 if has_honeybadger:
     app.config['HONEYBADGER_ENVIRONMENT'] = os.getenv('HONEYBADGER_ENVIRONMENT', 'production')
@@ -291,7 +295,7 @@ class Admins(db.Model):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     last_login = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class Gusts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     session = db.Column(db.String(100), nullable=False)
@@ -300,14 +304,14 @@ class Gusts(db.Model):
     address = db.Column(db.String(100), nullable=True)
     orders = db.relationship('Order', backref='guest', lazy=True)
     carts = db.relationship('Cart', backref='gust', lazy=True)  # This should work now
-    last_activity = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    last_activity = db.Column(db.DateTime, nullable=False, default=utc_now)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     products = db.relationship('Product', backref='category', lazy=True)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -321,24 +325,24 @@ class Product(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     additional_images = db.relationship('AdditionalImage', backref='product', lazy=True)
     additional_data = db.relationship('AdditionalData', backref='product', lazy=True)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class AdditionalImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     image = db.Column(db.String(100), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class AdditionalData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(100), nullable=False)
     value = db.Column(db.String(100), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('gusts.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
     
     # إضافة العلاقة مع Product
     product = db.relationship('Product', backref='carts', lazy=True)
@@ -365,37 +369,37 @@ class Order(db.Model):
     invoice_id = db.Column(db.String(50), nullable=True)
     invoice_url = db.Column(db.String(200), nullable=True)
     payment_status = db.Column(db.String(20), default='pending', nullable=True)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)  
 class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, nullable=False)
     product_id = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 
 class PromoCode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(100), nullable=False)
     discount = db.Column(db.Float, nullable=False)
     count = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True)
     session = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class Logs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=True)
     session = db.Column(db.String(100), nullable=True)
     action = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)  
 # shiping and city and zone and district and prices
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     city_id = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
     zones = db.relationship('Zone', backref='city', lazy=True, foreign_keys='Zone.city_id')
     price = db.relationship('ShippingCost', backref='city', lazy=True, foreign_keys='ShippingCost.city_id')
     districts = db.relationship('District', backref='city', lazy=True, foreign_keys='District.city_id')
@@ -413,7 +417,7 @@ class Zone(db.Model):
     name = db.Column(db.String(100), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey('city.city_id'), nullable=False)
     zone_id = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
     def serialize(self):
         return {
             'id': self.id,
@@ -426,7 +430,7 @@ class District(db.Model):
     name = db.Column(db.String(100), nullable=False)
     city_id = db.Column(db.Integer, db.ForeignKey('city.city_id'), nullable=False)
     district_id = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
     def serialize(self):
         return {
             'id': self.id,
@@ -438,7 +442,7 @@ class ShippingCost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     city_id = db.Column(db.Integer, db.ForeignKey('city.city_id'), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 
 # changShippingCostFromcity_idIsIdToCityId()
 
@@ -448,7 +452,7 @@ admin = Blueprint('admin', __name__)
 def cleanup_expired_cart_items():
     """Delete cart items older than 24 hours"""
     try:
-        expiration_time = datetime.utcnow() - timedelta(hours=24)
+        expiration_time = datetime.now(timezone.utc) - timedelta(hours=24)
         expired_items = Cart.query.filter(Cart.created_at < expiration_time).all()
         for item in expired_items:
             db.session.delete(item)
@@ -473,7 +477,7 @@ def check_session():
             session['cart_count'] = 0
             new_guest = Gusts(
                 session=session['session'],
-                last_activity=datetime.utcnow()
+                last_activity=datetime.now(timezone.utc)
             )
             db.session.add(new_guest)
             db.session.commit()
@@ -494,7 +498,7 @@ def check_session():
             session['cart_count'] = cart_count
             
             # 6. Check for session expiration (30 days of inactivity)
-            expiration_time = datetime.utcnow() - timedelta(days=30)
+            expiration_time = datetime.now(timezone.utc) - timedelta(days=30)
             if previous_last_activity and previous_last_activity < expiration_time:
                 # Clear old cart items
                 Cart.query.filter_by(user_id=guest.id).delete()
@@ -504,14 +508,14 @@ def check_session():
                 session['cart_count'] = 0
                 new_guest = Gusts(
                     session=session['session'],
-                    last_activity=datetime.utcnow()
+                    last_activity=datetime.now(timezone.utc)
                 )
                 db.session.add(new_guest)
                 db.session.commit()
                 return
 
             # Update activity only after expiration check
-            guest.last_activity = datetime.utcnow()
+            guest.last_activity = datetime.now(timezone.utc)
                 
             db.session.commit()
         else:
@@ -521,7 +525,7 @@ def check_session():
             session['cart_count'] = 0
             new_guest = Gusts(
                 session=session['session'],
-                last_activity=datetime.utcnow()
+                last_activity=datetime.now(timezone.utc)
             )
             db.session.add(new_guest)
             db.session.commit()
@@ -732,14 +736,14 @@ def add_to_cart(product_id):
                 return redirect(url_for('shop.cart'))
             
             cart_item.quantity = new_quantity
-            cart_item.created_at = datetime.utcnow()  # Reset the creation time
+            cart_item.created_at = datetime.now(timezone.utc)  # Reset the creation time
         else:
             # Create new cart item
             cart_item = Cart(
                 user_id=user.id,
                 product_id=product_id,
                 quantity=quantity,
-                created_at=datetime.utcnow()
+                created_at=datetime.now(timezone.utc)
             )
         
         # Save changes
@@ -1109,7 +1113,7 @@ def send_discord_notification(order, order_items):
             "image": {
                 "url": os.getenv('LOGO_URL', '/static/img/logo.png')
             },
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "footer": {
                 "text": "💎 Orfe Cosmetics - Premium Beauty Products | منتجات تجميل مميزة",
                 "icon_url": os.getenv('LOGO_URL', '/static/img/logo.png')
@@ -1515,7 +1519,7 @@ def login():
 
             if admin and is_valid_password:
                 session['admin'] = admin.id
-                admin.last_login = datetime.utcnow()
+                admin.last_login = datetime.now(timezone.utc)
                 db.session.commit()
                 return redirect(url_for('admin.home'))
             
@@ -2758,11 +2762,11 @@ def ship_order(order_id):
         
         # Generate tracking number if not exists
         if not order.tracking_number:
-            order.tracking_number = f"TRK-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{order.id}"
+            order.tracking_number = f"TRK-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{order.id}"
         
         # Generate business reference if not exists
         if not order.business_reference:
-            order.business_reference = f"ORD-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{order.id}"
+            order.business_reference = f"ORD-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{order.id}"
         
         db.session.commit()
         
