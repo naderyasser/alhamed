@@ -114,7 +114,7 @@ def create_project_backup():
         try:
             # Initialize git configuration if not set
             subprocess.run(['git', 'config', 'user.name', 'Backup System'], check=True)
-            subprocess.run(['git', 'config', 'user.email', 'backup@alha-store.com'], check=True)
+            subprocess.run(['git', 'config', 'user.email', 'backup@alhamd-store.com'], check=True)
             
             # Stage all tracked files
             subprocess.run(['git', 'add', '-u'], check=True)
@@ -315,6 +315,7 @@ class Gusts(db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True, default='')
     products = db.relationship('Product', backref='category', lazy=True)
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 
@@ -609,6 +610,7 @@ def home():
     return render_template("shop/index.html", 
                            last_products=last_products, 
                            most_viewed=trending_products,
+                           categories=categories,
                            section_id="featured-products",
                            section_title="Our Featured Products",
                            products=last_products)
@@ -858,7 +860,7 @@ def checkout():
     message_lines = ["السلام عليكم، انا عاوز اشتري:"]
     for item in cart_items:
         message_lines.append(f"- {item.product.name} × {item.quantity}")
-    message_lines.append("\nمن موقع ALha، وعاوز ادفع بالمحافظ الإلكترونية.")
+    message_lines.append("\nمن موقع Al Hamd، وعاوز ادفع بالمحافظ الإلكترونية.")
 
     full_message = "\n".join(message_lines)
     encoded_message = quote(full_message)
@@ -1128,7 +1130,7 @@ def send_discord_notification(order, order_items):
                         f"📦 **Items Count | عدد القطع:** {total_items}\n"
                         f"🕐 **Time | التوقيت:** {order.created_at.strftime('%d/%m/%Y - %H:%M')}\n"
                         f"🆔 **Order ID | رقم الطلب:** `#{order.id}`\n"
-                        f"🏪 **Store | المتجر:** ALha"
+                        f"🏪 **Store | المتجر:** Al Hamd"
                     ),
                     "inline": True
                 }
@@ -1141,7 +1143,7 @@ def send_discord_notification(order, order_items):
             },
             "timestamp": utc_now().isoformat(),
             "footer": {
-                "text": "💎 ALha - Premium Products | منتجات مميزة",
+                "text": "💎 Al Hamd - Premium Products | منتجات مميزة",
                 "icon_url": os.getenv('LOGO_URL', '/static/img/logo.png')
             },
             "author": {
@@ -1153,7 +1155,7 @@ def send_discord_notification(order, order_items):
         
         # Create the complete professional message
         message = {
-            "username": "🌟 ALha",
+            "username": "🌟 Al Hamd",
             "avatar_url": "https://k.top4top.io/p_3515e1v1u1.png",
             "content": (
                 f"@everyone 🔔 **NEW ORDER ALERT | تنبيه طلب جديد**\n"
@@ -1315,7 +1317,7 @@ def place_order():
         message_lines = ["السلام عليكم، انا عاوز اشتري:"]
         for item in cart_items:
             message_lines.append(f"- {item.product.name} × {item.quantity}")
-        message_lines.append("\nمن موقع ALha، وعاوز ادفع بالمحافظ الإلكترونية.")
+        message_lines.append("\nمن موقع Al Hamd، وعاوز ادفع بالمحافظ الإلكترونية.")
         full_message = "\n".join(message_lines)
         encoded_message = quote(full_message)
         whatsapp_link = f"https://wa.me/{admin_phone}?text={encoded_message}"
@@ -1941,7 +1943,8 @@ def add_category():
             flash('تصنيف بهذا الاسم موجود بالفعل!', 'error')
             return redirect(url_for('admin.categories'))
             
-        new_category = Category(name=name)
+        description = request.form.get('description', '')
+        new_category = Category(name=name, description=description)
         db.session.add(new_category)
         db.session.commit()
         flash('تمت إضافة التصنيف بنجاح!', 'success')
@@ -2107,6 +2110,10 @@ def delete_category(category_id):
     category = db.session.get(Category, category_id)
     if not category:
         abort(404)
+    # Check if category has products
+    if category.products:
+        flash(f'لا يمكن حذف التصنيف "{category.name}" لأنه يحتوي على {len(category.products)} منتج. قم بنقل المنتجات أولاً.', 'error')
+        return redirect(url_for('admin.categories'))
     db.session.delete(category)
     db.session.commit()
     flash('تم حذف القسم بنجاح!', 'success')
@@ -2121,6 +2128,8 @@ def edit_category(category_id):
     try:
         if 'name' in request.form and request.form['name']:
             category.name = request.form['name']
+        if 'description' in request.form:
+            category.description = request.form['description']
         db.session.commit()
         flash('تم تعديل القسم بنجاح!', 'success')
     except Exception as e:
@@ -3401,6 +3410,17 @@ def internal_server_error(e):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        # Migrate: add description column to category if missing
+        try:
+            from sqlalchemy import inspect as sa_inspect
+            inspector = sa_inspect(db.engine)
+            columns = [c['name'] for c in inspector.get_columns('category')]
+            if 'description' not in columns:
+                db.session.execute(db.text("ALTER TABLE category ADD COLUMN description TEXT DEFAULT ''"))
+                db.session.commit()
+                print('Migration: added description column to category table')
+        except Exception as e:
+            print(f'Migration check: {e}')
     debug_mode = os.getenv('FLASK_DEBUG', '1') in ('1', 'true', 'True')
     host = os.getenv('FLASK_HOST', '127.0.0.1')
     port = int(os.getenv('FLASK_PORT', '8765'))
