@@ -1,22 +1,23 @@
 {% extends "shop/base.html" %} {% block content %}
 <style>
      :root {
-        --orfe-primary: #8CA896;
-        --orfe-primary-dark: #788F82;
-        --orfe-primary-light: #A6BCAF;
-        --orfe-background: #F5F7F5;
-        --orfe-text: #333333;
-        --orfe-accent: #D2E1D9;
+        --orfe-primary: #D32F2F;
+        --orfe-primary-dark: #B71C1C;
+        --orfe-primary-light: #E53935;
+        --orfe-background: #000000;
+        --orfe-text: #ffffff;
+        --orfe-accent: #111111;
     }
     /* Promotional Banner */
     
     .promo-banner {
-        background: linear-gradient(135deg, var(--orfe-primary) 0%, var(--orfe-primary-dark) 100%);
+        background: linear-gradient(135deg, #0d0d0d 0%, #111111 100%);
         color: white;
         padding: 0;
         position: relative;
         overflow: hidden;
         z-index: 5;
+        border-bottom: 1px solid #222;
     }
     
     .promo-container {
@@ -195,7 +196,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 30%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0) 100%);
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.8) 30%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
         z-index: 2;
     }
     
@@ -220,7 +221,7 @@
         letter-spacing: 3px;
         text-transform: uppercase;
         margin-bottom: 1rem;
-        color: var(--orfe-primary-dark);
+        color: var(--lux-accent-red, #d32f2f);
         opacity: 0;
         transform: translateY(20px);
         animation: fadeUp 0.5s ease forwards;
@@ -242,7 +243,7 @@
     .hero-description {
         font-size: 1.1rem;
         margin-bottom: 2rem;
-        color: #555;
+        color: #b0b0b0;
         max-width: 90%;
         opacity: 0;
         transform: translateY(20px);
@@ -308,10 +309,11 @@
         display: flex;
         align-items: center;
         gap: 1.5rem;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 8px;
+        background: rgba(10, 10, 10, 0.92);
+        border: 1px solid #222;
+        border-radius: 14px;
         padding: 1rem 1.5rem;
-        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         max-width: 400px;
         transform: translateX(100%);
         animation: slideIn 0.8s ease forwards;
@@ -351,7 +353,7 @@
     .product-current-price {
         font-size: 1.1rem;
         font-weight: 700;
-        color: var(--orfe-primary-dark);
+        color: #d32f2f;
     }
     
     .product-discount {
@@ -368,7 +370,7 @@
         width: 30px;
         height: 4px;
         border-radius: 2px;
-        background: rgba(140, 168, 150, 0.5);
+        background: rgba(255, 255, 255, 0.3);
         opacity: 0.5;
         transition: all 0.3s ease;
     }
@@ -383,9 +385,10 @@
     .swiper-button-next {
         width: 50px;
         height: 50px;
-        background: white;
+        background: #0a0a0a;
+        border: 1px solid #222;
         border-radius: 50%;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -396,7 +399,7 @@
     .swiper-button-prev:after,
     .swiper-button-next:after {
         font-size: 1.2rem;
-        color: var(--orfe-text);
+        color: #ffffff;
     }
     
     .swiper-button-prev:hover,
@@ -458,7 +461,7 @@
     
     @media (max-width: 767px) {
         .hero-bg::before {
-            background: linear-gradient(0deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0.4) 80%);
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.3) 80%);
         }
         .hero-content {
             text-align: center;
@@ -482,7 +485,7 @@
     .about-section {
         position: relative;
         padding: 4rem 0;
-        background: linear-gradient(to right, var(--orfe-background), #ffffff);
+        background: linear-gradient(to right, #000000, #0a0a0a);
         overflow: hidden;
     }
     
@@ -508,7 +511,7 @@
     .about-content {
         font-size: 1.1rem;
         line-height: 1.8;
-        color: #555;
+        color: #b0b0b0;
     }
     
     @media (max-width: 767px) {
@@ -535,10 +538,11 @@
     }
     
     .featured-set-box {
-        background: white;
-        border-radius: 8px;
+        background: #0a0a0a;
+        border: 1px solid #222;
+        border-radius: 14px;
         overflow: hidden;
-        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -573,7 +577,7 @@
         padding: 0.5rem 1rem;
         border-radius: 4px;
         z-index: 2;
-        box-shadow: 0 3px 10px rgba(140, 168, 150, 0.3);
+        box-shadow: 0 3px 10px rgba(211, 47, 47, 0.3);
         animation: pulse 2s infinite;
     }
     
@@ -614,7 +618,7 @@
     }
     
     .featured-set-description {
-        color: #666;
+        color: #b0b0b0;
         margin-bottom: 1.5rem;
         line-height: 1.6;
     }
@@ -672,7 +676,7 @@
     .featured-set-btn:hover {
         background: var(--orfe-primary-dark);
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(140, 168, 150, 0.2);
+        box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
         color: white;
     }
     
@@ -684,7 +688,7 @@
     .featured-set-includes h4 {
         font-size: 1rem;
         font-weight: 600;
-        color: #555;
+        color: #b0b0b0;
         margin-bottom: 0.5rem;
     }
     
@@ -698,7 +702,7 @@
         display: flex;
         align-items: flex-start;
         gap: 0.5rem;
-        color: #555;
+        color: #b0b0b0;
         margin-bottom: 0.6rem;
         font-size: 0.95rem;
     }
@@ -732,7 +736,7 @@
     /* Modern Reviews Section */
     
     .reviews-section {
-        background-color: white;
+        background-color: #000000;
         padding: 5rem 0;
         position: relative;
         overflow: hidden;
@@ -783,17 +787,18 @@
     
     .reviews-subtitle {
         font-size: 1.1rem;
-        color: #777;
+        color: #b0b0b0;
         max-width: 600px;
         margin: 1rem auto 0;
     }
     
     .rating-overview {
-        background: var(--orfe-background);
+        background: #0a0a0a;
+        border: 1px solid #222;
         border-radius: 12px;
         padding: 2rem;
         margin-bottom: 2.5rem;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     }
     
     .rating-overall {
@@ -801,7 +806,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border-right: 1px solid #eee;
+        border-right: 1px solid #222;
     }
     
     .rating-number {
@@ -819,7 +824,7 @@
     
     .rating-total {
         font-size: 0.9rem;
-        color: #777;
+        color: #999;
     }
     
     .rating-bars {
@@ -841,7 +846,7 @@
     .rating-bar-bg {
         flex-grow: 1;
         height: 8px;
-        background-color: #eee;
+        background-color: #222;
         border-radius: 4px;
         overflow: hidden;
         position: relative;
@@ -864,9 +869,10 @@
     }
     
     .review-card {
-        background: white;
+        background: #0a0a0a;
+        border: 1px solid #222;
         border-radius: 12px;
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
         padding: 1.8rem;
         height: 100%;
         position: relative;
@@ -877,7 +883,7 @@
     
     .review-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
     
     .review-card::before {
@@ -916,12 +922,12 @@
         color: white;
         font-weight: 600;
         font-size: 1.2rem;
-        box-shadow: 0 3px 10px rgba(140, 168, 150, 0.2);
+        box-shadow: 0 3px 10px rgba(211, 47, 47, 0.2);
     }
     
     .review-name {
         font-weight: 600;
-        color: var(--orfe-text);
+        color: #ffffff;
         font-size: 1.1rem;
         margin-bottom: 0.2rem;
     }
@@ -937,7 +943,7 @@
     }
     
     .review-text {
-        color: #555;
+        color: #b0b0b0;
         line-height: 1.75;
         margin-bottom: 1.2rem;
         flex-grow: 1;
@@ -950,7 +956,8 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        background-color: var(--orfe-background);
+        background-color: #111111;
+        border: 1px solid #222;
         padding: 0.8rem;
         border-radius: 8px;
         margin-top: auto;
@@ -966,7 +973,7 @@
     .review-product-name {
         font-size: 0.9rem;
         font-weight: 500;
-        color: var(--orfe-text);
+        color: #ffffff;
         margin: 0;
     }
     
@@ -1023,14 +1030,14 @@
     .btn-review:hover {
         background: var(--orfe-primary-dark);
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(140, 168, 150, 0.2);
+        box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
         color: white;
     }
     
     .btn-all-reviews {
         border: 2px solid var(--orfe-primary);
         background: transparent;
-        color: var(--orfe-primary-dark);
+        color: #ffffff;
         padding: 1rem 2rem;
         border-radius: 8px;
         font-weight: 600;
@@ -1042,17 +1049,19 @@
     }
     
     .btn-all-reviews:hover {
-        background: rgba(140, 168, 150, 0.1);
+        background: rgba(211, 47, 47, 0.1);
         transform: translateY(-3px);
-        color: var(--orfe-primary-dark);
+        color: #ffffff;
     }
     /* Review Modal */
     
     #reviewModal .modal-content {
         border-radius: 16px;
-        border: none;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        border: 1px solid #222;
+        background: #0a0a0a;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         overflow: hidden;
+        color: #ffffff;
     }
     
     #reviewModal .modal-header {
@@ -1100,21 +1109,23 @@
     
     #reviewModal .form-control,
     #reviewModal .form-select {
-        border: 1px solid #e0e0e0;
+        border: 1px solid #333;
         border-radius: 8px;
         padding: 0.8rem 1rem;
         box-shadow: none;
+        background: #111;
+        color: #fff;
     }
     
     #reviewModal .form-control:focus,
     #reviewModal .form-select:focus {
         border-color: var(--orfe-primary);
-        box-shadow: 0 0 0 0.2rem rgba(140, 168, 150, 0.2);
+        box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.2);
     }
     
     #reviewModal .form-label {
         font-weight: 500;
-        color: #555;
+        color: #b0b0b0;
     }
     
     #reviewModal .btn-primary {
@@ -1133,7 +1144,7 @@
     
     .product-showcase {
         padding: 5rem 0;
-        background: linear-gradient(135deg, var(--orfe-background), #ffffff);
+        background: linear-gradient(135deg, #000000, #0a0a0a);
         position: relative;
         overflow: hidden;
     }
@@ -1145,7 +1156,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: radial-gradient(circle at 20% 25%, rgba(140, 168, 150, 0.05) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(140, 168, 150, 0.05) 0%, transparent 50%);
+        background-image: radial-gradient(circle at 20% 25%, rgba(211, 47, 47, 0.03) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(211, 47, 47, 0.03) 0%, transparent 50%);
         z-index: 0;
     }
     
@@ -1165,16 +1176,17 @@
     
     .showcase-subtitle {
         font-size: 1.2rem;
-        color: #777;
+        color: #b0b0b0;
         max-width: 700px;
         margin: 0 auto;
     }
     
     .product-card {
-        background: white;
+        background: #0a0a0a;
+        border: 1px solid #222;
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.07);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -1185,7 +1197,7 @@
     
     .product-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 25px 40px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
     }
     
     .product-image {
@@ -1237,7 +1249,7 @@
     }
     
     .product-desc {
-        color: #666;
+        color: #b0b0b0;
         margin-bottom: 1.5rem;
         line-height: 1.7;
         flex-grow: 1;
@@ -1281,18 +1293,18 @@
     
     .product-rating span {
         font-weight: 600;
-        color: #666;
+        color: #b0b0b0;
     }
     
     .product-features {
         margin: 1.5rem 0;
         padding-top: 1.5rem;
-        border-top: 1px solid #eee;
+        border-top: 1px solid #222;
     }
     
     .product-features h6 {
         font-weight: 600;
-        color: #555;
+        color: #b0b0b0;
         margin-bottom: 1rem;
         font-size: 1rem;
     }
@@ -1311,7 +1323,7 @@
         align-items: center;
         gap: 0.5rem;
         font-size: 0.9rem;
-        color: #666;
+        color: #b0b0b0;
         width: calc(50% - 0.75rem);
     }
     
@@ -1348,26 +1360,26 @@
     .btn-buy:hover {
         background: var(--orfe-primary-dark);
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(140, 168, 150, 0.2);
+        box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
         color: white;
     }
     
     .btn-info {
         border: 2px solid var(--orfe-primary);
         background: transparent;
-        color: var(--orfe-primary-dark);
+        color: #ffffff;
     }
     
     .btn-info:hover {
-        background: rgba(140, 168, 150, 0.1);
+        background: rgba(211, 47, 47, 0.1);
         transform: translateY(-3px);
-        color: var(--orfe-primary-dark);
+        color: #ffffff;
     }
     
     @media (max-width: 991px) {
         .rating-overall {
             border-right: none;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #222;
             padding-bottom: 1.5rem;
             margin-bottom: 1.5rem;
         }

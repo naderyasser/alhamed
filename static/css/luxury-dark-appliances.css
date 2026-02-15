@@ -1,45 +1,183 @@
+/* ═══════════════════════════════════════════════════════════════
+   LUXURY DARK THEME — Premium Home Appliances & Kitchenware
+   Deep Matte Black · Pure White Typography · Bold Red Accents
+   Cairo / Almarai · Mobile-First · WCAG AA Contrast
+   ═══════════════════════════════════════════════════════════════ */
+
 :root {
-  --lux-bg: #000000;
-  --lux-surface: #0b0b0b;
-  --lux-surface-2: #111111;
-  --lux-border: #242424;
-  --lux-text: #ffffff;
-  --lux-text-muted: #b8b8b8;
-  --lux-accent-red: #d32f2f;
+    --lux-bg: #000000;
+    --lux-surface: #0a0a0a;
+    --lux-surface-2: #111111;
+    --lux-surface-3: #161616;
+    --lux-border: #222222;
+    --lux-border-light: #2a2a2a;
+    --lux-text: #ffffff;
+    --lux-text-muted: #b0b0b0;
+    --lux-text-subtle: #777777;
+    --lux-accent-red: #d32f2f;
+    --lux-accent-red-hover: #e53935;
+    --lux-radius: 18px;
+    --lux-radius-sm: 12px;
+    --lux-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+    --lux-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Base ────────────────────────────────────────────────────── */
 body.luxury-dark-theme {
-  background: var(--lux-bg) !important;
-  color: var(--lux-text);
-  font-family: "Cairo", "Almarai", system-ui, -apple-system, sans-serif !important;
+    background: var(--lux-bg) !important;
+    color: var(--lux-text);
+    font-family: "Cairo", "Almarai", system-ui, -apple-system, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
 }
 
+/* ── Banners ─────────────────────────────────────────────────── */
 body.luxury-dark-theme .promo-banner,
 body.luxury-dark-theme .discount-banner {
-  background: var(--lux-surface-2) !important;
-  color: var(--lux-text) !important;
-  border-bottom: 1px solid var(--lux-border);
+    background: var(--lux-surface-2) !important;
+    color: var(--lux-text) !important;
+    border-bottom: 1px solid var(--lux-border);
 }
 
+body.luxury-dark-theme .promo-banner::before {
+    background-color: var(--lux-accent-red) !important;
+    opacity: 0.04 !important;
+}
+
+body.luxury-dark-theme .discount-off {
+    background: var(--lux-accent-red) !important;
+    color: #fff !important;
+}
+
+body.luxury-dark-theme .discount-code {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--lux-text) !important;
+}
+
+/* ── Header / Navbar ─────────────────────────────────────────── */
+body.luxury-dark-theme .modern-header,
+body.luxury-dark-theme .modern-header.scrolled {
+    background: var(--lux-bg) !important;
+    box-shadow: 0 1px 0 var(--lux-border), 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.luxury-dark-theme .modern-search-input {
+    background: var(--lux-surface-2) !important;
+    border-color: var(--lux-border) !important;
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme .modern-search-input::placeholder {
+    color: var(--lux-text-subtle) !important;
+}
+
+body.luxury-dark-theme .modern-search-input:focus {
+    border-color: var(--lux-accent-red) !important;
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.15) !important;
+    background: var(--lux-surface) !important;
+}
+
+body.luxury-dark-theme .modern-search-btn {
+    background: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme .modern-search-btn:hover {
+    background: var(--lux-accent-red-hover) !important;
+}
+
+body.luxury-dark-theme .modern-nav-link {
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme .modern-nav-link::after {
+    background: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme .modern-nav-link:hover {
+    color: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme .modern-cart-btn {
+    background: var(--lux-surface-2) !important;
+}
+
+body.luxury-dark-theme .modern-cart-btn:hover {
+    background: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme .modern-cart-icon {
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme .modern-cart-badge {
+    background: var(--lux-accent-red) !important;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.5) !important;
+}
+
+body.luxury-dark-theme .mobile-menu-btn {
+    border-color: var(--lux-border) !important;
+    background: var(--lux-surface-2) !important;
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme .offcanvas {
+    background: var(--lux-bg) !important;
+    color: var(--lux-text) !important;
+    border-left: 1px solid var(--lux-border) !important;
+}
+
+body.luxury-dark-theme .offcanvas-header {
+    border-bottom-color: var(--lux-border) !important;
+}
+
+body.luxury-dark-theme .btn-close {
+    filter: invert(1) !important;
+}
+
+body.luxury-dark-theme .mobile-search-container {
+    border-bottom-color: var(--lux-border) !important;
+}
+
+/* ── Surfaces (Cards / Sections / Panels) ────────────────────── */
 body.luxury-dark-theme .shop-header-modern,
 body.luxury-dark-theme .filter-card,
 body.luxury-dark-theme .filter-top-bar,
 body.luxury-dark-theme .product-card-modern,
 body.luxury-dark-theme .product-image-section,
 body.luxury-dark-theme .product-info-section,
-body.luxury-dark-theme .modern-price-section {
-  background: var(--lux-surface) !important;
-  border: 1px solid var(--lux-border) !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
-  border-radius: 18px !important;
+body.luxury-dark-theme .modern-price-section,
+body.luxury-dark-theme .card,
+body.luxury-dark-theme .bg-light,
+body.luxury-dark-theme .story-card,
+body.luxury-dark-theme .feature-card,
+body.luxury-dark-theme .value-card,
+body.luxury-dark-theme .cta-card {
+    background: var(--lux-surface) !important;
+    border: 1px solid var(--lux-border) !important;
+    box-shadow: var(--lux-shadow) !important;
+    border-radius: var(--lux-radius) !important;
 }
 
+/* ── Typography ──────────────────────────────────────────────── */
 body.luxury-dark-theme .shop-header-title,
 body.luxury-dark-theme .modern-product-title,
 body.luxury-dark-theme .product-title-modern,
 body.luxury-dark-theme .filter-card-title,
-body.luxury-dark-theme .meta-label {
-  color: var(--lux-text) !important;
+body.luxury-dark-theme .meta-label,
+body.luxury-dark-theme h1,
+body.luxury-dark-theme h2,
+body.luxury-dark-theme h3,
+body.luxury-dark-theme h4,
+body.luxury-dark-theme h5,
+body.luxury-dark-theme h6,
+body.luxury-dark-theme .display-4,
+body.luxury-dark-theme .card-title,
+body.luxury-dark-theme .widget-title,
+body.luxury-dark-theme .section-title,
+body.luxury-dark-theme .about-hero-title,
+body.luxury-dark-theme .hero-title,
+body.luxury-dark-theme .fw-bold,
+body.luxury-dark-theme .text-dark {
+    color: var(--lux-text) !important;
 }
 
 body.luxury-dark-theme .shop-breadcrumb-modern,
@@ -48,100 +186,374 @@ body.luxury-dark-theme .product-cat,
 body.luxury-dark-theme .meta-value,
 body.luxury-dark-theme .rating-text,
 body.luxury-dark-theme .text-muted,
+body.luxury-dark-theme .card-text,
+body.luxury-dark-theme .breadcrumb-item,
+body.luxury-dark-theme .breadcrumb-item a,
+body.luxury-dark-theme .section-subtitle,
+body.luxury-dark-theme .hero-subtitle,
+body.luxury-dark-theme .hero-description,
 body.luxury-dark-theme p {
-  color: var(--lux-text-muted) !important;
+    color: var(--lux-text-muted) !important;
 }
 
+/* ── Form Controls ───────────────────────────────────────────── */
 body.luxury-dark-theme .search-modern input,
 body.luxury-dark-theme .sort-dropdown,
 body.luxury-dark-theme .qty-input,
 body.luxury-dark-theme .qty-btn,
-body.luxury-dark-theme .qty-controls {
-  background: var(--lux-surface-2) !important;
-  color: var(--lux-text) !important;
-  border-color: var(--lux-border) !important;
+body.luxury-dark-theme .qty-controls,
+body.luxury-dark-theme .form-control,
+body.luxury-dark-theme .form-select,
+body.luxury-dark-theme input[type="text"],
+body.luxury-dark-theme input[type="email"],
+body.luxury-dark-theme input[type="tel"],
+body.luxury-dark-theme input[type="number"],
+body.luxury-dark-theme textarea,
+body.luxury-dark-theme select {
+    background: var(--lux-surface-2) !important;
+    color: var(--lux-text) !important;
+    border-color: var(--lux-border) !important;
 }
 
+body.luxury-dark-theme .form-control:focus,
+body.luxury-dark-theme .form-select:focus {
+    border-color: var(--lux-accent-red) !important;
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12) !important;
+}
+
+body.luxury-dark-theme .form-label {
+    color: var(--lux-text-muted) !important;
+}
+
+body.luxury-dark-theme .form-check-label {
+    color: var(--lux-text) !important;
+}
+
+/* ── Links ───────────────────────────────────────────────────── */
 body.luxury-dark-theme .filter-item a,
 body.luxury-dark-theme .product-title-modern a,
 body.luxury-dark-theme .product-breadcrumb a,
-body.luxury-dark-theme .meta-value a {
-  color: var(--lux-text) !important;
+body.luxury-dark-theme .meta-value a,
+body.luxury-dark-theme a {
+    color: var(--lux-text) !important;
+    transition: var(--lux-transition);
+}
+
+body.luxury-dark-theme a:hover {
+    color: var(--lux-accent-red) !important;
 }
 
 body.luxury-dark-theme .filter-item a:hover,
 body.luxury-dark-theme .filter-item a.active,
 body.luxury-dark-theme .page-item.active .page-link {
-  background: #161616 !important;
-  color: var(--lux-text) !important;
-  border-color: var(--lux-border) !important;
-  box-shadow: none !important;
+    background: var(--lux-surface-3) !important;
+    color: var(--lux-text) !important;
+    border-color: var(--lux-border) !important;
+    box-shadow: none !important;
 }
 
+/* ── Product Images — Dramatic Lighting ──────────────────────── */
 body.luxury-dark-theme .product-img-wrapper,
 body.luxury-dark-theme .main-product-image {
-  background: radial-gradient(circle at 50% 35%, #2a2a2a 0%, #121212 42%, #070707 100%) !important;
+    background: radial-gradient(ellipse at 50% 30%, #1e1e1e 0%, #0d0d0d 50%, #050505 100%) !important;
 }
 
 body.luxury-dark-theme .product-img-wrapper img,
 body.luxury-dark-theme .main-product-image img {
-  filter: contrast(1.1) brightness(1.05);
+    filter: contrast(1.08) brightness(1.06);
+    transition: transform 0.5s ease, filter 0.5s ease;
 }
 
-body.luxury-dark-theme .product-card-modern:hover,
-body.luxury-dark-theme .btn-add-cart-modern:hover,
-body.luxury-dark-theme .overlay-btn:hover {
-  transform: translateY(-4px);
+body.luxury-dark-theme .product-card-modern:hover .product-img-wrapper img {
+    filter: contrast(1.15) brightness(1.12);
 }
 
+/* ── Hover / Micro-interactions ──────────────────────────────── */
+body.luxury-dark-theme .product-card-modern {
+    transition: var(--lux-transition);
+}
+
+body.luxury-dark-theme .product-card-modern:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+    border-color: var(--lux-border-light) !important;
+}
+
+body.luxury-dark-theme .btn-add-cart-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(211, 47, 47, 0.35) !important;
+    background: var(--lux-accent-red-hover) !important;
+}
+
+/* ── RED Accents — Add to Cart, Prices, Badges ───────────────── */
 body.luxury-dark-theme .product-badge-modern,
 body.luxury-dark-theme .discount-badge-modern,
+body.luxury-dark-theme .btn-add-cart-modern,
+body.luxury-dark-theme .overlay-btn.add-cart-accent,
+body.luxury-dark-theme .btn-primary {
+    background: var(--lux-accent-red) !important;
+    color: #ffffff !important;
+    border-color: var(--lux-accent-red) !important;
+    font-weight: 700;
+}
+
+body.luxury-dark-theme .btn-primary:hover {
+    background: var(--lux-accent-red-hover) !important;
+    border-color: var(--lux-accent-red-hover) !important;
+}
+
 body.luxury-dark-theme .current-price,
 body.luxury-dark-theme .current-price-modern,
-body.luxury-dark-theme .price-tag,
-body.luxury-dark-theme .badge-notification,
-body.luxury-dark-theme .btn-add-cart-modern,
-body.luxury-dark-theme .overlay-btn.add-cart-accent {
-  background: var(--lux-accent-red) !important;
-  color: #ffffff !important;
-  border-color: var(--lux-accent-red) !important;
+body.luxury-dark-theme .product-current-price {
+    background: transparent !important;
+    color: var(--lux-accent-red) !important;
+    font-weight: 900;
 }
 
-body.luxury-dark-theme .current-price,
-body.luxury-dark-theme .current-price-modern {
-  background: transparent !important;
-  color: var(--lux-accent-red) !important;
+body.luxury-dark-theme .old-price,
+body.luxury-dark-theme .old-price-modern,
+body.luxury-dark-theme .product-old-price {
+    color: var(--lux-text-subtle) !important;
 }
 
+/* ── Secondary Buttons ───────────────────────────────────────── */
 body.luxury-dark-theme .btn-buy-now,
 body.luxury-dark-theme .overlay-btn,
 body.luxury-dark-theme .page-link,
-body.luxury-dark-theme .btn {
-  background: #111111;
-  color: var(--lux-text);
-  border: 1px solid var(--lux-border);
-  border-radius: 14px !important;
+body.luxury-dark-theme .btn-outline-dark,
+body.luxury-dark-theme .btn-outline-secondary,
+body.luxury-dark-theme .btn-dark {
+    background: var(--lux-surface-2) !important;
+    color: var(--lux-text) !important;
+    border: 1px solid var(--lux-border) !important;
+    border-radius: var(--lux-radius-sm) !important;
+}
+
+body.luxury-dark-theme .btn-dark:hover,
+body.luxury-dark-theme .btn-outline-dark:hover {
+    background: var(--lux-surface-3) !important;
+    border-color: var(--lux-border-light) !important;
 }
 
 body.luxury-dark-theme .btn,
 body.luxury-dark-theme .btn-add-cart-modern,
 body.luxury-dark-theme .btn-buy-now,
 body.luxury-dark-theme .overlay-btn {
-  min-height: 44px;
+    min-height: 44px;
+    border-radius: var(--lux-radius-sm) !important;
 }
 
-@media (max-width: 768px) {
-  body.luxury-dark-theme .shop-header-modern,
-  body.luxury-dark-theme .modern-product-detail,
-  body.luxury-dark-theme .container {
-    padding-top: 1rem;
-    padding-bottom: 1.25rem;
-  }
+/* ── Homepage Hero Section ───────────────────────────────────── */
+body.luxury-dark-theme .hero-section,
+body.luxury-dark-theme .hero-slider {
+    background: var(--lux-bg) !important;
+}
 
-  body.luxury-dark-theme .product-card-modern,
-  body.luxury-dark-theme .filter-card,
-  body.luxury-dark-theme .product-info-section,
-  body.luxury-dark-theme .product-image-section {
-    border-radius: 16px !important;
-  }
+body.luxury-dark-theme .hero-bg::before {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.8) 35%, rgba(0, 0, 0, 0.4) 65%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+body.luxury-dark-theme .hero-content {
+    color: var(--lux-text);
+}
+
+body.luxury-dark-theme .product-highlight {
+    background: var(--lux-surface) !important;
+    border: 1px solid var(--lux-border) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+    border-radius: var(--lux-radius-sm) !important;
+}
+
+body.luxury-dark-theme .product-highlight-title {
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme .product-discount {
+    background: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme .swiper-button-prev,
+body.luxury-dark-theme .swiper-button-next {
+    background: var(--lux-surface-2) !important;
+    border: 1px solid var(--lux-border) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.luxury-dark-theme .swiper-button-prev:after,
+body.luxury-dark-theme .swiper-button-next:after {
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme .swiper-button-prev:hover,
+body.luxury-dark-theme .swiper-button-next:hover {
+    background: var(--lux-accent-red) !important;
+    border-color: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme .swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.luxury-dark-theme .swiper-pagination-bullet-active {
+    background: var(--lux-accent-red) !important;
+}
+
+/* ── Homepage About / Features Sections ──────────────────────── */
+body.luxury-dark-theme .about-section,
+body.luxury-dark-theme section {
+    background: var(--lux-bg) !important;
+}
+
+body.luxury-dark-theme .about-hero {
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%) !important;
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme .about-hero::before {
+    opacity: 0.08 !important;
+}
+
+/* ── Cart Page ───────────────────────────────────────────────── */
+body.luxury-dark-theme .hero-section {
+    background: var(--lux-surface) !important;
+}
+
+body.luxury-dark-theme .cart-header {
+    color: var(--lux-text-muted) !important;
+}
+
+body.luxury-dark-theme .cart-item {
+    border-top-color: var(--lux-border) !important;
+}
+
+body.luxury-dark-theme .border-top,
+body.luxury-dark-theme .border-bottom {
+    border-color: var(--lux-border) !important;
+}
+
+body.luxury-dark-theme .table {
+    color: var(--lux-text) !important;
+    --bs-table-bg: transparent;
+}
+
+body.luxury-dark-theme .table th {
+    color: var(--lux-text-muted) !important;
+}
+
+body.luxury-dark-theme .table td {
+    color: var(--lux-text) !important;
+    border-bottom-color: var(--lux-border) !important;
+}
+
+/* ── Checkout Page ────────────────────────────────────────────── */
+body.luxury-dark-theme .form-check-input {
+    background-color: var(--lux-surface-2) !important;
+    border-color: var(--lux-border) !important;
+}
+
+body.luxury-dark-theme .form-check-input:checked {
+    background-color: var(--lux-accent-red) !important;
+    border-color: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme hr {
+    border-color: var(--lux-border) !important;
+    opacity: 1 !important;
+}
+
+/* ── Alerts ──────────────────────────────────────────────────── */
+body.luxury-dark-theme .alert {
+    background: var(--lux-surface-2) !important;
+    border-color: var(--lux-border) !important;
+    color: var(--lux-text) !important;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+body.luxury-dark-theme #footer {
+    background: var(--lux-surface) !important;
+    border-top: 1px solid var(--lux-border) !important;
+    color: var(--lux-text-muted) !important;
+}
+
+body.luxury-dark-theme #footer h5 {
+    color: var(--lux-text) !important;
+}
+
+body.luxury-dark-theme #footer a {
+    color: var(--lux-text-muted) !important;
+}
+
+body.luxury-dark-theme #footer a:hover {
+    color: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme #footer p {
+    color: var(--lux-text-subtle) !important;
+}
+
+/* ── WhatsApp Bubble ─────────────────────────────────────────── */
+body.luxury-dark-theme .whatsapp {
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35) !important;
+}
+
+/* ── Mobile Bottom Navigation ────────────────────────────────── */
+body.luxury-dark-theme .mobile-bottom-nav {
+    background: var(--lux-surface) !important;
+    border-top: 1px solid var(--lux-border) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.luxury-dark-theme .mobile-bottom-nav .nav-item {
+    color: var(--lux-text-subtle) !important;
+}
+
+body.luxury-dark-theme .mobile-bottom-nav .nav-item.active,
+body.luxury-dark-theme .mobile-bottom-nav .nav-item:hover {
+    color: var(--lux-accent-red) !important;
+}
+
+body.luxury-dark-theme .mobile-bottom-nav .cart-count-badge {
+    background: var(--lux-accent-red) !important;
+    color: #fff !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+body.luxury-dark-theme::-webkit-scrollbar {
+    width: 6px;
+}
+
+body.luxury-dark-theme::-webkit-scrollbar-track {
+    background: var(--lux-bg);
+}
+
+body.luxury-dark-theme::-webkit-scrollbar-thumb {
+    background: var(--lux-border);
+    border-radius: 3px;
+}
+
+body.luxury-dark-theme::-webkit-scrollbar-thumb:hover {
+    background: var(--lux-accent-red);
+}
+
+/* ── Responsive Mobile Overrides ─────────────────────────────── */
+@media (max-width: 768px) {
+    body.luxury-dark-theme .hero-bg::before {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.3) 100%) !important;
+    }
+
+    body.luxury-dark-theme .product-card-modern,
+    body.luxury-dark-theme .filter-card,
+    body.luxury-dark-theme .product-info-section,
+    body.luxury-dark-theme .product-image-section {
+        border-radius: 16px !important;
+    }
+
+    body.luxury-dark-theme .product-card-modern:hover {
+        transform: none;
+    }
+}
+
+/* ── Utility: ensure bg-body override ────────────────────────── */
+body.luxury-dark-theme.bg-body {
+    background-color: var(--lux-bg) !important;
 }

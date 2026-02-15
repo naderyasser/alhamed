@@ -238,7 +238,8 @@
     <!-- 10% Discount Promo Banner -->
     <style>
         .discount-banner {
-            background: #292f2b;
+            background: #0a0a0a;
+            border-bottom: 1px solid #222;
             color: #f6f5f2;
             text-align: center;
             padding: 10px 20px;
@@ -280,8 +281,8 @@
             gap: 8px;
         }
         .discount-off {
-            background: #f6f5f2;
-            color: #292f2b;
+            background: #d32f2f;
+            color: #fff;
             padding: 4px 12px;
             border-radius: 4px;
             font-weight: 700;
@@ -367,8 +368,8 @@
     <style>
         /* Modern Header Styles */
         .modern-header {
-            background: #ffffff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: #000000;
+            box-shadow: 0 1px 0 #222, 0 4px 16px rgba(0,0,0,0.4);
             position: sticky;
             top: 0;
             z-index: 999;
@@ -376,7 +377,7 @@
         }
 
         .modern-header.scrolled {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            box-shadow: 0 1px 0 #222, 0 6px 24px rgba(0,0,0,0.5);
         }
 
         .modern-navbar {
@@ -407,18 +408,19 @@
         .modern-search-input {
             width: 100%;
             padding: 0.7rem 3rem 0.7rem 1.2rem;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #222;
             border-radius: 50px;
             font-size: 0.95rem;
             transition: all 0.3s ease;
-            background: #f8f9fa;
+            background: #111;
+            color: #fff;
         }
 
         .modern-search-input:focus {
             outline: none;
-            border-color: #8CA896;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(140, 168, 150, 0.1);
+            border-color: #d32f2f;
+            background: #0a0a0a;
+            box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.12);
         }
 
         .modern-search-btn {
@@ -426,7 +428,7 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            background: #8CA896;
+            background: #d32f2f;
             color: white;
             border: none;
             width: 38px;
@@ -440,7 +442,7 @@
         }
 
         .modern-search-btn:hover {
-            background: #788F82;
+            background: #e53935;
             transform: translateY(-50%) scale(1.05);
         }
 
@@ -454,7 +456,7 @@
         }
 
         .modern-nav-link {
-            color: #333;
+            color: #ffffff;
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
@@ -469,12 +471,12 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #8CA896;
+            background: #d32f2f;
             transition: width 0.3s ease;
         }
 
         .modern-nav-link:hover {
-            color: #8CA896;
+            color: #d32f2f;
         }
 
         .modern-nav-link:hover::after,
@@ -484,7 +486,8 @@
 
         .modern-cart-btn {
             position: relative;
-            background: #f8f9fa;
+            background: #111;
+            border: 1px solid #222;
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -496,7 +499,8 @@
         }
 
         .modern-cart-btn:hover {
-            background: #8CA896;
+            background: #d32f2f;
+            border-color: #d32f2f;
             transform: translateY(-2px);
         }
 
@@ -506,7 +510,7 @@
 
         .modern-cart-icon {
             font-size: 22px;
-            color: #333;
+            color: #fff;
             transition: color 0.3s ease;
         }
 
@@ -514,7 +518,7 @@
             position: absolute;
             top: -5px;
             right: -5px;
-            background: #FF6B35;
+            background: #d32f2f;
             color: white;
             font-size: 0.7rem;
             font-weight: 700;
@@ -522,25 +526,26 @@
             border-radius: 50px;
             min-width: 20px;
             text-align: center;
-            box-shadow: 0 2px 6px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 2px 6px rgba(211, 47, 47, 0.4);
         }
 
         .mobile-menu-btn {
-            border: 2px solid #e0e0e0;
-            background: white;
+            border: 2px solid #333;
+            background: #111;
+            color: #fff;
             padding: 0.5rem;
             border-radius: 10px;
             transition: all 0.3s ease;
         }
 
         .mobile-menu-btn:hover {
-            border-color: #8CA896;
-            background: #f8f9fa;
+            border-color: #d32f2f;
+            background: #1a1a1a;
         }
 
         .mobile-search-container {
             padding: 1rem;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #222;
         }
 
         @media (max-width: 991px) {
@@ -716,6 +721,90 @@
             </div>
         </div>
     </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav d-md-none">
+        <a href="{{ url_for('shop.home') }}" class="nav-item {% if request.endpoint == 'shop.home' %}active{% endif %}">
+            <i class='bx bx-home-alt'></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="{{ url_for('shop.list') }}" class="nav-item {% if request.endpoint == 'shop.list' %}active{% endif %}">
+            <i class='bx bx-store'></i>
+            <span>المتجر</span>
+        </a>
+        <a href="{{ url_for('shop.cart') }}" class="nav-item {% if request.endpoint == 'shop.cart' %}active{% endif %}" style="position:relative;">
+            <i class='bx bx-cart'></i>
+            {% if session.get('cart') %}
+            <span class="cart-count-badge">{{ session.get('cart')|length }}</span>
+            {% endif %}
+            <span>السلة</span>
+        </a>
+        <a href="{{ url_for('shop.about') }}" class="nav-item {% if request.endpoint == 'shop.about' %}active{% endif %}">
+            <i class='bx bx-info-circle'></i>
+            <span>من نحن</span>
+        </a>
+    </nav>
+    <style>
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom, 0px));
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+        .mobile-bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: #777;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 60px;
+            min-height: 44px;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+        .mobile-bottom-nav .nav-item i {
+            font-size: 1.4rem;
+        }
+        .mobile-bottom-nav .nav-item.active,
+        .mobile-bottom-nav .nav-item:hover {
+            color: #d32f2f;
+        }
+        .mobile-bottom-nav .cart-count-badge {
+            position: absolute;
+            top: 2px;
+            right: 12px;
+            background: #d32f2f;
+            color: #fff;
+            font-size: 0.6rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        @media (min-width: 768px) {
+            .mobile-bottom-nav { display: none !important; }
+        }
+        /* Add bottom padding to body on mobile so content isn't hidden behind nav */
+        @media (max-width: 767px) {
+            body { padding-bottom: 70px; }
+        }
+    </style>
 
     <!-- Bootstrap Scripts -->
     <script>

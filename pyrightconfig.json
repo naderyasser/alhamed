@@ -1,0 +1,11 @@
+{
+    "typeCheckingMode": "off",
+    "reportMissingImports": "none",
+    "exclude": [
+        "**/__pycache__",
+        "instance",
+        "recovery",
+        "static",
+        "data"
+    ]
+}

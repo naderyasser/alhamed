@@ -1,6 +1,15 @@
 {% extends "shop/base.html" %} {% block content %}
-
-<section class="hero-section d-flex align-items-center py-4" style="background: #f7f7f7;">
+<style>
+  .hero-section { background: #0a0a0a !important; border-bottom: 1px solid #222; }
+  .hero-section h1 { color: #fff !important; }
+  .breadcrumb-item a { color: #b0b0b0 !important; }
+  .breadcrumb-item.active { color: #d32f2f !important; }
+  .card.shadow-sm { background: #0a0a0a !important; border: 1px solid #222 !important; }
+  .card.shadow-sm img { border-radius: 8px; }
+  .order-items h6 { color: #fff !important; }
+  .alert-success { background: rgba(211,47,47,0.08) !important; border-color: #d32f2f !important; color: #d32f2f !important; }
+</style>
+<section class="hero-section d-flex align-items-center py-4">
     <div class="container">
         <div class="row">
             <div class="col text-center">

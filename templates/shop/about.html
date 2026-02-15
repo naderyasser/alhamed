@@ -7,13 +7,13 @@
 
 <style>
     :root {
-        --orfe-primary: #8CA896;
-        --orfe-primary-dark: #788F82;
-        --orfe-primary-light: #A6BCAF;
-        --orfe-orange: #FF6B35;
-        --orfe-gold: #FFC107;
-        --orfe-black: #1A1A1A;
-        --orfe-gray-bg: #F8F9FA;
+        --orfe-primary: #d32f2f;
+        --orfe-primary-dark: #b71c1c;
+        --orfe-primary-light: #e53935;
+        --orfe-orange: #d32f2f;
+        --orfe-gold: #d32f2f;
+        --orfe-black: #ffffff;
+        --orfe-gray-bg: #000000;
     }
 
     body {
@@ -23,7 +23,7 @@
 
     /* Hero Section */
     .about-hero {
-        background: linear-gradient(135deg, var(--orfe-primary) 0%, var(--orfe-primary-dark) 100%);
+        background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
         color: white;
         padding: 5rem 0 3rem;
         text-align: center;
@@ -38,7 +38,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(211,47,47,0.08)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
         background-size: cover;
         opacity: 0.3;
     }
@@ -81,23 +81,24 @@
 
     .section-subtitle {
         font-size: 1.1rem;
-        color: #666;
+        color: #b0b0b0;
         max-width: 600px;
         margin: 0 auto;
     }
 
     .story-card {
-        background: white;
+        background: #0a0a0a;
+        border: 1px solid #222;
         border-radius: 20px;
         padding: 2.5rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         margin-bottom: 2rem;
     }
 
     .story-text {
         font-size: 1.1rem;
         line-height: 2;
-        color: #555;
+        color: #b0b0b0;
     }
 
     /* Values Section */
@@ -108,23 +109,24 @@
     }
 
     .value-card {
-        background: white;
+        background: #0a0a0a;
+        border: 1px solid #222;
         border-radius: 20px;
         padding: 2rem;
         text-align: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         transition: all 0.3s ease;
     }
 
     .value-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .value-icon {
         width: 80px;
         height: 80px;
-        background: linear-gradient(135deg, var(--orfe-primary-light), var(--orfe-primary));
+        background: linear-gradient(135deg, #d32f2f, #b71c1c);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -144,12 +146,14 @@
     .value-text {
         font-size: 1rem;
         line-height: 1.8;
-        color: #666;
+        color: #b0b0b0;
     }
 
     /* Stats Section */
     .stats-section {
-        background: linear-gradient(135deg, var(--orfe-primary) 0%, var(--orfe-primary-dark) 100%);
+        background: linear-gradient(135deg, #0d0d0d 0%, #111 100%);
+        border-top: 1px solid #222;
+        border-bottom: 1px solid #222;
         padding: 4rem 0;
         color: white;
         margin: 3rem 0;
@@ -182,23 +186,24 @@
     }
 
     .team-card {
-        background: white;
+        background: #0a0a0a;
+        border: 1px solid #222;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         transition: all 0.3s ease;
     }
 
     .team-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .team-image {
         width: 100%;
         height: 300px;
         object-fit: cover;
-        background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+        background: linear-gradient(135deg, #111, #1a1a1a);
     }
 
     .team-info {
@@ -229,11 +234,12 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: #f5f5f5;
+        background: #111;
+        border: 1px solid #222;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--orfe-primary-dark);
+        color: #b0b0b0;
         text-decoration: none;
         transition: all 0.3s;
     }
@@ -292,7 +298,7 @@
 </section>
 
 <!-- Values Section -->
-<section class="about-section" style="background: white;">
+<section class="about-section" style="background: #000;">
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">قيمنا</h2>
@@ -364,7 +370,7 @@
         </div>
         <div class="row">
             <div class="col-lg-10 mx-auto">
-                <div class="story-card" style="background: linear-gradient(135deg, #f8f9fa, white);">
+                <div class="story-card" style="background: linear-gradient(135deg, #0a0a0a, #111); border: 1px solid #222;">
                     <p class="story-text" style="text-align: center; font-size: 1.2rem; font-weight: 600;">
                         "مهمتنا هي تمكين كل امرأة من الاعتناء بنفسها بثقة، من خلال توفير منتجات عناية شخصية 
                         عالية الجودة، بأسعار عادلة، وتجربة تسوق سلسة وممتعة. نؤمن بأن كل امرأة تستحق أن تشعر 
@@ -377,13 +383,13 @@
 </section>
 
 <!-- Contact CTA -->
-<section class="about-section" style="background: white; padding: 3rem 0;">
+<section class="about-section" style="background: #000; padding: 3rem 0;">
     <div class="container text-center">
         <h2 class="section-title">تواصلي معنا</h2>
         <p class="section-subtitle" style="margin-bottom: 2rem;">
             هل لديك أي استفسار أو تحتاجين مساعدة؟ نحن هنا من أجلك!
         </p>
-        <a href="https://wa.me/{{ admin_phone }}" class="btn btn-lg" style="background: var(--orfe-primary); color: white; padding: 1rem 3rem; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.7rem;">
+        <a href="https://wa.me/{{ admin_phone }}" class="btn btn-lg" style="background: #d32f2f; color: white; padding: 1rem 3rem; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.7rem;">
             <i class='bx bxl-whatsapp' style="font-size: 1.5rem;"></i>
             تواصلي عبر واتساب
         </a>
