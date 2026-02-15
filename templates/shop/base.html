@@ -57,16 +57,15 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Orfe Shop</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Boxicons -->
 
     <!-- Google Fonts -->
@@ -75,7 +74,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@300;400;500;600;700&family=Sofia+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
-    <script src="static/js/modernizr.js" defer></script>
+    <script src="{{ url_for('static', filename='js/modernizr.js') }}" defer></script>
     <!-- Meta Data -->
     <meta name="description" content="Orfe Shop - Your ultimate destination for premium cosmetics. Discover beauty that enhances your confidence and brings out the best in you.">
     <meta name="keywords" content="Orfe, cosmetics, beauty, skincare, makeup, premium beauty products">
@@ -717,7 +716,33 @@
     </footer>
 
     <!-- Bootstrap Scripts -->
-    <script src="static/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('submit', function(event) {
+            const form = event.target;
+            if (!form || form.tagName !== 'FORM') {
+                return;
+            }
+
+            const method = (form.getAttribute('method') || 'GET').toUpperCase();
+            if (method !== 'POST') {
+                return;
+            }
+
+            if (!form.querySelector('input[name="csrf_token"]')) {
+                const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+                if (!tokenMeta || !tokenMeta.content) {
+                    return;
+                }
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrf_token';
+                csrfInput.value = tokenMeta.content;
+                form.appendChild(csrfInput);
+            }
+        }, true);
+    </script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 
 </html>

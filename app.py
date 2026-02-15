@@ -1,13 +1,17 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, session , send_from_directory , Blueprint , send_file
+# pyright: reportMissingImports=false, reportCallIssue=false, reportAttributeAccessIssue=false, reportOptionalMemberAccess=false, reportArgumentType=false
+from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, session , send_from_directory , Blueprint , send_file, abort
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_ , DateTime , ForeignKey , Integer , String , Float , Text , Column
 from datetime import datetime, timedelta, timezone
 from flask_migrate import Migrate
 import os
 import json
+import hmac
+import secrets
 import requests
 from uuid import uuid4
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from models.bosta import BostaService
 from datetime import datetime
 from datetime import datetime
@@ -37,13 +41,16 @@ app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_KEY_PREFIX'] = 'orfe-shop'
 app.secret_key = os.getenv('SECRET_KEY', 'secret-key-change-in-production')
 
+CSRF_EXEMPT_ENDPOINTS = {
+    'shop.payment_webhook',
+}
+
 # Configure Honeybadger only if successfully imported
 if has_honeybadger:
     app.config['HONEYBADGER_ENVIRONMENT'] = os.getenv('HONEYBADGER_ENVIRONMENT', 'production')
     app.config['HONEYBADGER_API_KEY'] = os.getenv('HONEYBADGER_API_KEY', '')
     app.config['HONEYBADGER_PARAMS_FILTERS'] = 'password, secret, credit-card'
     try:
-        from honeybadger.contrib import FlaskHoneybadger
         FlaskHoneybadger(app, report_exceptions=True)
         print("Honeybadger initialized successfully")
     except Exception as e:
@@ -476,8 +483,8 @@ def check_session():
         guest = Gusts.query.filter_by(session=session['session']).first()
         
         if guest:
-            # 3. Update last activity
-            guest.last_activity = datetime.utcnow()
+            # 3. Keep previous last activity for expiration check
+            previous_last_activity = guest.last_activity
             
             # 4. Clean up expired cart items
             cleanup_expired_cart_items()
@@ -488,7 +495,7 @@ def check_session():
             
             # 6. Check for session expiration (30 days of inactivity)
             expiration_time = datetime.utcnow() - timedelta(days=30)
-            if guest.last_activity < expiration_time:
+            if previous_last_activity and previous_last_activity < expiration_time:
                 # Clear old cart items
                 Cart.query.filter_by(user_id=guest.id).delete()
                 # Create new session
@@ -502,6 +509,9 @@ def check_session():
                 db.session.add(new_guest)
                 db.session.commit()
                 return
+
+            # Update activity only after expiration check
+            guest.last_activity = datetime.utcnow()
                 
             db.session.commit()
         else:
@@ -523,8 +533,23 @@ def check_session():
         if 'session' not in session:
             session['session'] = os.urandom(24).hex()
             session['cart_count'] = 0
+
+
+def generate_csrf_token():
+    token = session.get('_csrf_token')
+    if not token:
+        token = secrets.token_hex(32)
+        session['_csrf_token'] = token
+    return token
+
+
+@app.context_processor
+def inject_csrf_token():
+    return {'csrf_token': generate_csrf_token}
 @app.route('/test-honeybadger')
 def test_honeybadger():
+    if os.getenv('FLASK_DEBUG', '0') not in ('1', 'true', 'True'):
+        abort(404)
     return f"{1/0}"
 @app.before_request
 def before_request():
@@ -532,6 +557,28 @@ def before_request():
     cleanup_expired_cart_items()  # Clean up expired items on each request
     session.permanent = True
     session.modified = True
+
+
+@app.before_request
+def csrf_protect():
+    if request.method != 'POST':
+        return
+
+    if request.endpoint in CSRF_EXEMPT_ENDPOINTS:
+        return
+
+    if request.is_json:
+        return
+
+    session_token = session.get('_csrf_token')
+    request_token = request.form.get('csrf_token') or request.headers.get('X-CSRF-Token')
+
+    if not session_token or not request_token or not hmac.compare_digest(session_token, request_token):
+        if request.blueprint == 'admin':
+            flash('جلسة النموذج غير صالحة، أعد المحاولة', 'error')
+            return redirect(request.referrer or url_for('admin.login'))
+        flash('انتهت صلاحية النموذج، أعد المحاولة', 'danger')
+        return redirect(request.referrer or url_for('shop.home'))
 
 @app.template_filter('currency')
 def currency_format(value):
@@ -828,7 +875,7 @@ def handle_fawaterak_payment(order):
 
     # Add product items to cart items and total
     for item in order_items:
-        product = Product.query.get(item.product_id)
+        product = db.session.get(Product, item.product_id)
         if product:
             try:
                 price = float(product.price)
@@ -957,7 +1004,7 @@ def send_discord_notification(order, order_items):
         }
         
         for item in order_items:
-            product = Product.query.get(item.product_id)
+            product = db.session.get(Product, item.product_id)
             if product:
                 item_total = product.price * item.quantity
                 total_amount += item_total
@@ -1136,10 +1183,11 @@ def place_order():
             return redirect(url_for('shop.checkout'))
 
         # 5. Calculate product total server-side (secure calculation)
-        product_subtotal = sum(
-            Product.query.get(item.product_id).price * item.quantity
-            for item in cart_items
-        )
+        product_subtotal = 0
+        for item in cart_items:
+            product = db.session.get(Product, item.product_id)
+            if product:
+                product_subtotal += product.price * item.quantity
 
         # Apply promotional discount (10% off) if eligible
         promo_info = check_promotional_discount()
@@ -1152,7 +1200,7 @@ def place_order():
 
         # 6. Check stock availability
         for cart_item in cart_items:
-            product = Product.query.get(cart_item.product_id)
+            product = db.session.get(Product, cart_item.product_id)
             if not product:
                 flash(f'المنتج غير موجود', 'danger')
                 return redirect(url_for('shop.cart'))
@@ -1206,7 +1254,7 @@ def place_order():
         # 12. Create order items and update stock
         order_items = []
         for cart_item in cart_items:
-            product = Product.query.get(cart_item.product_id)
+            product = db.session.get(Product, cart_item.product_id)
             order_item = OrderItem(
                 order_id=order.id,
                 product_id=cart_item.product_id,
@@ -1261,7 +1309,7 @@ def order_confirmation():
     # get order items by order id
     order_items = OrderItem.query.filter_by(order_id=order.id).all()
     for item in order_items:
-        product = Product.query.get(item.product_id)
+        product = db.session.get(Product, item.product_id)
         item.product = product
     return render_template('shop/order_confirmation.html', order=order, order_items=order_items)
 
@@ -1285,7 +1333,7 @@ def order_detail():
         order_items = OrderItem.query.filter_by(order_id=order.id).all()
         
         for item in order_items:
-            product = Product.query.get(item.product_id)
+            product = db.session.get(Product, item.product_id)
             item.product = product
             
         productsPrice = 0 
@@ -1328,16 +1376,29 @@ def payment_pending(order_id):
 @shop.route('/payment/webhook', methods=['POST'])
 def payment_webhook():
     try:
+        webhook_secret = os.getenv('PAYMENT_WEBHOOK_SECRET', '')
+        if webhook_secret:
+            incoming_secret = request.headers.get('X-Webhook-Secret', '')
+            if incoming_secret != webhook_secret:
+                return jsonify({'status': 'error', 'message': 'Unauthorized webhook'}), 401
+
         data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({'status': 'error', 'message': 'Invalid payload'}), 400
+
         invoice_key = data.get('invoiceKey')
         status = data.get('status')
+
+        if not invoice_key or not status:
+            return jsonify({'status': 'error', 'message': 'Missing required fields'}), 400
 
         order = Order.query.filter_by(invoice_key=invoice_key).first()
         if order:
             order.payment_status = status
             if status == 'paid':
-                user = Gusts.query.get(order.user_id)
-                Cart.query.filter_by(user_id=user.id).delete()
+                user = db.session.get(Gusts, order.user_id)
+                if user:
+                    Cart.query.filter_by(user_id=user.id).delete()
             db.session.commit()
             return jsonify({'status': 'success'}), 200
 
@@ -1424,10 +1485,11 @@ def login():
         try:
             is_admin_created = Admins.query.first()
             if not is_admin_created:
+                default_password = os.getenv('ADMIN_PASSWORD', 'admin123')
                 new_admin = Admins(
                     name='Admin',
                     email=os.getenv('ADMIN_EMAIL', 'admin@example.com'),
-                    password=os.getenv('ADMIN_PASSWORD', 'admin123'),
+                    password=generate_password_hash(default_password),
                 )
                 db.session.add(new_admin)
                 db.session.commit()
@@ -1441,8 +1503,17 @@ def login():
                 flash('الرجاء إدخال البريد الإلكتروني وكلمة المرور', 'error')
                 return redirect(url_for('admin.login'))
             
-            admin = Admins.query.filter_by(email=email, password=password).first()
+            admin = Admins.query.filter_by(email=email).first()
             if admin:
+                is_valid_password = check_password_hash(admin.password, password)
+
+                # Backward compatibility for old plaintext password records
+                if not is_valid_password and admin.password == password:
+                    admin.password = generate_password_hash(password)
+                    db.session.commit()
+                    is_valid_password = True
+
+            if admin and is_valid_password:
                 session['admin'] = admin.id
                 admin.last_login = datetime.utcnow()
                 db.session.commit()
@@ -1470,7 +1541,7 @@ def admin_required(f):
 
 @admin.route('/logout')
 def logout():
-    session.pop('admin')
+    session.pop('admin', None)
     return redirect(url_for('admin.login'))
 
 
@@ -2535,7 +2606,7 @@ def delete_order(order_id):
         # Restore product stock
         order_items = OrderItem.query.filter_by(order_id=order_id).all()
         for item in order_items:
-            product = Product.query.get(item.product_id)
+            product = db.session.get(Product, item.product_id)
             if product:
                 product.stock += item.quantity
         
@@ -3235,27 +3306,7 @@ def internal_server_error(e):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        # make the product 4 stock 100
-        product = Product.query.get(4)
-        if product:
-            product.stock = 100
-            db.session.commit()
-
-        # One-time update: Set all existing orders payment_status to 'paid'
-        # تحديث حالة الدفع لجميع الطلبات القديمة إلى "تم الدفع"
-        try:
-            orders_to_update = Order.query.filter(
-                (Order.payment_status != 'paid') | (Order.payment_status.is_(None))
-            ).all()
-            if orders_to_update:
-                updated_count = 0
-                for order in orders_to_update:
-                    order.payment_status = 'paid'
-                    updated_count += 1
-                db.session.commit()
-                print(f"✓ تم تحديث حالة الدفع لـ {updated_count} طلب إلى 'paid'")
-        except Exception as e:
-            db.session.rollback()
-            print(f"⚠ خطأ في تحديث حالة الدفع للطلبات: {e}")
-
-    app.run(debug=True,host='0.0.0.0',port=8765)
+    debug_mode = os.getenv('FLASK_DEBUG', '1') in ('1', 'true', 'True')
+    host = os.getenv('FLASK_HOST', '127.0.0.1' if not debug_mode else '0.0.0.0')
+    port = int(os.getenv('FLASK_PORT', '8765'))
+    app.run(debug=debug_mode, host=host, port=port)
