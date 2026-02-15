@@ -1,7 +1,7 @@
 # pyright: reportMissingImports=false, reportCallIssue=false, reportAttributeAccessIssue=false, reportOptionalMemberAccess=false, reportArgumentType=false
-from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, session , send_from_directory , Blueprint , send_file, abort
+from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, session, Blueprint, send_file, abort
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_ , DateTime , ForeignKey , Integer , String , Float , Text , Column
+from sqlalchemy import or_, text as sa_text
 from datetime import datetime, timedelta, timezone
 from flask_migrate import Migrate
 import os
@@ -13,9 +13,6 @@ from uuid import uuid4
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.bosta import BostaService
-from datetime import datetime
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 import pandas as pd
 from io import BytesIO
 import shutil
@@ -115,7 +112,7 @@ def create_project_backup():
         try:
             # Initialize git configuration if not set
             subprocess.run(['git', 'config', 'user.name', 'Backup System'], check=True)
-            subprocess.run(['git', 'config', 'user.email', 'backup@orfe-cosmetics.com'], check=True)
+            subprocess.run(['git', 'config', 'user.email', 'backup@alha-store.com'], check=True)
             
             # Stage all tracked files
             subprocess.run(['git', 'add', '-u'], check=True)
@@ -208,7 +205,6 @@ def check_promotional_discount():
     Check for 10% promotional discount on all orders (valid for 5 days)
     Returns dictionary with discount info
     """
-    from datetime import datetime, timedelta
 
     # Define promotional period (5 days from January 4, 2026)
     promo_start_date = datetime(2026, 1, 4)  # تاريخ بداية العرض
@@ -239,7 +235,6 @@ def check_eid_shipping_offer(cart_items, city_id):
     - 50% off shipping for package #4 to other governorates
     Returns dictionary with offer details
     """
-    from datetime import datetime, timedelta
     
     # Define offer period (6 days) - Eid Al-Adha 2025
     offer_start_date = datetime(2025, 6, 5)  # يبدأ اليوم
@@ -273,7 +268,7 @@ def check_eid_shipping_offer(cart_items, city_id):
     try:
         city = City.query.filter_by(city_id=city_id).first()
         city_name = city.name if city else ""
-    except:
+    except Exception:
         city_name = ""
     
     # Check if city qualifies for free shipping
@@ -613,7 +608,6 @@ def home():
                            section_title="Our Featured Products",
                            products=last_products)
 
-from sqlalchemy import or_
 @shop.route('/shop')
 def list():
     page = request.args.get('page', 1, type=int)  # Current page
@@ -782,6 +776,8 @@ def add_to_cart(product_id):
 @shop.route('/cart/update/<int:item_id>', methods=['POST'])
 def update_cart(item_id):
     user = Gusts.query.filter_by(session=session['session']).first()
+    if not user:
+        return jsonify({'success': False, 'message': 'يرجى تحديث الصفحة'}), 400
     cart_item = db.session.get(Cart, item_id)
     if not cart_item:
         abort(404)
@@ -789,7 +785,11 @@ def update_cart(item_id):
     if not product:
         abort(404)
     
+    if not request.json:
+        return jsonify({'success': False, 'message': 'بيانات غير صحيحة'}), 400
     new_quantity = request.json.get('quantity')
+    if new_quantity is None or not isinstance(new_quantity, int):
+        return jsonify({'success': False, 'message': 'الكمية غير صحيحة'}), 400
     
     if not (1 <= new_quantity <= product.stock):
         return jsonify({
@@ -809,6 +809,9 @@ def update_cart(item_id):
 @shop.route('/cart/remove/<int:item_id>')
 def remove_from_cart(item_id):
     user = Gusts.query.filter_by(session=session['session']).first()
+    if not user:
+        flash('يرجى تحديث الصفحة', 'danger')
+        return redirect(url_for('shop.home'))
     cart_item = Cart.query.filter_by(id=item_id, user_id=user.id).first()
     if not cart_item:
         abort(404)
@@ -822,6 +825,9 @@ from urllib.parse import quote
 @shop.route('/checkout')
 def checkout():
     user = Gusts.query.filter_by(session=session['session']).first()
+    if not user:
+        flash('يرجى تحديث الصفحة', 'danger')
+        return redirect(url_for('shop.home'))
     cart_items = Cart.query.filter_by(user_id=user.id).all()
     if not cart_items:
         flash('سلة التسوق فارغة', 'danger')
@@ -847,7 +853,7 @@ def checkout():
     message_lines = ["السلام عليكم، انا عاوز اشتري:"]
     for item in cart_items:
         message_lines.append(f"- {item.product.name} × {item.quantity}")
-    message_lines.append("\nمن موقع أورف، وعاوز ادفع بالمحافظ الإلكترونية.")
+    message_lines.append("\nمن موقع ALha، وعاوز ادفع بالمحافظ الإلكترونية.")
 
     full_message = "\n".join(message_lines)
     encoded_message = quote(full_message)
@@ -863,9 +869,6 @@ def checkout():
         cities=cities,
         whatsapp_link=whatsapp_link
     )
-
-
-from uuid import uuid4
 
 
 def handle_fawaterak_payment(order):
@@ -1070,7 +1073,7 @@ def send_discord_notification(order, order_items):
         if not phone_clean.startswith("2"):
             phone_clean = "2" + phone_clean
         whatsapp_link = f"https://wa.me/{phone_clean}"
-        admin_url = f"http://orfe-cosmetics.com/admin/orders"
+        admin_url = os.getenv('ADMIN_URL', '/admin/orders')
         
         # Create professional Discord embed with bilingual content
         embed = {
@@ -1120,7 +1123,7 @@ def send_discord_notification(order, order_items):
                         f"📦 **Items Count | عدد القطع:** {total_items}\n"
                         f"🕐 **Time | التوقيت:** {order.created_at.strftime('%d/%m/%Y - %H:%M')}\n"
                         f"🆔 **Order ID | رقم الطلب:** `#{order.id}`\n"
-                        f"🏪 **Store | المتجر:** Orfe Cosmetics"
+                        f"🏪 **Store | المتجر:** ALha"
                     ),
                     "inline": True
                 }
@@ -1133,7 +1136,7 @@ def send_discord_notification(order, order_items):
             },
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "footer": {
-                "text": "💎 Orfe Cosmetics - Premium Beauty Products | منتجات تجميل مميزة",
+                "text": "💎 ALha - Premium Products | منتجات مميزة",
                 "icon_url": os.getenv('LOGO_URL', '/static/img/logo.png')
             },
             "author": {
@@ -1145,7 +1148,7 @@ def send_discord_notification(order, order_items):
         
         # Create the complete professional message
         message = {
-            "username": "🌟 Orfe Cosmetics",
+            "username": "🌟 ALha",
             "avatar_url": "https://k.top4top.io/p_3515e1v1u1.png",
             "content": (
                 f"@everyone 🔔 **NEW ORDER ALERT | تنبيه طلب جديد**\n"
@@ -1307,7 +1310,7 @@ def place_order():
         message_lines = ["السلام عليكم، انا عاوز اشتري:"]
         for item in cart_items:
             message_lines.append(f"- {item.product.name} × {item.quantity}")
-        message_lines.append("\nمن موقع أورف، وعاوز ادفع بالمحافظ الإلكترونية.")
+        message_lines.append("\nمن موقع ALha، وعاوز ادفع بالمحافظ الإلكترونية.")
         full_message = "\n".join(message_lines)
         encoded_message = quote(full_message)
         whatsapp_link = f"https://wa.me/{admin_phone}?text={encoded_message}"
@@ -1326,8 +1329,14 @@ def place_order():
 def order_confirmation():
     # get gusts session
     user = Gusts.query.filter_by(session=session['session']).first()
+    if not user:
+        flash('يرجى تحديث الصفحة', 'danger')
+        return redirect(url_for('shop.home'))
     # get order by user id
-    order = Order.query.filter_by(user_id=user.id).first()
+    order = Order.query.filter_by(user_id=user.id).order_by(Order.created_at.desc()).first()
+    if not order:
+        flash('لا يوجد طلبات', 'info')
+        return redirect(url_for('shop.home'))
     # get order items by order id
     order_items = OrderItem.query.filter_by(order_id=order.id).all()
     for item in order_items:
@@ -1386,9 +1395,11 @@ def payment_fail(order_id):
     order = db.session.get(Order, order_id)
     if not order:
         abort(404)
+    # Capture order data before deletion
+    order_data = {'id': order.id, 'cod_amount': order.cod_amount}
     db.session.delete(order)
     db.session.commit()
-    return render_template('shop/payment_fail.html', order=order)
+    return render_template('shop/payment_fail.html', order=order_data)
 
 
 @shop.route('/payment/pending/<int:order_id>')
@@ -1467,6 +1478,9 @@ def get_shipping_cost_api():
 @shop.route('/cart')
 def cart():
     user = Gusts.query.filter_by(session=session['session']).first()
+    if not user:
+        flash('يرجى تحديث الصفحة', 'danger')
+        return redirect(url_for('shop.home'))
     # Change the query to use correct relationship between Cart and Product
     cart_query_result = db.session.query(Cart, Product).join(Product).filter(Cart.user_id == user.id).all()
     total = sum(item.Product.price * item.Cart.quantity for item in cart_query_result)
@@ -1495,12 +1509,19 @@ def about():
 @shop.route('/cart/change-quantity/<action>/<int:item_id>')
 def change_quantity(action, item_id):
     user = Gusts.query.filter_by(session=session['session']).first()
+    if not user:
+        flash('يرجى تحديث الصفحة', 'danger')
+        return redirect(url_for('shop.home'))
     cart_item = Cart.query.filter_by(id=item_id, user_id=user.id).first()
     if not cart_item:
         abort(404)
     
     if action == 'plus':
-        cart_item.quantity += 1
+        product = db.session.get(Product, cart_item.product_id)
+        if product and cart_item.quantity < product.stock:
+            cart_item.quantity += 1
+        else:
+            flash('الكمية المطلوبة غير متوفرة', 'warning')
     elif action == 'minus':
         cart_item.quantity -= 1
         if cart_item.quantity < 1:
@@ -1534,6 +1555,7 @@ def login():
                 return redirect(url_for('admin.login'))
             
             admin = Admins.query.filter_by(email=email).first()
+            is_valid_password = False
             if admin:
                 is_valid_password = check_password_hash(admin.password, password)
 
@@ -1559,7 +1581,6 @@ def login():
     
     return render_template('admin/login.html')
 from functools import wraps
-from datetime import timedelta
 # ...existing code...
 def admin_required(f):
     @wraps(f)
@@ -2929,7 +2950,7 @@ def update_order_status(order_id):
 def test_db():
     try:
         # Test basic database connectivity
-        db.session.execute('SELECT 1')
+        db.session.execute(sa_text('SELECT 1'))
         
         # Test if required tables exist
         tables = {
@@ -3306,8 +3327,7 @@ def get_recent_orders():
         }), 500
 
 def get_time_ago(created_at):
-    from datetime import datetime, timedelta
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     diff = now - created_at
     
     if diff.days > 0:
@@ -3377,6 +3397,6 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     debug_mode = os.getenv('FLASK_DEBUG', '1') in ('1', 'true', 'True')
-    host = os.getenv('FLASK_HOST', '127.0.0.1' if not debug_mode else '0.0.0.0')
+    host = os.getenv('FLASK_HOST', '127.0.0.1')
     port = int(os.getenv('FLASK_PORT', '8765'))
     app.run(debug=debug_mode, host=host, port=port)

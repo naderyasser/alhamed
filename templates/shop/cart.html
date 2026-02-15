@@ -8,6 +8,22 @@
   .cart-item img { border-radius: 12px; background: radial-gradient(ellipse at 50% 30%, #1e1e1e, #0d0d0d); }
   .cart-table { background: #0a0a0a; border: 1px solid #222; border-radius: 18px; padding: 1.5rem; }
   .text-danger { color: #d32f2f !important; }
+  .cart-total-box { background: #111 !important; border: 1px solid #222; border-radius: 18px; padding: 1.5rem; }
+  .cart-total-box h4 { color: #fff !important; border-color: #222 !important; }
+  .cart-total-box .table { color: #fff; }
+  .cart-total-box .table th { color: #b0b0b0; }
+  .cart-total-box .text-muted { color: #777 !important; }
+  .cart-total-box .btn-outline-continue { border: 1px solid #333; color: #fff; background: transparent; }
+  .cart-total-box .btn-outline-continue:hover { background: #222; }
+  .cart-total-box .btn-checkout { background: #d32f2f; color: #fff; border: none; }
+  .cart-total-box .btn-checkout:hover { background: #e53935; }
+  .cart-item h6, .cart-item .fw-bold { color: #fff !important; }
+  .last-orders-card { background: #111; border: 1px solid #222; border-radius: 18px; }
+  .last-orders-card .card-title { color: #fff; }
+  .last-orders-card .card-text { color: #b0b0b0 !important; }
+  .last-orders-card .btn-primary { background: #d32f2f; border-color: #d32f2f; }
+  .last-orders-card .btn-primary:hover { background: #e53935; }
+  section h2 { color: #fff; }
 </style>
 <section class="hero-section d-flex align-items-center text-center">
       <div class="container">
@@ -33,27 +49,27 @@
                               </div>
 
                               {% for item in cart_items %}
-                              <div class="cart-item border-top py-4">
+                              <div class="cart-item border-top py-4" style="border-color: #222 !important;">
                                     <div class="row align-items-center">
                                           <div class="col-4 text-center">
                                                 <img src="{{ item.product.image }}" class="img-fluid rounded"
                                                       style="max-width: 80px;">
                                           </div>
                                           <div class="col-8">
-                                                <h6 class="text-dark mb-1">{{ item.product.name }}</h6>
+                                                <h6 class="mb-1">{{ item.product.name }}</h6>
                                                 <span class="text-muted">{{ item.product.category.name }}</span>
                                                 <div class="d-flex align-items-center mt-2">
                                                       <button class="btn btn-outline-secondary btn-sm"
-                                                            onclick="location.href='/cart/change-quantity/minus/{{ item.id }}'">-</button>
+                                                            onclick="location.href='{{ url_for('shop.change_quantity', action='minus', item_id=item.id) }}'">-</button>
                                                       <input type="number" class="form-control text-center mx-2"
-                                                            style="max-width: 50px;" value="{{ item.quantity }}" min="1"
-                                                            max="{{ item.product.stock }}">
+                                                            style="max-width: 50px; background: #111; color: #fff; border-color: #333;" value="{{ item.quantity }}" min="1"
+                                                            max="{{ item.product.stock }}" readonly>
                                                       <button class="btn btn-outline-secondary btn-sm"
-                                                            onclick="location.href='/cart/change-quantity/plus/{{ item.id }}'">+</button>
+                                                            onclick="location.href='{{ url_for('shop.change_quantity', action='plus', item_id=item.id) }}'">+</button>
                                                 </div>
-                                                <div class="text-dark fw-bold mt-2">{{ "%.2f"|format(item.product.price
+                                                <div class="fw-bold mt-2">{{ "%.2f"|format(item.product.price
                                                       * item.quantity) }} L.E</div>
-                                                <a href="/cart/remove/{{ item.id }}"
+                                                <a href="{{ url_for('shop.remove_from_cart', item_id=item.id) }}"
                                                       class="text-danger d-block mt-2">Remove</a>
                                           </div>
                                     </div>
@@ -63,8 +79,8 @@
                               {% else %}
                               <div class="text-center py-5">
                                     <i class="bi bi-cart-x display-1 text-muted"></i>
-                                    <h3 class="my-4">Your cart is empty</h3>
-                                    <a href="{{ url_for('shop.list') }}" class="btn btn-primary">Start Shopping</a>
+                                    <h3 class="my-4" style="color: #fff;">Your cart is empty</h3>
+                                    <a href="{{ url_for('shop.list') }}" class="btn" style="background: #d32f2f; color: #fff;">Start Shopping</a>
                               </div>
                               {% endif %}
                         </div>
@@ -72,8 +88,8 @@
 
                   {% if cart_items %}
                   <div class="col-lg-4 col-md-12">
-                        <div class="bg-light p-4 rounded-3 shadow-sm">
-                              <h4 class="text-dark pb-3 border-bottom">Cart Total</h4>
+                        <div class="cart-total-box">
+                              <h4 class="pb-3 border-bottom">Cart Total</h4>
                               <table class="table">
                                     <tr>
                                           <th>Subtotal</th>
@@ -83,14 +99,14 @@
                                           <th>Shipping</th>
                                           <td class="text-end text-muted">Calculated at checkout</td>
                                     </tr>
-                                    <tr class="border-top">
+                                    <tr class="border-top" style="border-color: #222 !important;">
                                           <th>Total</th>
                                           <td class="text-end fw-bold">{{ "%.2f"|format(total) }} L.E</td>
                                     </tr>
                               </table>
-                              <a href="{{ url_for('shop.list') }}" class="btn btn-outline-dark w-100 mb-3">Continue
+                              <a href="{{ url_for('shop.list') }}" class="btn btn-outline-continue w-100 mb-3">Continue
                                     Shopping</a>
-                              <a href="{{ url_for('shop.checkout') }}" class="btn btn-dark w-100">Proceed to
+                              <a href="{{ url_for('shop.checkout') }}" class="btn btn-checkout w-100">Proceed to
                                     Checkout</a>
                         </div>
                   </div>
@@ -106,12 +122,11 @@
             <div class="row">
                   {% for order in all_last_orders %}
                   <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card shadow-sm border-0">
+                        <div class="card last-orders-card border-0">
                               <div class="card-body">
                                     <h5 class="card-title">Order #{{ order.id }}</h5>
-                                    <p class="card-text text-muted">Total: {{ order.cod_amount
-                                          }} L.E</p>
-                                    <p class="card-text text-muted">Status: {{ order.status }}</p>
+                                    <p class="card-text">Total: {{ order.cod_amount }} L.E</p>
+                                    <p class="card-text">Status: {{ order.status }}</p>
                                     <a href="{{ url_for('shop.order_detail', order_id=order.id) }}"
                                           class="btn btn-primary">View Order</a>
                               </div>

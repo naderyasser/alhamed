@@ -1,14 +1,21 @@
 {% extends "shop/base.html" %}
 
 {% block content %}
-<section class="py-5">
+<style>
+  .error-section { min-height: 60vh; display: flex; align-items: center; }
+  .error-section h1 { color: #d32f2f; }
+  .error-section h2, .error-section p { color: #fff; }
+  .error-section .btn { background: #d32f2f; color: #fff; border: none; border-radius: 12px; padding: 0.75rem 2rem; }
+  .error-section .btn:hover { background: #e53935; }
+</style>
+<section class="error-section py-5">
       <div class="container text-center">
-            <h1 class="display-1 text-danger">404</h1>
-            <h2 class="mb-4">Page Not Found</h2>
+            <h1 class="display-1">500</h1>
+            <h2 class="mb-4">Internal Server Error</h2>
             <p class="lead mb-4">
-                  Sorry, the page you are looking for does not exist.
+                  Sorry, something went wrong on our end. Please try again later.
             </p>
-            <a href="/" class="btn btn-primary">Return Home</a>
+            <a href="{{ url_for('shop.home') }}" class="btn">Return Home</a>
       </div>
 </section>
 {% endblock %}

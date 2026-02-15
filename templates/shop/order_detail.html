@@ -1,11 +1,30 @@
 <!-- order_detail.html -->
 {% extends 'shop/base.html' %}
 {% block content %}
+<style>
+  .od-card { background: #111; border: 1px solid #222; border-radius: 18px; overflow: hidden; }
+  .od-card .card-header { background: #161616 !important; border-bottom: 1px solid #222; color: #fff; }
+  .od-card .card-body { color: #fff; }
+  .od-card .card-body p, .od-card .card-body dt, .od-card .card-body dd { color: #b0b0b0; }
+  .od-card .card-body strong { color: #fff; }
+  .od-card .table { color: #fff; }
+  .od-card .table thead { background: #0a0a0a; }
+  .od-card .table thead th { color: #b0b0b0; border-color: #222; }
+  .od-card .table td { border-color: #222; }
+  .od-card h6 { color: #fff; }
+  .od-card .text-muted { color: #777 !important; }
+  .od-card img { border-radius: 8px; background: #0a0a0a; }
+  .container h1 { color: #fff; }
+  .btn-back { border: 1px solid #333; color: #fff; background: transparent; border-radius: 12px; }
+  .btn-back:hover { background: #222; color: #fff; }
+  .btn-pay { background: #d32f2f; color: #fff; border: none; border-radius: 12px; }
+  .btn-pay:hover { background: #e53935; }
+</style>
 
 <div class="container my-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0">تفاصيل الطلب #{{ order.id }}</h1>
-            <a href="{{ url_for('shop.home') }}" class="btn btn-outline-secondary">
+            <a href="{{ url_for('shop.home') }}" class="btn btn-back">
                   <i class="bx bx-arrow-back"></i> العودة للتسوق
             </a>
       </div>
@@ -13,8 +32,8 @@
       <div class="row g-4">
             <!-- Order Summary -->
             <div class="col-lg-8">
-                  <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
+                  <div class="od-card">
+                        <div class="card-header">
                               <h5 class="card-title mb-0"><i class="bx bx-package"></i> معلومات الطلب</h5>
                         </div>
                         <div class="card-body">
@@ -30,7 +49,7 @@
 
                                           <p class="mb-2">
                                                 <strong>طريقة الدفع:</strong>
-                                                <span class="badge bg-info">
+                                                <span class="badge" style="background: #333;">
                                                       {{ order.payment_method|replace('_', ' ')|title }}
                                                 </span>
                                           </p>
@@ -46,7 +65,7 @@
                                           {% if order.tracking_number %}
                                           <p class="mb-2">
                                                 <strong>رقم التتبع:</strong>
-                                                <span class="badge bg-secondary">
+                                                <span class="badge" style="background: #333;">
                                                       {{ order.tracking_number }}
                                                 </span>
                                           </p>
@@ -57,14 +76,14 @@
                   </div>
 
                   <!-- Order Items -->
-                  <div class="card shadow-sm mt-4">
-                        <div class="card-header bg-light">
+                  <div class="od-card mt-4">
+                        <div class="card-header">
                               <h5 class="card-title mb-0"><i class="bx bx-list-ul"></i> المنتجات المطلوبة</h5>
                         </div>
                         <div class="card-body p-0">
                               <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                          <thead class="table-light">
+                                    <table class="table mb-0">
+                                          <thead>
                                                 <tr>
                                                       <th>المنتج</th>
                                                       <th class="text-center">الكمية</th>
@@ -103,8 +122,8 @@
 
             <!-- Order Summary Sidebar -->
             <div class="col-lg-4">
-                  <div class="card shadow-sm">
-                        <div class="card-header bg-light">
+                  <div class="od-card">
+                        <div class="card-header">
                               <h5 class="card-title mb-0"><i class="bx bx-detail"></i> ملخص الطلب</h5>
                         </div>
                         <div class="card-body">
@@ -120,15 +139,15 @@
                                     <dt class="col-6">الخصم:</dt>
                                     <dd class="col-6 text-end">0.00 ج.م</dd>
 
-                                    <dt class="col-6 fw-bold">المجموع الكلي:</dt>
-                                    <dd class="col-6 text-end fw-bold">{{ order.cod_amount }} ج.م</dd>
+                                    <dt class="col-6 fw-bold" style="color: #fff !important;">المجموع الكلي:</dt>
+                                    <dd class="col-6 text-end fw-bold" style="color: #fff !important;">{{ order.cod_amount }} ج.م</dd>
                               </dl>
                         </div>
                   </div>
 
                   <!-- Shipping Information -->
-                  <div class="card shadow-sm mt-4">
-                        <div class="card-header bg-light">
+                  <div class="od-card mt-4">
+                        <div class="card-header">
                               <h5 class="card-title mb-0"><i class="bx bx-truck"></i> معلومات الشحن</h5>
                         </div>
                         <div class="card-body">
@@ -147,7 +166,7 @@
                   <!-- Payment Actions -->
                   {% if order.payment_status != 'paid' and order.invoice_url %}
                   <div class="d-grid gap-2 mt-4">
-                        <a href="{{ order.invoice_url }}" class="btn btn-primary" target="_blank">
+                        <a href="{{ order.invoice_url }}" class="btn btn-pay" target="_blank">
                               <i class="bx bx-credit-card"></i> إكمال الدفع
                         </a>
                   </div>

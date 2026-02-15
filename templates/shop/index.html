@@ -1,12 +1,12 @@
-{% extends "shop/base.html" %} {% block content %}
+﻿{% extends "shop/base.html" %} {% block content %}
 <style>
      :root {
-        --orfe-primary: #D32F2F;
-        --orfe-primary-dark: #B71C1C;
-        --orfe-primary-light: #E53935;
-        --orfe-background: #000000;
-        --orfe-text: #ffffff;
-        --orfe-accent: #111111;
+        --alha-primary: #D32F2F;
+        --alha-primary-dark: #B71C1C;
+        --alha-primary-light: #E53935;
+        --alha-background: #000000;
+        --alha-text: #ffffff;
+        --alha-accent: #111111;
     }
     /* Promotional Banner */
     
@@ -71,7 +71,7 @@
     
     .promo-btn {
         background: white;
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
         border: none;
         font-weight: 600;
         padding: 0.25rem 1rem;
@@ -85,7 +85,7 @@
     .promo-btn:hover {
         background: rgba(255, 255, 255, 0.9);
         transform: translateY(-2px);
-        color: var(--orfe-text);
+        color: var(--alha-text);
     }
     
     .promo-close {
@@ -233,7 +233,7 @@
         font-weight: 800;
         line-height: 1.1;
         margin-bottom: 1.5rem;
-        color: var(--orfe-text);
+        color: var(--alha-text);
         opacity: 0;
         transform: translateY(20px);
         animation: fadeUp 0.5s ease forwards;
@@ -277,15 +277,15 @@
     }
     
     .btn-primary {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         border: none;
     }
     
     .btn-outline {
         background: transparent;
-        color: var(--orfe-text);
-        border: 2px solid var(--orfe-primary);
+        color: var(--alha-text);
+        border: 2px solid var(--alha-primary);
     }
     
     .btn-shop:hover {
@@ -294,7 +294,7 @@
     }
     
     .btn-primary:hover {
-        background: var(--orfe-primary-dark);
+        background: var(--alha-primary-dark);
     }
     
     .btn-outline:hover {
@@ -335,7 +335,7 @@
         font-size: 1.1rem;
         font-weight: 600;
         margin-bottom: 0.3rem;
-        color: var(--orfe-text);
+        color: var(--alha-text);
     }
     
     .product-highlight-price {
@@ -357,7 +357,7 @@
     }
     
     .product-discount {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         font-size: 0.8rem;
         font-weight: 600;
@@ -377,7 +377,7 @@
     
     .swiper-pagination-bullet-active {
         width: 50px;
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         opacity: 1;
     }
     
@@ -404,7 +404,7 @@
     
     .swiper-button-prev:hover,
     .swiper-button-next:hover {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
     }
     
     .swiper-button-prev:hover:after,
@@ -492,7 +492,7 @@
     .about-section .title {
         font-size: 2.5rem;
         font-weight: 800;
-        color: var(--orfe-text);
+        color: var(--alha-text);
         position: relative;
         margin-bottom: 1.5rem;
         display: inline-block;
@@ -505,7 +505,7 @@
         left: 0;
         width: 50px;
         height: 3px;
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
     }
     
     .about-content {
@@ -531,7 +531,7 @@
     
     .featured-set-section {
         padding: 4rem 0;
-        background-color: var(--orfe-background);
+        background-color: var(--alha-background);
         position: relative;
         overflow: hidden;
         margin: 2rem 0;
@@ -570,7 +570,7 @@
         position: absolute;
         top: 15px;
         right: 15px;
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         font-size: 0.8rem;
         font-weight: 700;
@@ -598,7 +598,7 @@
     }
     
     .countdown-badge i {
-        color: var(--orfe-primary-light);
+        color: var(--alha-primary-light);
     }
     
     .featured-set-content {
@@ -612,7 +612,7 @@
     .featured-set-title {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--orfe-text);
+        color: var(--alha-text);
         margin-bottom: 0.8rem;
         line-height: 1.3;
     }
@@ -640,11 +640,11 @@
     .featured-set-current-price {
         font-size: 1.8rem;
         font-weight: 800;
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
     }
     
     .featured-set-discount {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         font-size: 0.9rem;
         font-weight: 600;
@@ -656,7 +656,7 @@
     }
     
     .featured-set-btn {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         border: none;
         width: 100%;
@@ -674,7 +674,7 @@
     }
     
     .featured-set-btn:hover {
-        background: var(--orfe-primary-dark);
+        background: var(--alha-primary-dark);
         transform: translateY(-3px);
         box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
         color: white;
@@ -708,7 +708,7 @@
     }
     
     .featured-set-includes i {
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
         font-size: 1.1rem;
         margin-top: 0.1rem;
     }
@@ -768,7 +768,7 @@
     .reviews-title {
         font-size: 2.8rem;
         font-weight: 700;
-        color: var(--orfe-text);
+        color: var(--alha-text);
         position: relative;
         display: inline-block;
         margin-bottom: 0.8rem;
@@ -782,7 +782,7 @@
         transform: translateX(-50%);
         width: 80px;
         height: 3px;
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
     }
     
     .reviews-subtitle {
@@ -812,13 +812,13 @@
     .rating-number {
         font-size: 3.5rem;
         font-weight: 800;
-        color: var(--orfe-text);
+        color: var(--alha-text);
         line-height: 1;
     }
     
     .rating-stars {
         font-size: 1.2rem;
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
         margin: 0.5rem 0;
     }
     
@@ -858,7 +858,7 @@
         left: 0;
         top: 0;
         height: 100%;
-        background-color: var(--orfe-primary);
+        background-color: var(--alha-primary);
         border-radius: 4px;
     }
     
@@ -894,7 +894,7 @@
         left: 25px;
         font-size: 5.5rem;
         line-height: 1;
-        color: var(--orfe-primary);
+        color: var(--alha-primary);
         opacity: 0.15;
     }
     
@@ -918,7 +918,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--orfe-primary-light);
+        background-color: var(--alha-primary-light);
         color: white;
         font-weight: 600;
         font-size: 1.2rem;
@@ -938,7 +938,7 @@
     }
     
     .review-rating {
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
         font-size: 1.1rem;
     }
     
@@ -994,14 +994,14 @@
     .reviews-swiper .swiper-pagination-bullet {
         width: 10px;
         height: 10px;
-        background: var(--orfe-primary-light);
+        background: var(--alha-primary-light);
         opacity: 0.5;
     }
     
     .reviews-swiper .swiper-pagination-bullet-active {
         width: 30px;
         border-radius: 5px;
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         opacity: 1;
     }
     
@@ -1014,7 +1014,7 @@
     }
     
     .btn-review {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         border: none;
         padding: 1rem 2rem;
@@ -1028,14 +1028,14 @@
     }
     
     .btn-review:hover {
-        background: var(--orfe-primary-dark);
+        background: var(--alha-primary-dark);
         transform: translateY(-3px);
         box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
         color: white;
     }
     
     .btn-all-reviews {
-        border: 2px solid var(--orfe-primary);
+        border: 2px solid var(--alha-primary);
         background: transparent;
         color: #ffffff;
         padding: 1rem 2rem;
@@ -1065,7 +1065,7 @@
     }
     
     #reviewModal .modal-header {
-        background-color: var(--orfe-primary);
+        background-color: var(--alha-primary);
         color: white;
         border-bottom: none;
         padding: 1.5rem;
@@ -1103,7 +1103,7 @@
     
     .rating-input .rating-star:hover,
     .rating-input .rating-star.active {
-        color: var(--orfe-primary);
+        color: var(--alha-primary);
         transform: scale(1.1);
     }
     
@@ -1119,7 +1119,7 @@
     
     #reviewModal .form-control:focus,
     #reviewModal .form-select:focus {
-        border-color: var(--orfe-primary);
+        border-color: var(--alha-primary);
         box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.2);
     }
     
@@ -1129,7 +1129,7 @@
     }
     
     #reviewModal .btn-primary {
-        background-color: var(--orfe-primary);
+        background-color: var(--alha-primary);
         border: none;
         border-radius: 8px;
         padding: 0.8rem;
@@ -1138,7 +1138,7 @@
     }
     
     #reviewModal .btn-primary:hover {
-        background-color: var(--orfe-primary-dark);
+        background-color: var(--alha-primary-dark);
     }
     /* Product Showcase Section Styles */
     
@@ -1170,7 +1170,7 @@
     .showcase-title {
         font-size: 2.8rem;
         font-weight: 800;
-        color: var(--orfe-text);
+        color: var(--alha-text);
         margin-bottom: 1rem;
     }
     
@@ -1223,7 +1223,7 @@
         position: absolute;
         top: 15px;
         right: 15px;
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         font-size: 0.8rem;
         font-weight: 700;
@@ -1243,7 +1243,7 @@
     .product-name {
         font-size: 1.6rem;
         font-weight: 700;
-        color: var(--orfe-text);
+        color: var(--alha-text);
         margin-bottom: 0.8rem;
         line-height: 1.3;
     }
@@ -1271,7 +1271,7 @@
     .price-current {
         font-size: 1.6rem;
         font-weight: 800;
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
     }
     
     .price-old {
@@ -1287,7 +1287,7 @@
     }
     
     .product-rating i {
-        color: var(--orfe-primary);
+        color: var(--alha-primary);
         font-size: 1.1rem;
     }
     
@@ -1328,7 +1328,7 @@
     }
     
     .features-list li i {
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
         font-size: 1rem;
     }
     
@@ -1352,20 +1352,20 @@
     }
     
     .btn-buy {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         border: none;
     }
     
     .btn-buy:hover {
-        background: var(--orfe-primary-dark);
+        background: var(--alha-primary-dark);
         transform: translateY(-3px);
         box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
         color: white;
     }
     
     .btn-info {
-        border: 2px solid var(--orfe-primary);
+        border: 2px solid var(--alha-primary);
         background: transparent;
         color: #ffffff;
     }
@@ -1424,12 +1424,12 @@
 <section class="hero-section">
     <div class="swiper hero-slider">
         <div class="swiper-wrapper">
-            {% set banners = [ {'image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'title': 'Orfe Advanced Blends For Hair Spray', 'subtitle': 'Orfe Advanced Blends For Hair Spray', 'description': 'Achieve fuller, healthier hair with our innovative volume spray. Formulated
-            with natural ingredients to boost hair density and restore vitality.', 'highlight_image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'highlight_title': 'Orfe Advanced Blends For Hair Spray', 'regular_price': '438', 'sale_price': '350', 'discount':
-            '20%'}, {'image': 'https://f.top4top.io/p_3399frbky2.jpg', 'title': 'Orfe Advanced Blends For Hair Oil', 'subtitle': 'Orfe Advanced Blends For Hair Oil', 'description': 'Infused with powerful natural extracts to promote hair growth, reduce
-            thinning, and add incredible shine to every strand.', 'highlight_image': 'https://f.top4top.io/p_3399frbky2.jpg', 'highlight_title': 'Orfe Advanced Blends For Hair Oil', 'regular_price': '469', 'sale_price': '375', 'discount': '20%'}, {'image':
-            'https://f.top4top.io/p_3396mbqvn1.jpg', 'title': 'Orfe Lashes and Ayebrow Serum', 'subtitle': 'Orfe Lashes and Eyebrow Serum', 'description': 'Enhance your natural beauty with our advanced growth serum. Clinically proven to deliver longer,
-            fuller lashes and defined brows.', 'highlight_image': 'https://f.top4top.io/p_3396mbqvn1.jpg', 'highlight_title': 'Orfe Lashes and Eyebrow Serum', 'regular_price': '165', 'sale_price': '135', 'discount': '20%'} ] %} {% for banner in banners
+            {% set banners = [ {'image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'title': 'ALha Advanced Blends For Hair Spray', 'subtitle': 'ALha Advanced Blends For Hair Spray', 'description': 'Achieve fuller, healthier hair with our innovative volume spray. Formulated
+            with natural ingredients to boost hair density and restore vitality.', 'highlight_image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'highlight_title': 'ALha Advanced Blends For Hair Spray', 'regular_price': '438', 'sale_price': '350', 'discount':
+            '20%'}, {'image': 'https://f.top4top.io/p_3399frbky2.jpg', 'title': 'ALha Advanced Blends For Hair Oil', 'subtitle': 'ALha Advanced Blends For Hair Oil', 'description': 'Infused with powerful natural extracts to promote hair growth, reduce
+            thinning, and add incredible shine to every strand.', 'highlight_image': 'https://f.top4top.io/p_3399frbky2.jpg', 'highlight_title': 'ALha Advanced Blends For Hair Oil', 'regular_price': '469', 'sale_price': '375', 'discount': '20%'}, {'image':
+            'https://f.top4top.io/p_3396mbqvn1.jpg', 'title': 'ALha Lashes and Ayebrow Serum', 'subtitle': 'ALha Lashes and Eyebrow Serum', 'description': 'Enhance your natural beauty with our advanced growth serum. Clinically proven to deliver longer,
+            fuller lashes and defined brows.', 'highlight_image': 'https://f.top4top.io/p_3396mbqvn1.jpg', 'highlight_title': 'ALha Lashes and Eyebrow Serum', 'regular_price': '165', 'sale_price': '135', 'discount': '20%'} ] %} {% for banner in banners
             %}
             <div class="swiper-slide">
                 <div class="hero-slide">
@@ -1485,13 +1485,13 @@
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
-                <h2 class="display-4 mb-3" style="font-weight: 800; color: var(--orfe-text);">Limited Time Offer</h2>
-                <p class="lead text-muted">Experience the complete Orfe beauty regimen with our exclusive bundle</p>
+                <h2 class="display-4 mb-3" style="font-weight: 800; color: var(--alha-text);">Limited Time Offer</h2>
+                <p class="lead text-muted">Experience the complete ALha beauty regimen with our exclusive bundle</p>
             </div>
 
             <div class="col-lg-6">
                 <div class="featured-set-img mb-4 mb-lg-0">
-                    <img src="https://j.top4top.io/p_341638uh21.png" alt="Orfe Total Hair & Lash Care Set" class="img-fluid rounded-4 shadow">
+                    <img src="https://j.top4top.io/p_341638uh21.png" alt="ALha Total Hair & Lash Care Set" class="img-fluid rounded-4 shadow">
                     <span class="limited-badge">Limited Time Offer</span>
                     <div class="countdown-badge">
                         <i class="bx bx-time"></i>
@@ -1504,15 +1504,15 @@
                 <div class="featured-set-box h-100">
                     <div class="featured-set-content">
                         <div>
-                            <h3 class="featured-set-title">Orfe Total Hair & Lash Care Set | أورفي للعناية الكاملة بالشعر والرموش</h3>
-                            <p class="featured-set-description">Experience the full power of Orfe's premium beauty products with this exclusive set. Designed to transform both your hair and lashes, this complete care solution delivers salon-quality results at home.</p>
+                            <h3 class="featured-set-title">ALha Total Hair & Lash Care Set | Ø£ÙˆØ±ÙÙŠ Ù„Ù„Ø¹Ù†Ø§ÙŠØ© Ø§Ù„ÙƒØ§Ù…Ù„Ø© Ø¨Ø§Ù„Ø´Ø¹Ø± ÙˆØ§Ù„Ø±Ù…ÙˆØ´</h3>
+                            <p class="featured-set-description">Experience the full power of ALha's premium beauty products with this exclusive set. Designed to transform both your hair and lashes, this complete care solution delivers salon-quality results at home.</p>
 
                             <div class="featured-set-includes">
                                 <h4>This set includes:</h4>
                                 <ul>
-                                    <li><i class="bx bx-check-circle"></i> Orfe Advanced Blends For Hair Spray</li>
-                                    <li><i class="bx bx-check-circle"></i> Orfe Advanced Blends For Hair Oil</li>
-                                    <li><i class="bx bx-check-circle"></i> Orfe Lashes and Eyebrow Serum</li>
+                                    <li><i class="bx bx-check-circle"></i> ALha Advanced Blends For Hair Spray</li>
+                                    <li><i class="bx bx-check-circle"></i> ALha Advanced Blends For Hair Oil</li>
+                                    <li><i class="bx bx-check-circle"></i> ALha Lashes and Eyebrow Serum</li>
 
                                 </ul>
                             </div>
@@ -1541,10 +1541,10 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6 mb-4 mb-md-0">
-                <h2 class="title">About Orfe</h2>
+                <h2 class="title">About ALha</h2>
                 <div class="about-content">
-                    <p>At Orfe, we believe in the power of natural beauty enhanced through science. Our commitment to quality, innovation, and sustainability drives every product we create.</p>
-                    <p>Founded with a passion for helping people feel confident in their own skin, Orfe has quickly become a trusted name in beauty care across Egypt and beyond. We combine traditional ingredients with cutting-edge formulations to deliver
+                    <p>At ALha, we believe in the power of natural beauty enhanced through science. Our commitment to quality, innovation, and sustainability drives every product we create.</p>
+                    <p>Founded with a passion for helping people feel confident in their own skin, ALha has quickly become a trusted name in beauty care across Egypt and beyond. We combine traditional ingredients with cutting-edge formulations to deliver
                         real results you can see and feel.</p>
                 </div>
             </div>
@@ -1552,28 +1552,28 @@
                 <div class="row g-4">
                     <div class="col-6">
                         <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-leaf mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <i class="bx bx-leaf mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
                             <h5>Natural Ingredients</h5>
                             <p class="small text-muted mb-0">Formulated with the finest natural extracts</p>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-check-shield mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <i class="bx bx-check-shield mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
                             <h5>Dermatologist Tested</h5>
                             <p class="small text-muted mb-0">Safe and effective for all skin types</p>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-test-tube mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <i class="bx bx-test-tube mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
                             <h5>Science-backed</h5>
                             <p class="small text-muted mb-0">Clinically proven results</p>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-world mb-3" style="font-size: 2.5rem; color: var(--orfe-primary);"></i>
+                            <i class="bx bx-world mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
                             <h5>Cruelty-Free</h5>
                             <p class="small text-muted mb-0">Never tested on animals</p>
                         </div>
@@ -1599,24 +1599,24 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="https://e.top4top.io/p_3399y42yj1.jpg" alt="Orfe Advanced Blends Hair Spray">
+                        <img src="https://e.top4top.io/p_3399y42yj1.jpg" alt="ALha Advanced Blends Hair Spray">
                         <span class="product-tag">BESTSELLER</span>
                     </div>
                     <div class="product-content">
-                        <h3 class="product-name">Orfe Advanced Blends Hair Spray</h3>
+                        <h3 class="product-name">ALha Advanced Blends Hair Spray</h3>
                         <p class="product-desc">
-                            قوي مصمم لتعزيز نمو الشعر، وزيادة كثافته، وتقليل تساقطه. يتميز بتركيبته غير الدهنية سريعة الامتصاص، مثالي للاستخدام اليومي.
+                            Ù‚ÙˆÙŠ Ù…ØµÙ…Ù… Ù„ØªØ¹Ø²ÙŠØ² Ù†Ù…Ùˆ Ø§Ù„Ø´Ø¹Ø±ØŒ ÙˆØ²ÙŠØ§Ø¯Ø© ÙƒØ«Ø§ÙØªÙ‡ØŒ ÙˆØªÙ‚Ù„ÙŠÙ„ ØªØ³Ø§Ù‚Ø·Ù‡. ÙŠØªÙ…ÙŠØ² Ø¨ØªØ±ÙƒÙŠØ¨ØªÙ‡ ØºÙŠØ± Ø§Ù„Ø¯Ù‡Ù†ÙŠØ© Ø³Ø±ÙŠØ¹Ø© Ø§Ù„Ø§Ù…ØªØµØ§ØµØŒ Ù…Ø«Ø§Ù„ÙŠ Ù„Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„ÙŠÙˆÙ…ÙŠ.
                         </p>
 
                         <div class="product-features">
-                            <h6>المكونات الرئيسية:</h6>
+                            <h6>Ø§Ù„Ù…ÙƒÙˆÙ†Ø§Øª Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©:</h6>
                             <ul class="features-list">
-                                <li><i class="bx bx-check-circle"></i> إكليل الجبل</li>
-                                <li><i class="bx bx-check-circle"></i> بذور الحبة السوداء</li>
-                                <li><i class="bx bx-check-circle"></i> زيت بذور الخروع</li>
-                                <li><i class="bx bx-check-circle"></i> مستخلص الجزر</li>
-                                <li><i class="bx bx-check-circle"></i> الكافيين</li>
-                                <li><i class="bx bx-check-circle"></i> أوراق السدر</li>
+                                <li><i class="bx bx-check-circle"></i> Ø¥ÙƒÙ„ÙŠÙ„ Ø§Ù„Ø¬Ø¨Ù„</li>
+                                <li><i class="bx bx-check-circle"></i> Ø¨Ø°ÙˆØ± Ø§Ù„Ø­Ø¨Ø© Ø§Ù„Ø³ÙˆØ¯Ø§Ø¡</li>
+                                <li><i class="bx bx-check-circle"></i> Ø²ÙŠØª Ø¨Ø°ÙˆØ± Ø§Ù„Ø®Ø±ÙˆØ¹</li>
+                                <li><i class="bx bx-check-circle"></i> Ù…Ø³ØªØ®Ù„Øµ Ø§Ù„Ø¬Ø²Ø±</li>
+                                <li><i class="bx bx-check-circle"></i> Ø§Ù„ÙƒØ§ÙÙŠÙŠÙ†</li>
+                                <li><i class="bx bx-check-circle"></i> Ø£ÙˆØ±Ø§Ù‚ Ø§Ù„Ø³Ø¯Ø±</li>
                             </ul>
                         </div>
 
@@ -1651,24 +1651,24 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="https://f.top4top.io/p_3399frbky2.jpg" alt="Orfe Advanced Blends Hair Oil">
+                        <img src="https://f.top4top.io/p_3399frbky2.jpg" alt="ALha Advanced Blends Hair Oil">
                         <span class="product-tag">TOP RATED</span>
                     </div>
                     <div class="product-content">
-                        <h3 class="product-name">Orfe Advanced Blends Hair Oil</h3>
+                        <h3 class="product-name">ALha Advanced Blends Hair Oil</h3>
                         <p class="product-desc">
-                            تركيبة غنية بالمغذيات مصممة لتغذية بصيلات الشعر وتنعيم الأطراف المتقصفة وترطيب فروة الرأس الجافة، مع تحفيز نمو الشعر.
+                            ØªØ±ÙƒÙŠØ¨Ø© ØºÙ†ÙŠØ© Ø¨Ø§Ù„Ù…ØºØ°ÙŠØ§Øª Ù…ØµÙ…Ù…Ø© Ù„ØªØºØ°ÙŠØ© Ø¨ØµÙŠÙ„Ø§Øª Ø§Ù„Ø´Ø¹Ø± ÙˆØªÙ†Ø¹ÙŠÙ… Ø§Ù„Ø£Ø·Ø±Ø§Ù Ø§Ù„Ù…ØªÙ‚ØµÙØ© ÙˆØªØ±Ø·ÙŠØ¨ ÙØ±ÙˆØ© Ø§Ù„Ø±Ø£Ø³ Ø§Ù„Ø¬Ø§ÙØ©ØŒ Ù…Ø¹ ØªØ­ÙÙŠØ² Ù†Ù…Ùˆ Ø§Ù„Ø´Ø¹Ø±.
                         </p>
 
                         <div class="product-features">
-                            <h6>المكونات الرئيسية:</h6>
+                            <h6>Ø§Ù„Ù…ÙƒÙˆÙ†Ø§Øª Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©:</h6>
                             <ul class="features-list">
-                                <li><i class="bx bx-check-circle"></i> زيت بذور اليقطين</li>
-                                <li><i class="bx bx-check-circle"></i> زيت إكليل الجبل</li>
-                                <li><i class="bx bx-check-circle"></i> زيت الحبة السوداء</li>
-                                <li><i class="bx bx-check-circle"></i> زيت بذور الكتان</li>
-                                <li><i class="bx bx-check-circle"></i> زيت اللوز الحلو</li>
-                                <li><i class="bx bx-check-circle"></i> الكافيين</li>
+                                <li><i class="bx bx-check-circle"></i> Ø²ÙŠØª Ø¨Ø°ÙˆØ± Ø§Ù„ÙŠÙ‚Ø·ÙŠÙ†</li>
+                                <li><i class="bx bx-check-circle"></i> Ø²ÙŠØª Ø¥ÙƒÙ„ÙŠÙ„ Ø§Ù„Ø¬Ø¨Ù„</li>
+                                <li><i class="bx bx-check-circle"></i> Ø²ÙŠØª Ø§Ù„Ø­Ø¨Ø© Ø§Ù„Ø³ÙˆØ¯Ø§Ø¡</li>
+                                <li><i class="bx bx-check-circle"></i> Ø²ÙŠØª Ø¨Ø°ÙˆØ± Ø§Ù„ÙƒØªØ§Ù†</li>
+                                <li><i class="bx bx-check-circle"></i> Ø²ÙŠØª Ø§Ù„Ù„ÙˆØ² Ø§Ù„Ø­Ù„Ùˆ</li>
+                                <li><i class="bx bx-check-circle"></i> Ø§Ù„ÙƒØ§ÙÙŠÙŠÙ†</li>
                             </ul>
                         </div>
 
@@ -1703,24 +1703,24 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="https://f.top4top.io/p_3396mbqvn1.jpg" alt="Orfe Lashes & Eyebrow Serum">
+                        <img src="https://f.top4top.io/p_3396mbqvn1.jpg" alt="ALha Lashes & Eyebrow Serum">
                         <span class="product-tag">NEW</span>
                     </div>
                     <div class="product-content">
-                        <h3 class="product-name">Orfe Lashes & Eyebrow Serum</h3>
+                        <h3 class="product-name">ALha Lashes & Eyebrow Serum</h3>
                         <p class="product-desc">
-                            تركيبة متطورة تعزز كثافة وقوة الحواجب والرموش بفضل مزيج فريد من المكونات الطبيعية المغذية لمظهر أكثر امتلاءً وصحة.
+                            ØªØ±ÙƒÙŠØ¨Ø© Ù…ØªØ·ÙˆØ±Ø© ØªØ¹Ø²Ø² ÙƒØ«Ø§ÙØ© ÙˆÙ‚ÙˆØ© Ø§Ù„Ø­ÙˆØ§Ø¬Ø¨ ÙˆØ§Ù„Ø±Ù…ÙˆØ´ Ø¨ÙØ¶Ù„ Ù…Ø²ÙŠØ¬ ÙØ±ÙŠØ¯ Ù…Ù† Ø§Ù„Ù…ÙƒÙˆÙ†Ø§Øª Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠØ© Ø§Ù„Ù…ØºØ°ÙŠØ© Ù„Ù…Ø¸Ù‡Ø± Ø£ÙƒØ«Ø± Ø§Ù…ØªÙ„Ø§Ø¡Ù‹ ÙˆØµØ­Ø©.
                         </p>
 
                         <div class="product-features">
-                            <h6>المكونات الرئيسية:</h6>
+                            <h6>Ø§Ù„Ù…ÙƒÙˆÙ†Ø§Øª Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©:</h6>
                             <ul class="features-list">
-                                <li><i class="bx bx-check-circle"></i> البيوتين</li>
-                                <li><i class="bx bx-check-circle"></i> الكافيين</li>
-                                <li><i class="bx bx-check-circle"></i> الروزماري</li>
-                                <li><i class="bx bx-check-circle"></i> ساو بالميتو</li>
-                                <li><i class="bx bx-check-circle"></i> فيتامين E</li>
-                                <li><i class="bx bx-check-circle"></i> مستخلص الجزر</li>
+                                <li><i class="bx bx-check-circle"></i> Ø§Ù„Ø¨ÙŠÙˆØªÙŠÙ†</li>
+                                <li><i class="bx bx-check-circle"></i> Ø§Ù„ÙƒØ§ÙÙŠÙŠÙ†</li>
+                                <li><i class="bx bx-check-circle"></i> Ø§Ù„Ø±ÙˆØ²Ù…Ø§Ø±ÙŠ</li>
+                                <li><i class="bx bx-check-circle"></i> Ø³Ø§Ùˆ Ø¨Ø§Ù„Ù…ÙŠØªÙˆ</li>
+                                <li><i class="bx bx-check-circle"></i> ÙÙŠØªØ§Ù…ÙŠÙ† E</li>
+                                <li><i class="bx bx-check-circle"></i> Ù…Ø³ØªØ®Ù„Øµ Ø§Ù„Ø¬Ø²Ø±</li>
                             </ul>
                         </div>
 
@@ -1850,7 +1850,7 @@
         </div>
         <div class="review-product">
             <img src="https://e.top4top.io/p_3399y42yj1.jpg" class="review-product-img" alt="Hair Spray">
-            <p class="review-product-name">Orfe Advanced Blends For Hair Spray</p>
+            <p class="review-product-name">ALha Advanced Blends For Hair Spray</p>
         </div>
     </div>
 </div>
@@ -1860,9 +1860,9 @@
     <div class="review-card">
         <div class="review-header">
             <div class="review-avatar-wrapper">
-                <div class="review-avatar">م</div>
+                <div class="review-avatar">Ù…</div>
                 <div>
-                    <h4 class="review-name">مريم</h4>
+                    <h4 class="review-name">Ù…Ø±ÙŠÙ…</h4>
                     <div class="review-date">1 month ago</div>
                 </div>
             </div>
@@ -1875,11 +1875,11 @@
             </div>
         </div>
         <div class="review-text">
-            "شكرا بجد ع ال جميل Packing والأسباراي ده الأسباراي بجد حلو جدا وضعي علي القشرة في وقت قليل والزيت قمر طلعلي بيبي هير بعد شهر استخدام وبالبيبي هير بدا يطول كمان ميرسي بجد ع الشحن السريع والتعامل الزوق جدا والمنتجات التحفة دي"
+            "Ø´ÙƒØ±Ø§ Ø¨Ø¬Ø¯ Ø¹ Ø§Ù„ Ø¬Ù…ÙŠÙ„ Packing ÙˆØ§Ù„Ø£Ø³Ø¨Ø§Ø±Ø§ÙŠ Ø¯Ù‡ Ø§Ù„Ø£Ø³Ø¨Ø§Ø±Ø§ÙŠ Ø¨Ø¬Ø¯ Ø­Ù„Ùˆ Ø¬Ø¯Ø§ ÙˆØ¶Ø¹ÙŠ Ø¹Ù„ÙŠ Ø§Ù„Ù‚Ø´Ø±Ø© ÙÙŠ ÙˆÙ‚Øª Ù‚Ù„ÙŠÙ„ ÙˆØ§Ù„Ø²ÙŠØª Ù‚Ù…Ø± Ø·Ù„Ø¹Ù„ÙŠ Ø¨ÙŠØ¨ÙŠ Ù‡ÙŠØ± Ø¨Ø¹Ø¯ Ø´Ù‡Ø± Ø§Ø³ØªØ®Ø¯Ø§Ù… ÙˆØ¨Ø§Ù„Ø¨ÙŠØ¨ÙŠ Ù‡ÙŠØ± Ø¨Ø¯Ø§ ÙŠØ·ÙˆÙ„ ÙƒÙ…Ø§Ù† Ù…ÙŠØ±Ø³ÙŠ Ø¨Ø¬Ø¯ Ø¹ Ø§Ù„Ø´Ø­Ù† Ø§Ù„Ø³Ø±ÙŠØ¹ ÙˆØ§Ù„ØªØ¹Ø§Ù…Ù„ Ø§Ù„Ø²ÙˆÙ‚ Ø¬Ø¯Ø§ ÙˆØ§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„ØªØ­ÙØ© Ø¯ÙŠ"
         </div>
         <div class="review-product">
             <img src="https://f.top4top.io/p_3399frbky2.jpg" class="review-product-img" alt="Hair Oil">
-            <p class="review-product-name">Orfe Advanced Blends For Hair Oil</p>
+            <p class="review-product-name">ALha Advanced Blends For Hair Oil</p>
         </div>
     </div>
 </div>
@@ -1889,9 +1889,9 @@
     <div class="review-card">
         <div class="review-header">
             <div class="review-avatar-wrapper">
-                <div class="review-avatar">م</div>
+                <div class="review-avatar">Ù…</div>
                 <div>
-                    <h4 class="review-name">محمد</h4>
+                    <h4 class="review-name">Ù…Ø­Ù…Ø¯</h4>
                     <div class="review-date">3 weeks ago</div>
                 </div>
             </div>
@@ -1904,11 +1904,11 @@
             </div>
         </div>
         <div class="review-text">
-            "المنتج جميل جدا ومتقافله بعد فترة النتيجة هتكون مرضيه بجد شكرا على المنتج له حق نديم يتكلم في الاستوري بجد يكلم ربنا يبارككم ويرزقكم يا رب"
+            "Ø§Ù„Ù…Ù†ØªØ¬ Ø¬Ù…ÙŠÙ„ Ø¬Ø¯Ø§ ÙˆÙ…ØªÙ‚Ø§ÙÙ„Ù‡ Ø¨Ø¹Ø¯ ÙØªØ±Ø© Ø§Ù„Ù†ØªÙŠØ¬Ø© Ù‡ØªÙƒÙˆÙ† Ù…Ø±Ø¶ÙŠÙ‡ Ø¨Ø¬Ø¯ Ø´ÙƒØ±Ø§ Ø¹Ù„Ù‰ Ø§Ù„Ù…Ù†ØªØ¬ Ù„Ù‡ Ø­Ù‚ Ù†Ø¯ÙŠÙ… ÙŠØªÙƒÙ„Ù… ÙÙŠ Ø§Ù„Ø§Ø³ØªÙˆØ±ÙŠ Ø¨Ø¬Ø¯ ÙŠÙƒÙ„Ù… Ø±Ø¨Ù†Ø§ ÙŠØ¨Ø§Ø±ÙƒÙƒÙ… ÙˆÙŠØ±Ø²Ù‚ÙƒÙ… ÙŠØ§ Ø±Ø¨"
         </div>
         <div class="review-product">
             <img src="https://f.top4top.io/p_3396mbqvn1.jpg" class="review-product-img" alt="Lash Serum">
-            <p class="review-product-name">Orfe Lashes and Ayebrow Serum</p>
+            <p class="review-product-name">ALha Lashes and Ayebrow Serum</p>
         </div>
     </div>
 </div>
@@ -1917,9 +1917,9 @@
     <div class="review-card">
         <div class="review-header">
             <div class="review-avatar-wrapper">
-                <div class="review-avatar">ن</div>
+                <div class="review-avatar">Ù†</div>
                 <div>
-                    <h4 class="review-name">نور</h4>
+                    <h4 class="review-name">Ù†ÙˆØ±</h4>
                     <div class="review-date">2 months ago</div>
                 </div>
             </div>
@@ -1932,11 +1932,11 @@
             </div>
         </div>
         <div class="review-text">
-            "مساء الخير أولاً أحب أن أقول رأيي في المنتجات بتاعتكوا الصراحة المنتجات تحفه ف شعري جداااااااااااااااااااا"
+            "Ù…Ø³Ø§Ø¡ Ø§Ù„Ø®ÙŠØ± Ø£ÙˆÙ„Ø§Ù‹ Ø£Ø­Ø¨ Ø£Ù† Ø£Ù‚ÙˆÙ„ Ø±Ø£ÙŠÙŠ ÙÙŠ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø¨ØªØ§Ø¹ØªÙƒÙˆØ§ Ø§Ù„ØµØ±Ø§Ø­Ø© Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª ØªØ­ÙÙ‡ Ù Ø´Ø¹Ø±ÙŠ Ø¬Ø¯Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§Ø§"
         </div>
         <div class="review-product">
             <img src="https://e.top4top.io/p_3399y42yj1.jpg" class="review-product-img" alt="Hair Spray">
-            <p class="review-product-name">Orfe Advanced Blends For Hair Spray</p>
+            <p class="review-product-name">ALha Advanced Blends For Hair Spray</p>
         </div>
     </div>
 </div>
@@ -1964,7 +1964,7 @@
         </div>
         <div class="review-product">
             <img src="https://f.top4top.io/p_3399frbky2.jpg" class="review-product-img" alt="Hair Oil">
-            <p class="review-product-name">Orfe Advanced Blends For Hair Oil</p>
+            <p class="review-product-name">ALha Advanced Blends For Hair Oil</p>
         </div>
     </div>
 </div>
@@ -1973,9 +1973,9 @@
     <div class="review-card">
         <div class="review-header">
             <div class="review-avatar-wrapper">
-                <div class="review-avatar">ه</div>
+                <div class="review-avatar">Ù‡</div>
                 <div>
-                    <h4 class="review-name">هدى</h4>
+                    <h4 class="review-name">Ù‡Ø¯Ù‰</h4>
                     <div class="review-date">3 months ago</div>
                 </div>
             </div>
@@ -1988,11 +1988,11 @@
             </div>
         </div>
         <div class="review-text">
-            "صباح الخير، الحمد لله على هذه المنتجات الممتازة اللي عملت فرق كبير معايا. تعبت من القشرة لسنين وده المنتج الأول اللي خلاني أحس بإني قربت من الحل النهائي. مرسي ليكم جداً جداً."
+            "ØµØ¨Ø§Ø­ Ø§Ù„Ø®ÙŠØ±ØŒ Ø§Ù„Ø­Ù…Ø¯ Ù„Ù„Ù‡ Ø¹Ù„Ù‰ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…Ù…ØªØ§Ø²Ø© Ø§Ù„Ù„ÙŠ Ø¹Ù…Ù„Øª ÙØ±Ù‚ ÙƒØ¨ÙŠØ± Ù…Ø¹Ø§ÙŠØ§. ØªØ¹Ø¨Øª Ù…Ù† Ø§Ù„Ù‚Ø´Ø±Ø© Ù„Ø³Ù†ÙŠÙ† ÙˆØ¯Ù‡ Ø§Ù„Ù…Ù†ØªØ¬ Ø§Ù„Ø£ÙˆÙ„ Ø§Ù„Ù„ÙŠ Ø®Ù„Ø§Ù†ÙŠ Ø£Ø­Ø³ Ø¨Ø¥Ù†ÙŠ Ù‚Ø±Ø¨Øª Ù…Ù† Ø§Ù„Ø­Ù„ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ. Ù…Ø±Ø³ÙŠ Ù„ÙŠÙƒÙ… Ø¬Ø¯Ø§Ù‹ Ø¬Ø¯Ø§Ù‹."
         </div>
         <div class="review-product">
             <img src="https://e.top4top.io/p_3399y42yj1.jpg" class="review-product-img" alt="Hair Spray">
-            <p class="review-product-name">Orfe Advanced Blends For Hair Spray</p>
+            <p class="review-product-name">ALha Advanced Blends For Hair Spray</p>
         </div>
     </div>
 </div>
@@ -2000,9 +2000,9 @@
     <div class="review-card">
         <div class="review-header">
             <div class="review-avatar-wrapper">
-                <div class="review-avatar">أ</div>
+                <div class="review-avatar">Ø£</div>
                 <div>
-                    <h4 class="review-name">أحمد</h4>
+                    <h4 class="review-name">Ø£Ø­Ù…Ø¯</h4>
                     <div class="review-date">2 weeks ago</div>
                 </div>
             </div>
@@ -2015,11 +2015,11 @@
             </div>
         </div>
         <div class="review-text">
-            "بصراحة مش قادر أوصف كمية السعادة اللي حسيتها لما شفت النتيجة. الشعر بقى أكثر كثافة والنعومة زادت بشكل واضح. المنتج يستاهل كل فلوس إنك تشتريه بلا منازع."
+            "Ø¨ØµØ±Ø§Ø­Ø© Ù…Ø´ Ù‚Ø§Ø¯Ø± Ø£ÙˆØµÙ ÙƒÙ…ÙŠØ© Ø§Ù„Ø³Ø¹Ø§Ø¯Ø© Ø§Ù„Ù„ÙŠ Ø­Ø³ÙŠØªÙ‡Ø§ Ù„Ù…Ø§ Ø´ÙØª Ø§Ù„Ù†ØªÙŠØ¬Ø©. Ø§Ù„Ø´Ø¹Ø± Ø¨Ù‚Ù‰ Ø£ÙƒØ«Ø± ÙƒØ«Ø§ÙØ© ÙˆØ§Ù„Ù†Ø¹ÙˆÙ…Ø© Ø²Ø§Ø¯Øª Ø¨Ø´ÙƒÙ„ ÙˆØ§Ø¶Ø­. Ø§Ù„Ù…Ù†ØªØ¬ ÙŠØ³ØªØ§Ù‡Ù„ ÙƒÙ„ ÙÙ„ÙˆØ³ Ø¥Ù†Ùƒ ØªØ´ØªØ±ÙŠÙ‡ Ø¨Ù„Ø§ Ù…Ù†Ø§Ø²Ø¹."
         </div>
         <div class="review-product">
             <img src="https://f.top4top.io/p_3399frbky2.jpg" class="review-product-img" alt="Hair Oil">
-            <p class="review-product-name">Orfe Advanced Blends For Hair Oil</p>
+            <p class="review-product-name">ALha Advanced Blends For Hair Oil</p>
         </div>
     </div>
 </div>
@@ -2062,9 +2062,9 @@
                     <div class="mb-3">
                         <label for="product" class="form-label">Which product are you reviewing?</label>
                         <select class="form-select" id="product" name="product">
-                            <option value="hair-spray">Orfe Advanced Blends For Hair Spray</option>
-                            <option value="hair-oil">Orfe Advanced Blends For Hair Oil</option>
-                            <option value="lash-serum">Orfe Lashes and Ayebrow Serum</option>
+                            <option value="hair-spray">ALha Advanced Blends For Hair Spray</option>
+                            <option value="hair-oil">ALha Advanced Blends For Hair Oil</option>
+                            <option value="lash-serum">ALha Lashes and Ayebrow Serum</option>
                             <option value="complete-set">Complete Hair & Lash Care Set</option>
                         </select>
                     </div>
@@ -2212,7 +2212,7 @@
                     modalBody.innerHTML = `
                         <div class="text-center py-5">
                             <div class="mb-4">
-                                <i class="bx bx-check-circle" style="font-size: 5rem; color: var(--orfe-primary);"></i>
+                                <i class="bx bx-check-circle" style="font-size: 5rem; color: var(--alha-primary);"></i>
                             </div>
                             <h4 class="mb-3">Thank You for Your Review!</h4>
                             <p class="text-muted mb-4">Your feedback has been successfully submitted and will help others in their purchase decisions.</p>

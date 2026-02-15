@@ -7,18 +7,18 @@
 
 <style>
     :root {
-        --orfe-primary: #d32f2f;
-        --orfe-primary-dark: #b71c1c;
-        --orfe-primary-light: #e53935;
-        --orfe-orange: #d32f2f;
-        --orfe-gold: #d32f2f;
-        --orfe-black: #ffffff;
-        --orfe-gray-bg: #000000;
+        --alha-primary: #d32f2f;
+        --alha-primary-dark: #b71c1c;
+        --alha-primary-light: #e53935;
+        --alha-orange: #d32f2f;
+        --alha-gold: #d32f2f;
+        --alha-black: #ffffff;
+        --alha-gray-bg: #000000;
     }
 
     body {
         font-family: 'Cairo', system-ui, -apple-system, sans-serif !important;
-        background-color: var(--orfe-gray-bg);
+        background-color: var(--alha-gray-bg);
     }
 
     /* Modern Shop Header */
@@ -39,7 +39,7 @@
 
     .shop-header-title {
         font-weight: 800;
-        color: var(--orfe-black);
+        color: var(--alha-black);
         font-size: 2.5rem;
         margin-bottom: 0.5rem;
     }
@@ -75,7 +75,7 @@
         gap: 0.5rem;
         padding-bottom: 0.8rem;
         border-bottom: 2px solid #222;
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
     }
 
     /* Refined Types for Filters */
@@ -99,12 +99,12 @@
 
     .filter-item a:hover {
         background-color: #111;
-        color: var(--orfe-primary);
+        color: var(--alha-primary);
         padding-right: 1rem; /* Slide effect for RTL */
     }
 
     .filter-item a.active {
-        background-color: var(--orfe-primary);
+        background-color: var(--alha-primary);
         color: white;
         font-weight: 600;
         padding-right: 1rem;
@@ -201,7 +201,7 @@
     }
 
     .overlay-btn:hover {
-        background: var(--orfe-primary);
+        background: var(--alha-primary);
         color: white;
         transform: scale(1.1);
     }
@@ -240,7 +240,7 @@
     }
 
     .product-title-modern a:hover {
-        color: var(--orfe-primary);
+        color: var(--alha-primary);
     }
 
     .price-wrapper {
@@ -253,7 +253,7 @@
     .current-price {
         font-size: 1.2rem;
         font-weight: 800;
-        color: var(--orfe-primary-dark);
+        color: var(--alha-primary-dark);
     }
 
     .old-price {
@@ -311,7 +311,7 @@
 
     .search-modern input:focus {
         background: #0a0a0a;
-        border-color: var(--orfe-primary);
+        border-color: var(--alha-primary);
         box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12);
         outline: none;
     }
@@ -449,7 +449,7 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/7486/7486777.png" alt="No products" style="width: 150px; opacity: 0.5; margin-bottom: 20px;">
                 <h3 class="text-muted">لم يتم العثور على منتجات</h3>
                 <p class="text-muted">جربي البحث بكلمات مختلفة أو إزالة بعض الفلاتر</p>
-                <a href="/shop" class="btn btn-primary" style="background: var(--orfe-primary); border: none;">عرض كل المنتجات</a>
+                <a href="/shop" class="btn btn-primary" style="background: var(--alha-primary); border: none;">عرض كل المنتجات</a>
             </div>
             {% else %}
             
@@ -518,7 +518,7 @@
                         <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
                             <a class="page-link shadow-none" 
                                href="{{ url_for('shop.list', page=page_num, sort=current_filters.sort, search=current_filters.search, category=current_filters.category, price=current_filters.price) }}"
-                               style="{% if page_num == pagination.page %}background-color: var(--orfe-primary); border-color: var(--orfe-primary);{% else %}color: #fff; border: none;{% endif %} border-radius: 8px; margin: 0 5px;">
+                               style="{% if page_num == pagination.page %}background-color: var(--alha-primary); border-color: var(--alha-primary);{% else %}color: #fff; border: none;{% endif %} border-radius: 8px; margin: 0 5px;">
                                 {{ page_num }}
                             </a>
                         </li>

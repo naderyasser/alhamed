@@ -58,7 +58,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
-    <title>Orfe Shop</title>
+    <title>ALha Shop</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -78,25 +78,25 @@
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/modernizr.js') }}" defer></script>
     <!-- Meta Data -->
-    <meta name="description" content="Orfe Shop - Your ultimate destination for premium cosmetics. Discover beauty that enhances your confidence and brings out the best in you.">
-    <meta name="keywords" content="Orfe, cosmetics, beauty, skincare, makeup, premium beauty products">
-    <meta name="author" content="Orfe Cosmetics">
+    <meta name="description" content="ALha Shop - Your ultimate destination for premium products. Discover quality that enhances your life.">
+    <meta name="keywords" content="ALha, shop, premium products, home appliances, kitchenware">
+    <meta name="author" content="ALha">
     <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#000000">
     <!-- faveicon -->
-    <link rel="icon" href="static/images/main-logo.ico" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo-alha.jpeg') }}" type="image/jpeg">
     <!-- Open Graph Meta Tags for Social Sharing -->
-    <meta property="og:title" content="Orfe Shop - Premium Cosmetics">
-    <meta property="og:description" content="Discover high-quality beauty products designed to enhance your confidence and bring out the best in you.">
-    <meta property="og:image" content="https://i.top4top.io/p_33209yqsf1.png">
-    <meta property="og:url" content="https://orfe-cosmetics.com">
+    <meta property="og:title" content="ALha Shop - Premium Products">
+    <meta property="og:description" content="Discover high-quality products designed to enhance your life.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo-alha.jpeg') }}">
+    <meta property="og:url" content="/">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="https://i.top4top.io/p_33209yqsf1.png">
-    <meta name="twitter:title" content="Orfe Shop - Premium Cosmetics">
-    <meta name="twitter:description" content="Shop premium beauty products at Orfe Cosmetics and elevate your look with top-quality skincare and makeup.">
-    <meta name="twitter:image" content="https://i.top4top.io/p_33209yqsf1.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ALha Shop - Premium Products">
+    <meta name="twitter:description" content="Shop premium products at ALha and elevate your life with top-quality items.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/logo-alha.jpeg') }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://i.top4top.io/p_33209yqsf1.png">
@@ -331,7 +331,7 @@
             <span class="separator">|</span>
             <span class="discount-off">10% OFF</span>
             <span class="separator">|</span>
-            <span class="discount-text">Use Code: <span class="discount-code">ORFE10</span></span>
+            <span class="discount-text">Use Code: <span class="discount-code">ALHA10</span></span>
             <span class="separator">|</span>
             <span id="discount-countdown"></span>
         </div>
@@ -576,7 +576,7 @@
         <nav class="modern-navbar navbar navbar-expand-lg">
             <div class="container-fluid px-3 px-lg-4">
                 <a class="navbar-brand" href="/">
-                    <img src="static/images/main-logo.png" class="modern-logo logo" alt="Orfe Logo">
+                    <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" class="modern-logo logo" alt="ALha Logo">
                 </a>
 
                 <!-- Desktop Search Bar -->
@@ -594,9 +594,9 @@
                 </button>
 
                 <div class="offcanvas offcanvas-end" id="bdNavbar" style="max-width: 320px;">
-                    <div class="offcanvas-header" style="border-bottom: 1px solid #e0e0e0;">
+                    <div class="offcanvas-header" style="border-bottom: 1px solid #222;">
                         <a class="navbar-brand" href="/">
-                            <img src="static/images/main-logo.png" class="modern-logo logo" alt="Orfe Logo">
+                            <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" class="modern-logo logo" alt="ALha Logo">
                         </a>
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                     </div>
@@ -683,20 +683,19 @@
             <div class="row">
                 <!-- About -->
                 <div class="col-lg-3 col-sm-6 pb-3">
-                    <img src="static/images/logo.svg" alt="Orfe Logo" class="pb-3" style="width: 150px;">
-                    <p>Welcome to Orfe, your ultimate destination for premium cosmetics. Discover beauty that enhances your confidence and brings out the best in you.</p>
-                    <p>© 2024. Designed by <a href="https://orfe.com/" target="_blank">Orfe Cosmetics</a></p>
+                    <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" alt="ALha Logo" class="pb-3" style="width: 150px; border-radius: 12px;">
+                    <p>Welcome to ALha, your ultimate destination for premium products.</p>
+                    <p>© 2025. <a href="/">ALha</a></p>
                 </div>
 
                 <!-- Quick Links -->
                 <div class="col-lg-2 col-sm-6 pb-3">
                     <h5 class="widget-title pb-2">Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about-us">About Us</a></li>
-                        <li><a href="#products">Our Products</a></li>
-                        <li><a href="#blog">Beauty Blog</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="{{ url_for('shop.home') }}">Home</a></li>
+                        <li><a href="{{ url_for('shop.about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('shop.list') }}">Our Products</a></li>
+                        <li><a href="{{ url_for('shop.cart') }}">Cart</a></li>
                     </ul>
                 </div>
 
@@ -716,7 +715,7 @@
                 <div class="col-lg-3 col-sm-6">
                     <h5 class="widget-title pb-2">Contact Us</h5>
                     <p><a href="tel:+201030553029">+201030553029</a></p>
-                    <p><a href="mailto:info@orfe-cosmetics.com">info@orfe-cosmetics.com</a></p>
+                    <p><a href="mailto:info@alha-store.com">info@alha-store.com</a></p>
                 </div>
             </div>
         </div>
