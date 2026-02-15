@@ -212,3 +212,64 @@ def test_place_order_cash_on_delivery_creates_order():
     with app.app_context():
         after_count = Order.query.count()
         assert after_count == before_count + 1
+
+
+def test_admin_orders_requires_admin_session():
+    client = app.test_client()
+    response = client.get('/admin/orders', follow_redirects=False)
+
+    assert response.status_code in (301, 302)
+    assert '/admin/login' in response.headers.get('Location', '')
+
+
+def test_admin_delete_order_requires_csrf_token():
+    session_id = 'test-session-admin-delete'
+    _seed_checkout_data(session_id=session_id)
+
+    with app.app_context():
+        guest = Gusts.query.filter_by(session=session_id).first()
+        order = Order(
+            user_id=guest.id,
+            name='Delete Test',
+            email='delete@test.com',
+            phone='01000000000',
+            address='Delete Address',
+            city='1',
+            zone_id='10',
+            district_id='20',
+            cod_amount=100,
+            payment_method='cash_on_delivery',
+            status='pending',
+        )
+        db.session.add(order)
+        db.session.commit()
+        order_id = order.id
+
+    client = app.test_client()
+    with client.session_transaction() as sess:
+        sess['admin'] = 1
+
+    response = client.post(f'/admin/delete_order/{order_id}', data={}, follow_redirects=False)
+    assert response.status_code in (301, 302)
+
+
+def test_api_cities_returns_json():
+    _seed_checkout_data(session_id='test-session-api-cities')
+    client = app.test_client()
+
+    response = client.get('/api/cities')
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert isinstance(payload, dict)
+    assert 'city' in payload
+    assert isinstance(payload['city'], list)
+
+
+def test_api_shipping_cost_returns_expected_value():
+    _seed_checkout_data(session_id='test-session-api-shipping')
+    client = app.test_client()
+
+    response = client.get('/api/shipping-cost?city_id=1')
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert 'cost' in payload
