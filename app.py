@@ -31,7 +31,15 @@ except (ImportError, AttributeError) as e:
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///orfe-shop.sqlite3')
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret-key-change-in-production')
+is_debug_env = os.getenv('FLASK_DEBUG', '1') in ('1', 'true', 'True')
+secret_key = os.getenv('SECRET_KEY')
+if not secret_key:
+    if is_debug_env:
+        secret_key = 'dev-only-secret-key-change-me'
+    else:
+        raise RuntimeError('SECRET_KEY environment variable is required in non-debug mode')
+
+app.config['SECRET_KEY'] = secret_key
 app.config['FAWATERAK_API_KEY'] = os.getenv('FAWATERAK_API_KEY', '')
 app.config['FAWATERAK_API_URL'] = os.getenv('FAWATERAK_API_URL', 'https://app.fawaterk.com/api/v2/createInvoiceLink')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -39,7 +47,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_KEY_PREFIX'] = 'orfe-shop'
-app.secret_key = os.getenv('SECRET_KEY', 'secret-key-change-in-production')
+app.secret_key = app.config['SECRET_KEY']
 
 CSRF_EXEMPT_ENDPOINTS = {
     'shop.payment_webhook',
