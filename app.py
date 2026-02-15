@@ -694,7 +694,9 @@ def list():
     
 @shop.route('/<int:product_id>')
 def product(product_id):
-    product = Product.query.get_or_404(product_id)
+    product = db.session.get(Product, product_id)
+    if not product:
+        abort(404)
     additional_images = AdditionalImage.query.filter_by(product_id=product_id).all()
     additional_data = AdditionalData.query.filter_by(product_id=product_id).all()
     product.views += 1
@@ -708,7 +710,9 @@ def add_to_cart(product_id):
         cleanup_expired_cart_items()
         
         # Get product and validate
-        product = Product.query.get_or_404(product_id)
+        product = db.session.get(Product, product_id)
+        if not product:
+            abort(404)
         if not product.stock > 0:
             flash('المنتج غير متوفر حالياً', 'danger')
             return redirect(url_for('shop.product', product_id=product_id))
@@ -778,8 +782,12 @@ def add_to_cart(product_id):
 @shop.route('/cart/update/<int:item_id>', methods=['POST'])
 def update_cart(item_id):
     user = Gusts.query.filter_by(session=session['session']).first()
-    cart_item = Cart.query.get_or_404(item_id)
-    product = Product.query.get_or_404(cart_item.product_id)
+    cart_item = db.session.get(Cart, item_id)
+    if not cart_item:
+        abort(404)
+    product = db.session.get(Product, cart_item.product_id)
+    if not product:
+        abort(404)
     
     new_quantity = request.json.get('quantity')
     
@@ -1361,7 +1369,9 @@ def order_detail():
 
 @shop.route('/payment/success/<int:order_id>')
 def payment_success(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = db.session.get(Order, order_id)
+    if not order:
+        abort(404)
     order.payment_status = 'paid'
     db.session.commit()
     user = Gusts.query.filter_by(session=session['session']).first()
@@ -1371,7 +1381,9 @@ def payment_success(order_id):
 
 @shop.route('/payment/fail/<int:order_id>')
 def payment_fail(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = db.session.get(Order, order_id)
+    if not order:
+        abort(404)
     db.session.delete(order)
     db.session.commit()
     return render_template('shop/payment_fail.html', order=order)
@@ -1379,7 +1391,9 @@ def payment_fail(order_id):
 
 @shop.route('/payment/pending/<int:order_id>')
 def payment_pending(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = db.session.get(Order, order_id)
+    if not order:
+        abort(404)
     order.payment_status = 'pending'
     db.session.commit()
     return render_template('shop/payment_pending.html', order=order)
@@ -1919,7 +1933,9 @@ def products():
 @admin.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 @admin_required
 def delete_product(product_id):
-    product = Product.query.get_or_404(product_id)
+    product = db.session.get(Product, product_id)
+    if not product:
+        abort(404)
     additional_images = AdditionalImage.query.filter_by(product_id=product_id).all()
     additional_data = AdditionalData.query.filter_by(product_id=product_id).all()
     for image in additional_images:
@@ -1936,7 +1952,9 @@ def delete_product(product_id):
 @admin_required
 def get_edit_product_form(product_id):
     """Return the edit product form HTML for AJAX loading"""
-    product = Product.query.get_or_404(product_id)
+    product = db.session.get(Product, product_id)
+    if not product:
+        abort(404)
     categories = Category.query.all()
     
     return render_template('admin/edit_product.html', product=product, categories=categories)
@@ -1944,7 +1962,9 @@ def get_edit_product_form(product_id):
 @admin.route('/edit_product/<int:product_id>', methods=['POST'])
 @admin_required
 def edit_product(product_id):
-    product = Product.query.get_or_404(product_id)
+    product = db.session.get(Product, product_id)
+    if not product:
+        abort(404)
     try:
         # Validate required fields
         if not request.form.get('name'):
@@ -2017,7 +2037,9 @@ def edit_product(product_id):
 def delete_additional_image(image_id):
     """Delete an additional product image"""
     try:
-        additional_image = AdditionalImage.query.get_or_404(image_id)
+        additional_image = db.session.get(AdditionalImage, image_id)
+        if not additional_image:
+            abort(404)
         
         # Delete the file from filesystem
         try:
@@ -2052,7 +2074,9 @@ def categories():
 @admin.route('/delete_category/<int:category_id>', methods=['POST'])
 @admin_required
 def delete_category(category_id):
-    category = Category.query.get_or_404(category_id)
+    category = db.session.get(Category, category_id)
+    if not category:
+        abort(404)
     db.session.delete(category)
     db.session.commit()
     flash('تم حذف القسم بنجاح!', 'success')
@@ -2061,7 +2085,9 @@ def delete_category(category_id):
 @admin.route('/edit_category/<int:category_id>', methods=['POST'])
 @admin_required
 def edit_category(category_id):
-    category = Category.query.get_or_404(category_id)
+    category = db.session.get(Category, category_id)
+    if not category:
+        abort(404)
     try:
         if 'name' in request.form and request.form['name']:
             category.name = request.form['name']
@@ -2187,7 +2213,9 @@ def shipping():
 @admin_required
 def delete_city(id):
     try:
-        city = City.query.get_or_404(id)
+        city = db.session.get(City, id)
+        if not city:
+            abort(404)
         
         # Delete associated shipping costs
         ShippingCost.query.filter_by(city_id=city.city_id).delete()
@@ -2398,7 +2426,9 @@ def orders():
 def order_detail(order_id):
     try:
         # Get the order record or return a 404 if not found
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         
         # Get city information
         city = City.query.filter_by(city_id=order.city).first()
@@ -2500,7 +2530,9 @@ def order_detail(order_id):
 @admin_required
 def add_item_to_order(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         product_id = request.form.get('product_id')
         quantity = int(request.form.get('quantity', 1))
         
@@ -2508,7 +2540,9 @@ def add_item_to_order(order_id):
             flash('الرجاء اختيار منتج', 'error')
             return redirect(url_for('admin.order_detail', order_id=order_id))
             
-        product = Product.query.get_or_404(product_id)
+        product = db.session.get(Product, product_id)
+        if not product:
+            abort(404)
         
         # Validate stock
         if quantity > product.stock:
@@ -2553,9 +2587,15 @@ def add_item_to_order(order_id):
 @admin_required
 def delete_item_from_order(order_id, item_id):
     try:
-        order_item = OrderItem.query.get_or_404(item_id)
-        order = Order.query.get_or_404(order_id)
-        product = Product.query.get_or_404(order_item.product_id)
+        order_item = db.session.get(OrderItem, item_id)
+        if not order_item:
+            abort(404)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
+        product = db.session.get(Product, order_item.product_id)
+        if not product:
+            abort(404)
         
         # Validate order item belongs to order
         if order_item.order_id != order_id:
@@ -2615,7 +2655,9 @@ def update_shipping_status(order_id):
 @admin_required
 def delete_order(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         
         # Restore product stock
         order_items = OrderItem.query.filter_by(order_id=order_id).all()
@@ -2755,7 +2797,9 @@ def export_selected_orders():
 @admin_required
 def ship_order(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         
         # Check if order is already shipped
         if order.shipping_status == 'shipped':
@@ -2793,7 +2837,9 @@ def ship_order(order_id):
 @admin_required
 def update_order_shipping_price(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         new_shipping_price = float(request.form.get('shipping_price', 0))
         
         if new_shipping_price < 0:
