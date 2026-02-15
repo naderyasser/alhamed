@@ -809,7 +809,9 @@ def update_cart(item_id):
 @shop.route('/cart/remove/<int:item_id>')
 def remove_from_cart(item_id):
     user = Gusts.query.filter_by(session=session['session']).first()
-    cart_item = Cart.query.filter_by(id=item_id, user_id=user.id).first_or_404()
+    cart_item = Cart.query.filter_by(id=item_id, user_id=user.id).first()
+    if not cart_item:
+        abort(404)
     
     db.session.delete(cart_item)
     db.session.commit()
@@ -1493,7 +1495,9 @@ def about():
 @shop.route('/cart/change-quantity/<action>/<int:item_id>')
 def change_quantity(action, item_id):
     user = Gusts.query.filter_by(session=session['session']).first()
-    cart_item = Cart.query.filter_by(id=item_id, user_id=user.id).first_or_404()
+    cart_item = Cart.query.filter_by(id=item_id, user_id=user.id).first()
+    if not cart_item:
+        abort(404)
     
     if action == 'plus':
         cart_item.quantity += 1
