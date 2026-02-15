@@ -2585,7 +2585,9 @@ def delete_item_from_order(order_id, item_id):
 @admin_required
 def update_shipping_status(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         status = request.form.get('status')
         
         if not status:
@@ -2823,7 +2825,9 @@ def update_order_shipping_price(order_id):
 @admin_required
 def update_order_cod_amount(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         new_cod_amount = float(request.form.get('cod_amount', 0))
         
         if new_cod_amount < 0:
@@ -2845,7 +2849,9 @@ def update_order_cod_amount(order_id):
 @admin_required
 def update_order_status(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         status = request.form.get('status')
         
         if not status:
@@ -3269,7 +3275,9 @@ def get_time_ago(created_at):
 @admin_required
 def update_payment_method(order_id):
     try:
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         payment_method = request.form.get('payment_method')
         
         if not payment_method:
