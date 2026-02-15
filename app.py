@@ -52,7 +52,9 @@ CSRF_EXEMPT_ENDPOINTS = {
 
 
 def utc_now():
-    return datetime.now(timezone.utc)
+    """Return current UTC time as a naive datetime (no timezone info).
+    SQLite does not preserve timezone info, so we store naive UTC consistently."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 # Configure Honeybadger only if successfully imported
 if has_honeybadger:
@@ -455,7 +457,7 @@ admin = Blueprint('admin', __name__)
 def cleanup_expired_cart_items():
     """Delete cart items older than 24 hours"""
     try:
-        expiration_time = datetime.now(timezone.utc) - timedelta(hours=24)
+        expiration_time = utc_now() - timedelta(hours=24)
         expired_items = Cart.query.filter(Cart.created_at < expiration_time).all()
         for item in expired_items:
             db.session.delete(item)
@@ -480,7 +482,7 @@ def check_session():
             session['cart_count'] = 0
             new_guest = Gusts(
                 session=session['session'],
-                last_activity=datetime.now(timezone.utc)
+                last_activity=utc_now()
             )
             db.session.add(new_guest)
             db.session.commit()
@@ -501,24 +503,27 @@ def check_session():
             session['cart_count'] = cart_count
             
             # 6. Check for session expiration (30 days of inactivity)
-            expiration_time = datetime.now(timezone.utc) - timedelta(days=30)
-            if previous_last_activity and previous_last_activity < expiration_time:
-                # Clear old cart items
-                Cart.query.filter_by(user_id=guest.id).delete()
-                # Create new session
-                session.clear()
-                session['session'] = os.urandom(24).hex()
-                session['cart_count'] = 0
-                new_guest = Gusts(
-                    session=session['session'],
-                    last_activity=datetime.now(timezone.utc)
-                )
-                db.session.add(new_guest)
-                db.session.commit()
-                return
+            expiration_time = utc_now() - timedelta(days=30)
+            if previous_last_activity:
+                if previous_last_activity.tzinfo is not None:
+                    previous_last_activity = previous_last_activity.replace(tzinfo=None)
+                if previous_last_activity < expiration_time:
+                    # Clear old cart items
+                    Cart.query.filter_by(user_id=guest.id).delete()
+                    # Create new session
+                    session.clear()
+                    session['session'] = os.urandom(24).hex()
+                    session['cart_count'] = 0
+                    new_guest = Gusts(
+                        session=session['session'],
+                        last_activity=utc_now()
+                    )
+                    db.session.add(new_guest)
+                    db.session.commit()
+                    return
 
             # Update activity only after expiration check
-            guest.last_activity = datetime.now(timezone.utc)
+            guest.last_activity = utc_now()
                 
             db.session.commit()
         else:
@@ -528,7 +533,7 @@ def check_session():
             session['cart_count'] = 0
             new_guest = Gusts(
                 session=session['session'],
-                last_activity=datetime.now(timezone.utc)
+                last_activity=utc_now()
             )
             db.session.add(new_guest)
             db.session.commit()
@@ -552,7 +557,7 @@ def generate_csrf_token():
 
 @app.context_processor
 def inject_csrf_token():
-    return {'csrf_token': generate_csrf_token}
+    return {'csrf_token': generate_csrf_token()}
 @app.route('/test-honeybadger')
 def test_honeybadger():
     if os.getenv('FLASK_DEBUG', '0') not in ('1', 'true', 'True'):
@@ -742,14 +747,14 @@ def add_to_cart(product_id):
                 return redirect(url_for('shop.cart'))
             
             cart_item.quantity = new_quantity
-            cart_item.created_at = datetime.now(timezone.utc)  # Reset the creation time
+            cart_item.created_at = utc_now()  # Reset the creation time
         else:
             # Create new cart item
             cart_item = Cart(
                 user_id=user.id,
                 product_id=product_id,
                 quantity=quantity,
-                created_at=datetime.now(timezone.utc)
+                created_at=utc_now()
             )
         
         # Save changes
@@ -1134,7 +1139,7 @@ def send_discord_notification(order, order_items):
             "image": {
                 "url": os.getenv('LOGO_URL', '/static/img/logo.png')
             },
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": utc_now().isoformat(),
             "footer": {
                 "text": "💎 ALha - Premium Products | منتجات مميزة",
                 "icon_url": os.getenv('LOGO_URL', '/static/img/logo.png')
@@ -1567,7 +1572,7 @@ def login():
 
             if admin and is_valid_password:
                 session['admin'] = admin.id
-                admin.last_login = datetime.now(timezone.utc)
+                admin.last_login = utc_now()
                 db.session.commit()
                 return redirect(url_for('admin.home'))
             
@@ -2841,11 +2846,11 @@ def ship_order(order_id):
         
         # Generate tracking number if not exists
         if not order.tracking_number:
-            order.tracking_number = f"TRK-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{order.id}"
+            order.tracking_number = f"TRK-{utc_now().strftime('%Y%m%d%H%M%S')}-{order.id}"
         
         # Generate business reference if not exists
         if not order.business_reference:
-            order.business_reference = f"ORD-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{order.id}"
+            order.business_reference = f"ORD-{utc_now().strftime('%Y%m%d%H%M%S')}-{order.id}"
         
         db.session.commit()
         
@@ -3327,7 +3332,7 @@ def get_recent_orders():
         }), 500
 
 def get_time_ago(created_at):
-    now = datetime.now(timezone.utc)
+    now = utc_now()
     diff = now - created_at
     
     if diff.days > 0:
