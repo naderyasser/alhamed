@@ -1,4 +1,5 @@
 import pathlib
+import os
 
 from werkzeug.security import generate_password_hash
 
@@ -273,3 +274,110 @@ def test_api_shipping_cost_returns_expected_value():
     assert response.status_code == 200
     payload = response.get_json()
     assert 'cost' in payload
+
+
+def test_payment_webhook_rejects_invalid_secret_when_configured():
+    previous_secret = os.environ.get('PAYMENT_WEBHOOK_SECRET')
+    os.environ['PAYMENT_WEBHOOK_SECRET'] = 'secret-123'
+    client = app.test_client()
+
+    response = client.post(
+        '/payment/webhook',
+        json={'invoiceKey': 'x', 'status': 'paid'},
+        headers={'X-Webhook-Secret': 'wrong-secret'},
+    )
+
+    assert response.status_code == 401
+    payload = response.get_json()
+    assert payload['status'] == 'error'
+
+    if previous_secret is None:
+        os.environ.pop('PAYMENT_WEBHOOK_SECRET', None)
+    else:
+        os.environ['PAYMENT_WEBHOOK_SECRET'] = previous_secret
+
+
+def _seed_admin_order_for_updates(session_id='test-session-admin-updates'):
+    _seed_checkout_data(session_id=session_id)
+    with app.app_context():
+        guest = Gusts.query.filter_by(session=session_id).first()
+        order = Order(
+            user_id=guest.id,
+            name='Admin Update',
+            email='admin-update@test.com',
+            phone='01000000000',
+            address='Admin Address',
+            city='1',
+            zone_id='10',
+            district_id='20',
+            cod_amount=150,
+            payment_method='cash_on_delivery',
+            status='pending',
+            shipping_status='pending',
+        )
+        db.session.add(order)
+        db.session.commit()
+        return order.id
+
+
+def test_admin_update_order_status_success():
+    order_id = _seed_admin_order_for_updates('test-session-status-update')
+    client = app.test_client()
+
+    with client.session_transaction() as sess:
+        sess['admin'] = 1
+        sess['_csrf_token'] = 'csrf-admin-status'
+
+    response = client.post(
+        f'/admin/order/{order_id}/update-status',
+        data={'csrf_token': 'csrf-admin-status', 'status': 'completed'},
+        follow_redirects=False,
+    )
+
+    assert response.status_code in (301, 302)
+
+    with app.app_context():
+        order = db.session.get(Order, order_id)
+        assert order.status == 'completed'
+
+
+def test_admin_update_shipping_status_success():
+    order_id = _seed_admin_order_for_updates('test-session-shipping-update')
+    client = app.test_client()
+
+    with client.session_transaction() as sess:
+        sess['admin'] = 1
+        sess['_csrf_token'] = 'csrf-admin-shipping'
+
+    response = client.post(
+        f'/admin/update_shipping_status/{order_id}',
+        data={'csrf_token': 'csrf-admin-shipping', 'status': 'shipped'},
+        follow_redirects=False,
+    )
+
+    assert response.status_code in (301, 302)
+
+    with app.app_context():
+        order = db.session.get(Order, order_id)
+        assert order.shipping_status == 'shipped'
+
+
+def test_admin_update_payment_method_success():
+    order_id = _seed_admin_order_for_updates('test-session-payment-update')
+    client = app.test_client()
+
+    with client.session_transaction() as sess:
+        sess['admin'] = 1
+        sess['_csrf_token'] = 'csrf-admin-payment'
+
+    response = client.post(
+        f'/admin/order/{order_id}/update-payment-method',
+        data={'csrf_token': 'csrf-admin-payment', 'payment_method': 'visa'},
+        follow_redirects=False,
+    )
+
+    assert response.status_code in (301, 302)
+
+    with app.app_context():
+        order = db.session.get(Order, order_id)
+        assert order.payment_method == 'visa'
