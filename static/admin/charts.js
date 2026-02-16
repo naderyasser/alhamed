@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const sageGreen = '#8BA888';
-    const sageGreenLight = '#E8F1E8';
+document.addEventListener('DOMContentLoaded', function () {
+    const accentColor = '#d32f2f';
+    const accentLight = 'rgba(211,47,47,0.15)';
 
     // Shared chart options
     const commonOptions = {
@@ -14,8 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: {
                     usePointStyle: true,
                     padding: 20,
+                    color: '#999',
                     font: {
-                        family: 'masmak'
+                        family: 'Cairo'
                     }
                 }
             }
@@ -24,11 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
             y: {
                 beginAtZero: true,
                 grid: {
-                    color: 'rgba(0,0,0,0.05)'
+                    color: 'rgba(255,255,255,0.06)'
                 },
                 ticks: {
+                    color: '#888',
                     font: {
-                        family: 'masmak'
+                        family: 'Cairo'
                     }
                 }
             },
@@ -37,8 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: false
                 },
                 ticks: {
+                    color: '#888',
                     font: {
-                        family: 'masmak'
+                        family: 'Cairo'
                     }
                 }
             }
@@ -58,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'الإيرادات',
                     data: values,
-                    borderColor: sageGreen,
-                    backgroundColor: sageGreenLight,
+                    borderColor: accentColor,
+                    backgroundColor: accentLight,
                     fill: true,
                     tension: 0.4,
                     pointStyle: 'circle',
@@ -73,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ...commonOptions.plugins,
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 return ` ${context.parsed.y} ج.م `;
                             }
                         }
@@ -96,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'الطلبات',
                     data: values,
-                    backgroundColor: sageGreen,
+                    backgroundColor: accentColor,
                     borderRadius: 6
                 }]
             },
@@ -106,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle period buttons
     document.querySelectorAll('[data-period]').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const period = this.dataset.period;
             const chartId = this.dataset.chart;
             const container = this.closest('.chart-container');

@@ -17,6 +17,9 @@ import pandas as pd
 from io import BytesIO
 import shutil
 import subprocess
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+import re
 
 # Import Honeybadger conditionally to handle compatibility issues
 try:
@@ -450,6 +453,20 @@ class ShippingCost(db.Model):
     price = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 
+class DropshipProduct(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    source_url = db.Column(db.String(500), nullable=False)
+    source_site = db.Column(db.String(100), nullable=True)
+    name = db.Column(db.String(300), nullable=True)
+    price = db.Column(db.Float, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    image_url = db.Column(db.String(500), nullable=True)
+    additional_images = db.Column(db.Text, nullable=True)  # JSON array
+    status = db.Column(db.String(20), default='pending')  # pending, imported, error
+    imported_product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    error_message = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+
 # changShippingCostFromcity_idIsIdToCityId()
 
 shop = Blueprint('shop', __name__)
@@ -559,6 +576,15 @@ def generate_csrf_token():
 @app.context_processor
 def inject_csrf_token():
     return {'csrf_token': generate_csrf_token()}
+
+@app.context_processor
+def inject_global_data():
+    """Inject categories and other global data into all templates"""
+    try:
+        all_categories = Category.query.all()
+    except Exception:
+        all_categories = []
+    return {'all_categories': all_categories}
 @app.route('/test-honeybadger')
 def test_honeybadger():
     if os.getenv('FLASK_DEBUG', '0') not in ('1', 'true', 'True'):
@@ -2137,6 +2163,296 @@ def edit_category(category_id):
         print(f"Error: {e}")
         flash('حدث خطأ أثناء تعديل القسم!', 'error')
     return redirect(url_for('admin.categories'))
+
+# ==================== DROPSHIPPING ROUTES ====================
+
+def scrape_product_data(url):
+    """Scrape product data from a given URL using generic selectors"""
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'ar,en-US;q=0.9,en;q=0.8',
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        parsed_url = urlparse(url)
+        source_site = parsed_url.netloc.replace('www.', '')
+        
+        # Extract product name
+        name = None
+        for selector in ['h1', '[itemprop="name"]', '.product-title', '.product_title', '#productTitle']:
+            tag = soup.select_one(selector)
+            if tag and tag.get_text(strip=True):
+                name = tag.get_text(strip=True)[:300]
+                break
+        if not name:
+            og = soup.find('meta', property='og:title')
+            if og:
+                name = og.get('content', '')[:300]
+        
+        # Extract price
+        price = None
+        for selector in ['[itemprop="price"]', '.price', '.product-price', '.current-price', 'span.price']:
+            tag = soup.select_one(selector)
+            if tag:
+                content = tag.get('content') or tag.get_text(strip=True)
+                nums = re.findall(r'[\d,]+\.?\d*', content.replace(',', ''))
+                if nums:
+                    try:
+                        price = float(nums[0])
+                        break
+                    except ValueError:
+                        pass
+        if price is None:
+            og = soup.find('meta', property='product:price:amount')
+            if og:
+                try:
+                    price = float(og.get('content', '0'))
+                except ValueError:
+                    pass
+        
+        # Extract description
+        description = ''
+        for selector in ['[itemprop="description"]', '.product-description', '#productDescription', '.description']:
+            tag = soup.select_one(selector)
+            if tag:
+                description = tag.get_text(strip=True)[:2000]
+                break
+        if not description:
+            og = soup.find('meta', property='og:description')
+            if og:
+                description = og.get('content', '')[:2000]
+        
+        # Extract main image
+        image_url = None
+        for selector in ['[itemprop="image"]', '.product-image img', '#main-image', '.gallery-image img', 'img.product-image']:
+            tag = soup.select_one(selector)
+            if tag:
+                image_url = tag.get('src') or tag.get('data-src') or tag.get('data-lazy')
+                if image_url:
+                    image_url = urljoin(url, image_url)
+                    break
+        if not image_url:
+            og = soup.find('meta', property='og:image')
+            if og:
+                image_url = urljoin(url, og.get('content', ''))
+        
+        # Extract additional images
+        additional_imgs = []
+        gallery_selectors = ['.product-gallery img', '.thumbnail img', '[data-gallery] img', '.product-images img']
+        for selector in gallery_selectors:
+            imgs = soup.select(selector)
+            if imgs:
+                for img in imgs[:10]:
+                    src = img.get('src') or img.get('data-src') or img.get('data-lazy')
+                    if src:
+                        full_url = urljoin(url, src)
+                        if full_url != image_url and full_url not in additional_imgs:
+                            additional_imgs.append(full_url)
+                if additional_imgs:
+                    break
+        
+        return {
+            'success': True,
+            'name': name or 'منتج بدون اسم',
+            'price': price or 0,
+            'description': description,
+            'image_url': image_url or '',
+            'additional_images': additional_imgs,
+            'source_site': source_site
+        }
+    except requests.exceptions.Timeout:
+        return {'success': False, 'error': 'انتهت مهلة الاتصال بالموقع'}
+    except requests.exceptions.ConnectionError:
+        return {'success': False, 'error': 'فشل الاتصال بالموقع'}
+    except Exception as e:
+        return {'success': False, 'error': f'خطأ: {str(e)}'}
+
+
+def download_image_from_url(image_url):
+    """Download an image from URL and save it locally"""
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        response = requests.get(image_url, headers=headers, timeout=10, stream=True)
+        response.raise_for_status()
+        
+        content_type = response.headers.get('content-type', '')
+        ext = 'jpg'
+        if 'png' in content_type:
+            ext = 'png'
+        elif 'gif' in content_type:
+            ext = 'gif'
+        elif 'webp' in content_type:
+            ext = 'webp'
+        
+        filename = f"{uuid4().hex}.{ext}"
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        with open(save_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        return filename
+    except Exception as e:
+        app.logger.error(f'Error downloading image {image_url}: {e}')
+        return None
+
+
+@admin.route('/dropshipping')
+@admin_required
+def dropshipping():
+    items = DropshipProduct.query.order_by(DropshipProduct.created_at.desc()).all()
+    categories = Category.query.all()
+    return render_template('admin/dropshipping.html', items=items, categories=categories)
+
+
+@admin.route('/dropshipping/scrape', methods=['POST'])
+@admin_required
+def dropshipping_scrape():
+    url = request.form.get('url', '').strip()
+    if not url:
+        flash('الرجاء إدخال رابط المنتج', 'error')
+        return redirect(url_for('admin.dropshipping'))
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    # Check if URL already scraped
+    existing = DropshipProduct.query.filter_by(source_url=url).first()
+    if existing:
+        flash('هذا المنتج تم استيراده مسبقاً', 'warning')
+        return redirect(url_for('admin.dropshipping'))
+    
+    result = scrape_product_data(url)
+    
+    if result['success']:
+        item = DropshipProduct(
+            source_url=url,
+            source_site=result['source_site'],
+            name=result['name'],
+            price=result['price'],
+            description=result['description'],
+            image_url=result['image_url'],
+            additional_images=json.dumps(result['additional_images']),
+            status='pending'
+        )
+        db.session.add(item)
+        db.session.commit()
+        flash(f'تم جلب بيانات المنتج "{result["name"]}" بنجاح!', 'success')
+    else:
+        item = DropshipProduct(
+            source_url=url,
+            source_site=urlparse(url).netloc,
+            status='error',
+            error_message=result['error']
+        )
+        db.session.add(item)
+        db.session.commit()
+        flash(f'فشل جلب بيانات المنتج: {result["error"]}', 'error')
+    
+    return redirect(url_for('admin.dropshipping'))
+
+
+@admin.route('/dropshipping/import/<int:item_id>', methods=['POST'])
+@admin_required
+def dropshipping_import(item_id):
+    item = db.session.get(DropshipProduct, item_id)
+    if not item:
+        abort(404)
+    
+    try:
+        name = request.form.get('name', item.name).strip()
+        price_str = request.form.get('price', str(item.price or 0)).strip()
+        price = float(price_str) if price_str else 0
+        discount_str = request.form.get('discount', '0').strip()
+        discount = float(discount_str) if discount_str else 0
+        stock_str = request.form.get('stock', '10').strip()
+        stock = int(stock_str) if stock_str else 10
+        category_id_str = request.form.get('category_id', '1').strip()
+        category_id = int(category_id_str) if category_id_str else 1
+        description = request.form.get('description', item.description or '').strip()
+        
+        # Download main image
+        main_image_filename = None
+        if item.image_url:
+            main_image_filename = download_image_from_url(item.image_url)
+        
+        if not main_image_filename:
+            main_image_filename = 'static/images/placeholder.png'
+        else:
+            main_image_filename = f"static/uploads/{main_image_filename}"
+        
+        # Create product
+        new_product = Product(
+            name=name,
+            description=description,
+            price=price,
+            discount=discount,
+            stock=stock,
+            image=main_image_filename,
+            category_id=category_id
+        )
+        db.session.add(new_product)
+        db.session.commit()
+        
+        # Download additional images
+        if item.additional_images:
+            try:
+                add_imgs = json.loads(item.additional_images)
+                for img_url in add_imgs[:5]:
+                    filename = download_image_from_url(img_url)
+                    if filename:
+                        add_img = AdditionalImage(
+                            image=f"static/uploads/{filename}",
+                            product_id=new_product.id
+                        )
+                        db.session.add(add_img)
+            except (json.JSONDecodeError, Exception) as e:
+                app.logger.error(f'Error processing additional images: {e}')
+        
+        item.status = 'imported'
+        item.imported_product_id = new_product.id
+        db.session.commit()
+        
+        flash(f'تم استيراد المنتج "{name}" بنجاح كمنتج في متجرك!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'Error importing dropship product: {e}')
+        flash(f'حدث خطأ أثناء الاستيراد: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.dropshipping'))
+
+
+@admin.route('/dropshipping/delete/<int:item_id>', methods=['POST'])
+@admin_required
+def dropshipping_delete(item_id):
+    item = db.session.get(DropshipProduct, item_id)
+    if not item:
+        abort(404)
+    db.session.delete(item)
+    db.session.commit()
+    flash('تم حذف المنتج من قائمة الدروب شوبينج', 'success')
+    return redirect(url_for('admin.dropshipping'))
+
+
+@admin.route('/dropshipping/api/scrape', methods=['POST'])
+@admin_required
+def dropshipping_api_scrape():
+    """AJAX endpoint to scrape product data without saving"""
+    data = request.get_json()
+    url = data.get('url', '').strip() if data else ''
+    
+    if not url:
+        return jsonify({'success': False, 'error': 'الرجاء إدخال رابط'}), 400
+    
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    
+    result = scrape_product_data(url)
+    return jsonify(result)
+
+# ==================== END DROPSHIPPING ROUTES ====================
 
 @admin.route('/shipping')
 @admin_required

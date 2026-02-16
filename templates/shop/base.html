@@ -589,9 +589,62 @@
                     </form>
                 </div>
 
-                <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar">
-                    <i class="bx bx-menu" style="font-size: 28px;"></i>
-                </button>
+                <!-- Desktop Actions -->
+                <div class="d-none d-lg-flex align-items-center gap-3">
+                    <ul class="modern-nav-links navbar-nav align-items-center">
+                        <li class="nav-item">
+                            <a class="modern-nav-link {% if request.endpoint == 'shop.home' %}active{% endif %}" href="/">الرئيسية</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="modern-nav-link {% if request.endpoint == 'shop.list' %}active{% endif %}" href="/shop">المتجر</a>
+                        </li>
+                        <!-- Categories Dropdown -->
+                        <li class="nav-item dropdown position-relative">
+                            <a class="modern-nav-link dropdown-toggle-custom" href="#" onclick="toggleCategoryDropdown(event)">
+                                الأقسام <i class='bx bx-chevron-down' style="font-size:14px;vertical-align:middle;"></i>
+                            </a>
+                            <div class="category-dropdown" id="categoryDropdown">
+                                <div class="category-dropdown-inner">
+                                    {% for cat in all_categories %}
+                                    <a href="/shop?category={{ cat.id }}" class="category-dropdown-item">
+                                        <i class='bx bx-tag-alt'></i>
+                                        <span>{{ cat.name }}</span>
+                                        <span class="cat-count">{{ cat.products|length }}</span>
+                                    </a>
+                                    {% endfor %}
+                                    <div class="category-dropdown-footer">
+                                        <a href="/shop" class="view-all-link">
+                                            <i class='bx bx-grid-alt'></i> عرض الكل
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="modern-nav-link {% if request.endpoint == 'shop.about' %}active{% endif %}" href="/about">من نحن</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/cart" class="modern-cart-btn">
+                                <i class='bx bx-cart modern-cart-icon'></i>
+                                {% if session.get('cart_count', 0) > 0 %}
+                                <span class="modern-cart-badge">{{ session.get('cart_count', 0) }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="d-flex d-lg-none align-items-center gap-2">
+                    <a href="/cart" class="modern-cart-btn" style="width:40px;height:40px;">
+                        <i class='bx bx-cart modern-cart-icon' style="font-size:20px;"></i>
+                        {% if session.get('cart_count', 0) > 0 %}
+                        <span class="modern-cart-badge">{{ session.get('cart_count', 0) }}</span>
+                        {% endif %}
+                    </a>
+                    <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar">
+                        <i class="bx bx-menu" style="font-size: 28px;"></i>
+                    </button>
+                </div>
 
                 <div class="offcanvas offcanvas-end" id="bdNavbar" style="max-width: 320px;">
                     <div class="offcanvas-header" style="border-bottom: 1px solid #222;">
@@ -611,23 +664,37 @@
                         </form>
                     </div>
 
-                    <div class="offcanvas-body">
-                        <ul class="modern-nav-links navbar-nav ms-auto align-items-lg-center">
-                            <li class="nav-item">
-                                <a class="modern-nav-link active" href="/">الرئيسية</a>
+                    <div class="offcanvas-body" dir="rtl">
+                        <ul class="navbar-nav" style="list-style:none;padding:0;margin:0;">
+                            <li class="nav-item mb-1">
+                                <a class="mobile-nav-item {% if request.endpoint == 'shop.home' %}active{% endif %}" href="/">
+                                    <i class='bx bx-home-alt'></i> الرئيسية
+                                </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="modern-nav-link" href="/about">من نحن</a>
+                            <li class="nav-item mb-1">
+                                <a class="mobile-nav-item {% if request.endpoint == 'shop.list' %}active{% endif %}" href="/shop">
+                                    <i class='bx bx-store'></i> المتجر
+                                </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="modern-nav-link" href="/shop">المتجر</a>
+                            <!-- Mobile Categories Accordion -->
+                            <li class="nav-item mb-1">
+                                <a class="mobile-nav-item" href="#" onclick="toggleMobileCategories(event)">
+                                    <i class='bx bx-category'></i> الأقسام
+                                    <i class='bx bx-chevron-down mobile-cat-arrow' id="mobileCatArrow" style="margin-right:auto;transition:transform 0.3s;"></i>
+                                </a>
+                                <div class="mobile-categories-list" id="mobileCategoriesList">
+                                    {% for cat in all_categories %}
+                                    <a href="/shop?category={{ cat.id }}" class="mobile-cat-item">
+                                        <i class='bx bx-tag-alt'></i>
+                                        {{ cat.name }}
+                                        <span class="mobile-cat-count">{{ cat.products|length }}</span>
+                                    </a>
+                                    {% endfor %}
+                                </div>
                             </li>
-                            <li class="nav-item">
-                                <a href="/cart" class="modern-cart-btn">
-                                    <i class='bx bx-cart modern-cart-icon'></i>
-                                    {% if session.get('cart_count', 0) > 0 %}
-                                    <span class="modern-cart-badge">{{ session.get('cart_count', 0) }}</span>
-                                    {% endif %}
+                            <li class="nav-item mb-1">
+                                <a class="mobile-nav-item {% if request.endpoint == 'shop.about' %}active{% endif %}" href="/about">
+                                    <i class='bx bx-info-circle'></i> من نحن
                                 </a>
                             </li>
                         </ul>
@@ -636,6 +703,144 @@
             </div>
         </nav>
     </header>
+
+    <style>
+        /* Category Dropdown */
+        .dropdown-toggle-custom { cursor: pointer; }
+        .category-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 260px;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 16px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .category-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .category-dropdown-inner { padding: 8px 0; }
+        .category-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.92rem;
+            transition: all 0.2s;
+        }
+        .category-dropdown-item:hover {
+            background: #111;
+            color: #d32f2f;
+            padding-right: 22px;
+        }
+        .category-dropdown-item i { font-size: 1.1rem; color: #555; }
+        .category-dropdown-item:hover i { color: #d32f2f; }
+        .cat-count {
+            margin-right: auto;
+            background: #1a1a1a;
+            color: #777;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .category-dropdown-footer {
+            border-top: 1px solid #222;
+            padding: 8px 18px;
+        }
+        .view-all-link {
+            color: #d32f2f;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .view-all-link:hover { color: #e53935; }
+
+        /* Mobile Nav Items */
+        .mobile-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .mobile-nav-item:hover, .mobile-nav-item.active {
+            background: #111;
+            color: #d32f2f;
+        }
+        .mobile-nav-item i { font-size: 1.2rem; }
+
+        .mobile-categories-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding-right: 20px;
+        }
+        .mobile-categories-list.show { max-height: 500px; }
+        .mobile-cat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.88rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .mobile-cat-item:hover { background: #111; color: #d32f2f; }
+        .mobile-cat-item i { font-size: 0.95rem; color: #555; }
+        .mobile-cat-count {
+            margin-right: auto;
+            background: #1a1a1a;
+            color: #666;
+            font-size: 0.7rem;
+            padding: 1px 7px;
+            border-radius: 8px;
+        }
+    </style>
+
+    <script>
+        // Category dropdown toggle
+        function toggleCategoryDropdown(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('categoryDropdown').classList.toggle('show');
+        }
+        // Close dropdown on outside click
+        document.addEventListener('click', function(e) {
+            var dd = document.getElementById('categoryDropdown');
+            if (dd && !e.target.closest('.dropdown-toggle-custom') && !e.target.closest('.category-dropdown')) {
+                dd.classList.remove('show');
+            }
+        });
+        // Mobile categories toggle
+        function toggleMobileCategories(e) {
+            e.preventDefault();
+            var list = document.getElementById('mobileCategoriesList');
+            var arrow = document.getElementById('mobileCatArrow');
+            list.classList.toggle('show');
+            arrow.style.transform = list.classList.contains('show') ? 'rotate(180deg)' : '';
+        }
+    </script>
 
     <script>
         // Navbar scroll effect
