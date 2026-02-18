@@ -1535,7 +1535,7 @@ def return_policy():
 @shop.route('/about')
 def about():
     """About us page"""
-    admin_phone = os.getenv('ADMIN_PHONE', '201234567890')
+    admin_phone = os.getenv('ADMIN_PHONE', '201050188516')
     return render_template('shop/about.html', admin_phone=admin_phone)
 
 # chang-quantity/plus/1
@@ -1988,6 +1988,26 @@ def products():
     products = Product.query.all()
     categories = Category.query.all()
     return render_template('admin/products.html', products=products, categories=categories)
+
+
+@admin.route('/products/missing-images')
+@admin_required
+def products_missing_images():
+    """Show all products that have no real image (missing, placeholder, or empty)"""
+    import os as _os
+    all_products = Product.query.all()
+    missing = []
+    for p in all_products:
+        img = p.image or ''
+        # Consider missing if: empty, points to placeholder, or file doesn't exist on disk
+        if (
+            not img
+            or 'placeholder' in img.lower()
+            or img.strip() in ('', 'None')
+            or (not img.startswith('http') and not _os.path.exists(_os.path.join(app.root_path, img)))
+        ):
+            missing.append(p)
+    return render_template('admin/products_missing_images.html', products=missing, total=len(all_products))
 
 @admin.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 @admin_required

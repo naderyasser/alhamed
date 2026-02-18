@@ -143,7 +143,7 @@ def sample_dropship_product(db_session):
 def authenticated_client(client, sample_admin, app):
     """Create an authenticated admin client"""
     with client.session_transaction() as session:
-        session['admin_id'] = sample_admin.id
+        session['admin'] = sample_admin.id
     return client
 
 @pytest.fixture
