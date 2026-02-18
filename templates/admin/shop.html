@@ -39,7 +39,7 @@
 </div>
 <div class="container mx-auto px-4 py-6">
       <div class="flex items-center mb-4 gap-2">
-            <img src="{{ url_for('static', filename='uploads/' + shop.logo) }}" alt="Logo"
+            <img src="{{ url_for('static', filename='uploads/' + shop.logo) }}" alt="شعار"
                   class="w-8 h-8 object-cover rounded-full mr-2">
             <h1 class="text-2xl font-bold text-gray-800">{{ shop.name }}</h1>
       </div>
@@ -111,7 +111,7 @@
             <h2 class="text-2xl font-semibold mb-4">معلومات عن المتجر</h2>
             <!-- logo -->
             <div class="flex items-center mb-4">
-                  <img src="{{ url_for('static', filename='uploads/' + shop.logo) }}" alt="Logo"
+                  <img src="{{ url_for('static', filename='uploads/' + shop.logo) }}" alt="شعار"
                         class="w-32 h-32 object-cover rounded-lg mr-4">
                   <p class="text-gray-700">{{ shop.about_us }}</p>
             </div>
@@ -155,7 +155,7 @@
                                             <tr>
                                                       <td class="px-4 py-2"><img
                                                                         src="{{ url_for('static', filename='uploads/' + product.image) }}"
-                                                                        alt="Product Image" class="w-16 h-16 object-cover rounded-lg"></td>
+                                                                        alt="صورة المنتج" class="w-16 h-16 object-cover rounded-lg"></td>
                                                       <td class="px-4 py-2">{{ product.name }}</td>
                                                       <td class="px-4 py-2">{{ product.price }}</td>
                                                       <td class="px-4 py-2">{{ product.category.name }}</td>

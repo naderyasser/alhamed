@@ -13,12 +13,12 @@
     <div class="container">
         <div class="row">
             <div class="col text-center">
-                <h1 class="display-4">Checkout</h1>
-                <nav aria-label="breadcrumb">
+                <h1 class="display-4">إتمام الطلب</h1>
+                <nav aria-label="مسار التنقل">
                     <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a href="{{ url_for('shop.home') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ url_for('shop.cart') }}">Cart</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('shop.home') }}">الرئيسية</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('shop.cart') }}">السلة</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">إتمام الطلب</li>
                     </ol>
                 </nav>
             </div>
@@ -33,22 +33,22 @@
                 <!-- Shipping & Payment Details -->
                 <div class="col-lg-8 mb-4">
                     <div class="card p-4 shadow-sm">
-                        <h4 class="mb-4">Shipping Information</h4>
+                        <h4 class="mb-4">معلومات الشحن</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">Full Name</label>
+                                <label for="name" class="form-label">الاسم الكامل</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email Address (optional)</label>
+                                <label for="email" class="form-label">البريد الإلكتروني (اختياري)</label>
                                 <input type="email" class="form-control" id="email" name="email">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">Phone Number</label>
+                                <label for="phone" class="form-label">رقم الهاتف</label>
                                 <input type="tel" class="form-control" id="phone" name="phone" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="address" class="form-label">Shipping Address</label>
+                                <label for="address" class="form-label">عنوان الشحن</label>
                                 <textarea class="form-control" id="address" name="address" rows="2" required></textarea>
                             </div>
 
@@ -77,12 +77,12 @@
                         <input type="hidden" name="total" value="{{ total }}">
 
                         <hr class="my-4">
-                        <h4 class="mb-3">Payment Method</h4>
+                        <h4 class="mb-3">طريقة الدفع</h4>
                         <div class="row">
                             <!-- الدفع عند الاستلام -->
                             <div class="col-md-4 mb-3">
                                 <div class="card shadow-sm p-3 text-center">
-                                    <img src="{{ url_for('static', filename='images/cashOnD.png') }}" alt="Cash on Delivery" class="img-fluid mb-2" width="60">
+                                    <img src="{{ url_for('static', filename='images/cashOnD.png') }}" alt="الدفع عند الاستلام" class="img-fluid mb-2" width="60">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment_method" id="cash_on_delivery" value="cash_on_delivery" required checked>
                                         <label class="form-check-label fw-bold" for="cash_on_delivery">الدفع عند الاستلام</label>
@@ -92,7 +92,7 @@
                             <!-- فودافون كاش + واتساب -->
                             <div class="col-md-4 mb-3">
                                 <div class="card shadow-sm p-3 text-center">
-                                    <img src="https://app.fawaterk.com/clients/payment_options/pay5png" alt="Vodafone Cash" class="img-fluid mb-2" width="100">
+                                    <img src="https://app.fawaterk.com/clients/payment_options/pay5png" alt="فودافون كاش" class="img-fluid mb-2" width="100">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment_method" id="vodafone_cash" value="vodafone_cash" required>
                                         <label class="form-check-label fw-bold" for="vodafone_cash">
@@ -106,7 +106,7 @@
                             <!-- الدفع بالفيزا -->
                             <div class="col-md-4 mb-3">
                                 <div class="card shadow-sm p-3 text-center">
-                                    <img src="https://app.fawaterk.com/clients/payment_options/Visa_mastercardpng" alt="Visa" class="img-fluid mb-2" width="100">
+                                    <img src="https://app.fawaterk.com/clients/payment_options/Visa_mastercardpng" alt="فيزا" class="img-fluid mb-2" width="100">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment_method" id="visa" value="visa" required>
                                         <label class="form-check-label fw-bold" for="visa">الدفع
@@ -121,37 +121,37 @@
                 <!-- Order Summary -->
                 <div class="col-lg-4">
                     <div class="card p-4 shadow-sm" style="background: #111; border: 1px solid #222; border-radius: 18px;">
-                        <h4 class="pb-3 border-bottom" style="color: #fff; border-color: #222 !important;">Order Summary</h4>
+                        <h4 class="pb-3 border-bottom" style="color: #fff; border-color: #222 !important;">ملخص الطلب</h4>
                         <div class="order-items my-4">
                             {% for item in cart_items %}
                             <div class="d-flex justify-content-between mb-2">
                                 <div>
                                     <h6 class="mb-0" style="color: #fff;">{{ item.product.name }}</h6>
-                                    <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                    <small class="text-muted">الكمية: {{ item.quantity }}</small>
                                 </div>
-                                <span style="color: #fff;">{{ "%.2f"|format(item.product.price * item.quantity) }} L.E</span>
+                                <span style="color: #fff;">{{ "%.2f"|format(item.product.price * item.quantity) }} ج.م</span>
                             </div>
                             {% endfor %}
                         </div>
                         <table class="table" style="color: #fff;">
                             <tbody>
                                 <tr class="subtotal">
-                                    <th style="color: #b0b0b0;">Subtotal</th>
-                                    <td class="text-end" id="subtotalValue">{{ "%.2f"|format(subtotal) }} L.E</td>
+                                    <th style="color: #b0b0b0;">المجموع الجزئي</th>
+                                    <td class="text-end" id="subtotalValue">{{ "%.2f"|format(subtotal) }} ج.م</td>
                                 </tr>
                                 {% if promo_info and promo_info.eligible %}
                                 <tr class="discount text-success">
                                     <th><i class="bi bi-tag-fill me-1"></i>خصم {{ promo_info.discount_percent }}%</th>
-                                    <td class="text-end text-success">- {{ "%.2f"|format(discount_amount) }} L.E</td>
+                                    <td class="text-end text-success">- {{ "%.2f"|format(discount_amount) }} ج.م</td>
                                 </tr>
                                 {% endif %}
                                 <tr class="shipping">
-                                    <th style="color: #b0b0b0;">Shipping</th>
-                                    <td class="text-end text-muted" id="shippingCost">Calculated at checkout</td>
+                                    <th style="color: #b0b0b0;">الشحن</th>
+                                    <td class="text-end text-muted" id="shippingCost">يُحسب عند الدفع</td>
                                 </tr>
                                 <tr class="total border-top" style="border-color: #222 !important;">
-                                    <th style="color: #fff;">Total</th>
-                                    <td class="text-end fw-bold" id="totalValue">{{ "%.2f"|format(total) }} L.E</td>
+                                    <th style="color: #fff;">المجموع</th>
+                                    <td class="text-end fw-bold" id="totalValue">{{ "%.2f"|format(total) }} ج.م</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -161,7 +161,7 @@
                         </div>
                         {% endif %}
 
-                        <button type="submit" class="btn w-100 mt-3" style="background: #d32f2f; color: #fff; border: none; border-radius: 12px; padding: 0.75rem;">Place Order</button>
+                        <button type="submit" class="btn w-100 mt-3" style="background: #d32f2f; color: #fff; border: none; border-radius: 12px; padding: 0.75rem;">تأكيد الطلب</button>
                     </div>
                 </div>
             </div>
@@ -192,28 +192,28 @@
                     if (data.discount_applied) {
                         // Show standard cost as crossed out and free shipping message
                         const standardCost = data.standard_cost;
-                        const discountMessage = data.discount_message || "Free Shipping";
+                        const discountMessage = data.discount_message || "شحن مجاني";
                         const shipping_cost = data.shipping_cost || 0;
                         shippingCostElement.innerHTML = `
-                        <span class="text-decoration-line-through text-muted">${standardCost} L.E</span>
+                        <span class="text-decoration-line-through text-muted">${standardCost} ج.م</span>
                         <span class="ms-2 text-success">
-      ${shipping_cost} L.E</span>
+      ${shipping_cost} ج.م</span>
                         <div class="mt-1 text-success small"><i class="bi bi-gift me-1"></i>${discountMessage}</div>
                     `;
 
                         // Update total with free shipping
-                        totalValueElement.textContent = `${subtotalValue.toFixed(2)} L.E`;
+                        totalValueElement.textContent = `${subtotalValue.toFixed(2)} ج.م`;
                     } else {
                         // Regular shipping cost
                         const shippingCost = data.shipping_cost;
-                        shippingCostElement.textContent = `${shippingCost} L.E`;
+                        shippingCostElement.textContent = `${shippingCost} ج.م`;
                         const total = subtotalValue + shippingCost;
-                        totalValueElement.textContent = `${total.toFixed(2)} L.E`;
+                        totalValueElement.textContent = `${total.toFixed(2)} ج.م`;
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching shipping cost:', error);
-                    shippingCostElement.textContent = 'Error calculating shipping';
+                    shippingCostElement.textContent = 'خطأ في حساب الشحن';
                 });
         }
 
@@ -262,12 +262,12 @@
                             })
                             .catch(error => {
                                 console.error('Error fetching districts:', error);
-                                districtSelect.innerHTML = '<option value="">Error loading districts</option>';
+                                districtSelect.innerHTML = '<option value="">خطأ في تحميل الأحياء</option>';
                             });
                     })
                     .catch(error => {
                         console.error('Error fetching zones:', error);
-                        zoneSelect.innerHTML = '<option value="">Error loading zones</option>';
+                        zoneSelect.innerHTML = '<option value="">خطأ في تحميل المناطق</option>';
                     });
 
                 // Update shipping cost

@@ -473,22 +473,62 @@ body.luxury-dark-theme #footer {
     background: var(--lux-surface) !important;
     border-top: 1px solid var(--lux-border) !important;
     color: var(--lux-text-muted) !important;
+    padding-top: 4rem !important;
+    padding-bottom: 2rem !important;
 }
 
 body.luxury-dark-theme #footer h5 {
     color: var(--lux-text) !important;
+    font-weight: 700 !important;
+    margin-bottom: 1.5rem !important;
+    font-size: 1.1rem !important;
+}
+
+body.luxury-dark-theme #footer ul {
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+body.luxury-dark-theme #footer ul li {
+    margin-bottom: 0.75rem !important;
+    transition: var(--lux-transition) !important;
+}
+
+body.luxury-dark-theme #footer ul li:hover {
+    transform: translateX(-5px) !important;
 }
 
 body.luxury-dark-theme #footer a {
     color: var(--lux-text-muted) !important;
+    text-decoration: none !important;
+    transition: var(--lux-transition) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
 }
 
 body.luxury-dark-theme #footer a:hover {
     color: var(--lux-accent-red) !important;
 }
 
+body.luxury-dark-theme #footer a i {
+    font-size: 1.2rem !important;
+}
+
 body.luxury-dark-theme #footer p {
     color: var(--lux-text-subtle) !important;
+    line-height: 1.8 !important;
+    margin-bottom: 0.75rem !important;
+}
+
+body.luxury-dark-theme #footer img {
+    border: 2px solid var(--lux-border) !important;
+    transition: var(--lux-transition) !important;
+}
+
+body.luxury-dark-theme #footer img:hover {
+    border-color: var(--lux-accent-red) !important;
+    transform: scale(1.05) !important;
 }
 
 /* ── WhatsApp Bubble ─────────────────────────────────────────── */

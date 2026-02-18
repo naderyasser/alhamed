@@ -1915,7 +1915,7 @@ def add_product():
             price=price,
             discount=discount,
             stock=stock,
-            image=main_image_filename,
+            image=f"static/uploads/{main_image_filename}",
             category_id=category_id
         )
         db.session.add(new_product)
@@ -1927,7 +1927,7 @@ def add_product():
             if file and allowed_file(file.filename):
                 filename = save_uploaded_file(file)
                 additional_image = AdditionalImage(
-                    image=filename,
+                    image=f"static/uploads/{filename}",
                     product_id=new_product.id
                 )
                 db.session.add(additional_image)
@@ -2175,15 +2175,31 @@ def scrape_product_data(url):
     }
     
     try:
-        response = requests.get(url, headers=headers, timeout=15)
+        response = requests.get(url, headers=headers, timeout=15, allow_redirects=True)
         response.raise_for_status()
+        # Use final URL after redirects for source_site
+        final_url = response.url
         soup = BeautifulSoup(response.text, 'html.parser')
-        parsed_url = urlparse(url)
+        parsed_url = urlparse(final_url)
         source_site = parsed_url.netloc.replace('www.', '')
         
-        # Extract product name
+        # Detect site type for specialized extraction
+        is_amazon = 'amazon' in source_site
+        is_noon = 'noon.com' in source_site
+        is_jumia = 'jumia' in source_site
+        
+        # ── Extract product name ──
         name = None
-        for selector in ['h1', '[itemprop="name"]', '.product-title', '.product_title', '#productTitle']:
+        if is_amazon:
+            name_selectors = ['#productTitle', '#title span', 'h1#title']
+        elif is_noon:
+            name_selectors = ['h1[data-qa="pdp-name"]', 'h1.productTitle', 'h1']
+        elif is_jumia:
+            name_selectors = ['h1.-fs20', 'h1.-pts', 'h1']
+        else:
+            name_selectors = ['h1', '[itemprop="name"]', '.product-title', '.product_title', '#productTitle']
+        
+        for selector in name_selectors:
             tag = soup.select_one(selector)
             if tag and tag.get_text(strip=True):
                 name = tag.get_text(strip=True)[:300]
@@ -2193,13 +2209,30 @@ def scrape_product_data(url):
             if og:
                 name = og.get('content', '')[:300]
         
-        # Extract price
+        # ── Extract price ──
         price = None
-        for selector in ['[itemprop="price"]', '.price', '.product-price', '.current-price', 'span.price']:
+        if is_amazon:
+            price_selectors = [
+                '.a-price .a-offscreen',
+                '#priceblock_ourprice', '#priceblock_dealprice',
+                '#price_inside_buybox', '.a-price-whole',
+                '#corePrice_feature_div .a-offscreen',
+                'span.a-price span.a-offscreen',
+            ]
+        elif is_noon:
+            price_selectors = ['strong[data-qa="div-price-now"]', '.priceNow', 'span.price']
+        elif is_jumia:
+            price_selectors = ['.-b.-ltr', '.-fs24', 'span.-b.-ltr']
+        else:
+            price_selectors = ['[itemprop="price"]', '.price', '.product-price', '.current-price', 'span.price']
+        
+        for selector in price_selectors:
             tag = soup.select_one(selector)
             if tag:
                 content = tag.get('content') or tag.get_text(strip=True)
-                nums = re.findall(r'[\d,]+\.?\d*', content.replace(',', ''))
+                # Remove currency symbols and commas, extract numbers
+                cleaned = re.sub(r'[^\d.,]', '', content.replace('٫', '.'))
+                nums = re.findall(r'[\d,]+\.?\d*', cleaned.replace(',', ''))
                 if nums:
                     try:
                         price = float(nums[0])
@@ -2214,9 +2247,16 @@ def scrape_product_data(url):
                 except ValueError:
                     pass
         
-        # Extract description
+        # ── Extract description ──
         description = ''
-        for selector in ['[itemprop="description"]', '.product-description', '#productDescription', '.description']:
+        if is_amazon:
+            desc_selectors = ['#feature-bullets', '#productDescription', '#aplus_feature_div', '[itemprop="description"]']
+        elif is_jumia:
+            desc_selectors = ['.markup.-mhm.-pvl.-oxa.-sc', '.card-body.-fs14', '[itemprop="description"]']
+        else:
+            desc_selectors = ['[itemprop="description"]', '.product-description', '#productDescription', '.description']
+        
+        for selector in desc_selectors:
             tag = soup.select_one(selector)
             if tag:
                 description = tag.get_text(strip=True)[:2000]
@@ -2226,30 +2266,63 @@ def scrape_product_data(url):
             if og:
                 description = og.get('content', '')[:2000]
         
-        # Extract main image
+        # ── Extract main image ──
         image_url = None
-        for selector in ['[itemprop="image"]', '.product-image img', '#main-image', '.gallery-image img', 'img.product-image']:
-            tag = soup.select_one(selector)
-            if tag:
-                image_url = tag.get('src') or tag.get('data-src') or tag.get('data-lazy')
-                if image_url:
-                    image_url = urljoin(url, image_url)
-                    break
+        if is_amazon:
+            img_selectors = ['#landingImage', '#imgBlkFront', '#main-image-container img', '#imageBlock img']
+            for selector in img_selectors:
+                tag = soup.select_one(selector)
+                if tag:
+                    # Amazon stores hi-res in data-old-hires or data-a-dynamic-image
+                    image_url = tag.get('data-old-hires') or tag.get('src') or tag.get('data-src')
+                    if image_url:
+                        image_url = urljoin(final_url, image_url)
+                        break
+            # Fallback: try extracting from data-a-dynamic-image JSON
+            if not image_url:
+                tag = soup.select_one('#landingImage, #imgBlkFront')
+                if tag and tag.get('data-a-dynamic-image'):
+                    try:
+                        import json
+                        dyn = json.loads(tag['data-a-dynamic-image'])
+                        if dyn:
+                            image_url = list(dyn.keys())[0]
+                    except Exception:
+                        pass
+        else:
+            for selector in ['[itemprop="image"]', '.product-image img', '#main-image', '.gallery-image img', 'img.product-image']:
+                tag = soup.select_one(selector)
+                if tag:
+                    image_url = tag.get('src') or tag.get('data-src') or tag.get('data-lazy')
+                    if image_url:
+                        image_url = urljoin(final_url, image_url)
+                        break
         if not image_url:
             og = soup.find('meta', property='og:image')
             if og:
-                image_url = urljoin(url, og.get('content', ''))
+                image_url = urljoin(final_url, og.get('content', ''))
         
-        # Extract additional images
+        # ── Extract additional images ──
         additional_imgs = []
-        gallery_selectors = ['.product-gallery img', '.thumbnail img', '[data-gallery] img', '.product-images img']
+        if is_amazon:
+            # Amazon stores thumb images in altImages or uses script-based JSON
+            gallery_selectors = ['#altImages img', '.imageThumbnail img', '#imageBlock_feature_div img']
+        else:
+            gallery_selectors = ['.product-gallery img', '.thumbnail img', '[data-gallery] img', '.product-images img']
+        
         for selector in gallery_selectors:
             imgs = soup.select(selector)
             if imgs:
                 for img in imgs[:10]:
-                    src = img.get('src') or img.get('data-src') or img.get('data-lazy')
+                    src = img.get('data-old-hires') or img.get('src') or img.get('data-src') or img.get('data-lazy')
                     if src:
-                        full_url = urljoin(url, src)
+                        # Skip tiny placeholder images
+                        if 'sprite' in src or '1x1' in src or 'grey-pixel' in src:
+                            continue
+                        # For Amazon thumbs, try to get hi-res by removing size suffix
+                        if is_amazon and '_SS' in src:
+                            src = re.sub(r'\._[A-Z]{2}\d+_', '.', src)
+                        full_url = urljoin(final_url, src)
                         if full_url != image_url and full_url not in additional_imgs:
                             additional_imgs.append(full_url)
                 if additional_imgs:
@@ -2275,10 +2348,14 @@ def scrape_product_data(url):
 def download_image_from_url(image_url):
     """Download an image from URL and save it locally"""
     try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-        response = requests.get(image_url, headers=headers, timeout=10, stream=True)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+        }
+        response = requests.get(image_url, headers=headers, timeout=15, stream=True, allow_redirects=True)
         response.raise_for_status()
         
+        # Detect extension from content-type or URL
         content_type = response.headers.get('content-type', '')
         ext = 'jpg'
         if 'png' in content_type:
@@ -2287,12 +2364,31 @@ def download_image_from_url(image_url):
             ext = 'gif'
         elif 'webp' in content_type:
             ext = 'webp'
+        elif 'jpeg' not in content_type and 'jpg' not in content_type:
+            # Try from URL path
+            url_path = urlparse(image_url).path.lower()
+            for e in ['png', 'gif', 'webp', 'svg']:
+                if url_path.endswith(f'.{e}'):
+                    ext = e
+                    break
+        
+        # Verify we actually got an image
+        first_chunk = next(response.iter_content(chunk_size=512), None)
+        if not first_chunk or len(first_chunk) < 8:
+            return None
         
         filename = f"{uuid4().hex}.{ext}"
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         with open(save_path, 'wb') as f:
+            f.write(first_chunk)
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
+        
+        # Verify file size is reasonable (>1KB for a real image)
+        if os.path.getsize(save_path) < 1024:
+            os.remove(save_path)
+            return None
+        
         return filename
     except Exception as e:
         app.logger.error(f'Error downloading image {image_url}: {e}')

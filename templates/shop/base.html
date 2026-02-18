@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <!-- Google tag (gtag.js) -->
@@ -58,7 +58,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
-    <title>Al Hamd Shop</title>
+    <title>الحامد - متجر المنتجات الفاخرة</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -78,24 +78,24 @@
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/modernizr.js') }}" defer></script>
     <!-- Meta Data -->
-    <meta name="description" content="Al Hamd Shop - Your ultimate destination for premium products. Discover quality that enhances your life.">
-    <meta name="keywords" content="Al Hamd, shop, premium products, home appliances, kitchenware">
-    <meta name="author" content="Al Hamd">
+    <meta name="description" content="الحامد - وجهتك المثالية للمنتجات الفاخرة. اكتشف جودة تعزز حياتك.">
+    <meta name="keywords" content="الحامد, متجر, منتجات فاخرة, مستحضرات تجميل, عناية بالبشرة">
+    <meta name="author" content="الحامد">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#000000">
     <!-- faveicon -->
     <link rel="icon" href="{{ url_for('static', filename='images/logo-alha.jpeg') }}" type="image/jpeg">
     <!-- Open Graph Meta Tags for Social Sharing -->
-    <meta property="og:title" content="Al Hamd Shop - Premium Products">
-    <meta property="og:description" content="Discover high-quality products designed to enhance your life.">
+    <meta property="og:title" content="الحامد - منتجات فاخرة">
+    <meta property="og:description" content="اكتشف منتجات عالية الجودة مصممة لتعزيز جمالك.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo-alha.jpeg') }}">
     <meta property="og:url" content="/">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Al Hamd Shop - Premium Products">
-    <meta name="twitter:description" content="Shop premium products at Al Hamd and elevate your life with top-quality items.">
+    <meta name="twitter:title" content="الحامد - منتجات فاخرة">
+    <meta name="twitter:description" content="تسوقي المنتجات الفاخرة من الحامد وارتقي بجمالك.">
     <meta name="twitter:image" content="{{ url_for('static', filename='images/logo-alha.jpeg') }}">
 
     <!-- Favicon -->
@@ -105,135 +105,6 @@
 </head>
 
 <body class="bg-body luxury-dark-theme" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-smooth-scroll="true">
-    <style>
-        .promo-banner {
-            background-color: #8B4513;
-            /* Changed to a festive brown color */
-            color: white;
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-            padding: 15px;
-            animation: fadeIn 1s ease-in-out;
-        }
-        /* Background animation */
-        
-        .promo-banner::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #D2691E;
-            opacity: 0.1;
-            animation: moveBg 10s linear infinite;
-        }
-        
-        .promo-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            font-size: 18px;
-            gap: 10px;
-        }
-        
-        #countdown {
-            font-weight: bold;
-            font-size: 18px;
-            margin-left: 10px;
-            display: flex;
-            gap: 5px;
-        }
-        
-        #countdown span {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: all 0.3s ease-in-out;
-        }
-        /* Keyframes for animations */
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes moveBg {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 100px 100px;
-            }
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-    </style>
-    <!-- Eid Al-Adha Promo Banner -->
-    <div class="promo-banner" dir="rtl">
-        <div class="promo-content">
-            <strong>🕌 عرض عيد الأضحى المبارك 🎉</strong>
-            <span>شحن مجاني لباقة العناية الكاملة للقاهرة والإسكندرية والجيزة والبحيرة • خصم 50% على الشحن لباقي المحافظات</span>
-            <span id="countdown"></span>
-        </div>
-    </div>
-
-    <script>
-        function updateCountdown() {
-            // Set end date to June 11, 2025 (6 days from June 5)
-            const endDate = new Date('2025-06-11T23:59:59');
-            const now = new Date().getTime();
-            const distance = endDate - now;
-
-            if (distance < 0) {
-                document.getElementById('countdown').innerHTML = "انتهى العرض";
-                document.querySelector('.promo-banner').style.display = 'none';
-                clearInterval(countdownInterval);
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('countdown').innerHTML = `
-                <span>العرض ينتهي خلال: ${days} يوم</span> 
-                <span>${hours} ساعة</span> 
-                <span>${minutes} دقيقة</span> 
-                <span>${seconds} ثانية</span>`;
-
-            // Apply pulse animation when numbers change
-            document.querySelectorAll("#countdown span").forEach(el => {
-                el.style.animation = "pulse 0.5s";
-                setTimeout(() => el.style.animation = "", 500);
-            });
-        }
-
-        const countdownInterval = setInterval(updateCountdown, 1000);
-        updateCountdown();
-    </script>
 
     <!-- 10% Discount Promo Banner -->
     <style>
@@ -325,21 +196,21 @@
             }
         }
     </style>
-    <div class="discount-banner" id="discountBanner">
+    <div class="discount-banner" id="discountBanner" dir="rtl">
         <div class="discount-content">
-            <span class="discount-text">✨ Happy New Year ✨</span>
+            <span class="discount-text">✨ خصم خاص ✨</span>
             <span class="separator">|</span>
-            <span class="discount-off">10% OFF</span>
+            <span class="discount-off">خصم 10%</span>
             <span class="separator">|</span>
-            <span class="discount-text">Use Code: <span class="discount-code">ALHAMD10</span></span>
+            <span class="discount-text">استخدم الكود: <span class="discount-code">ALHAMD10</span></span>
             <span class="separator">|</span>
             <span id="discount-countdown"></span>
         </div>
     </div>
     <script>
         function updateDiscountCountdown() {
-            // Promo ends January 9, 2026
-            const endDate = new Date('2026-01-09T23:59:59');
+            // Promo ends March 31, 2026
+            const endDate = new Date('2026-03-31T23:59:59');
             const now = new Date().getTime();
             const distance = endDate - now;
 
@@ -355,10 +226,10 @@
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             document.getElementById('discount-countdown').innerHTML = `
-                <span class="time-block">${days}d</span>
-                <span class="time-block">${hours}h</span>
-                <span class="time-block">${minutes}m</span>
-                <span class="time-block">${seconds}s</span>`;
+                <span class="time-block">${days} يوم</span>
+                <span class="time-block">${hours} ساعة</span>
+                <span class="time-block">${minutes} دقيقة</span>
+                <span class="time-block">${seconds} ثانية</span>`;
         }
 
         const discountCountdownInterval = setInterval(updateDiscountCountdown, 1000);
@@ -384,6 +255,13 @@
             padding: 0.8rem 0;
         }
 
+        .modern-navbar .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
         .modern-logo {
             width: 90px;
             height: auto;
@@ -396,8 +274,9 @@
 
         .modern-search-container {
             flex: 1;
-            max-width: 500px;
-            margin: 0 2rem;
+            max-width: 560px;
+            min-width: 0;
+            margin: 0;
         }
 
         .modern-search-box {
@@ -449,10 +328,19 @@
         .modern-nav-links {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.25rem;
+            flex-wrap: nowrap;
             list-style: none;
             margin: 0;
             padding: 0;
+        }
+
+        .modern-nav-links .nav-item {
+            white-space: nowrap;
+        }
+
+        .modern-desktop-actions {
+            min-width: max-content;
         }
 
         .modern-nav-link {
@@ -548,6 +436,33 @@
             border-bottom: 1px solid #222;
         }
 
+        @media (min-width: 992px) {
+            .modern-navbar .container-fluid {
+                display: grid;
+                grid-template-columns: max-content minmax(260px, 1fr) max-content;
+                grid-template-areas: "brand search actions";
+                align-items: center;
+                column-gap: 1.25rem;
+            }
+
+            .modern-brand {
+                grid-area: brand;
+                justify-self: start;
+            }
+
+            .modern-search-container {
+                grid-area: search;
+                width: 100%;
+                max-width: 640px;
+                justify-self: center;
+            }
+
+            .modern-desktop-actions {
+                grid-area: actions;
+                justify-self: end;
+            }
+        }
+
         @media (max-width: 991px) {
             .modern-search-container {
                 display: none;
@@ -573,16 +488,16 @@
     </style>
 
     <header id="header" class="modern-header site-header">
-        <nav class="modern-navbar navbar navbar-expand-lg">
+        <nav class="modern-navbar navbar">
             <div class="container-fluid px-3 px-lg-4">
-                <a class="navbar-brand" href="/">
-                    <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" class="modern-logo logo" alt="Al Hamd Logo">
+                <a class="navbar-brand modern-brand" href="/">
+                    <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" class="modern-logo logo" alt="شعار الحامد">
                 </a>
 
                 <!-- Desktop Search Bar -->
                 <div class="modern-search-container d-none d-lg-block">
                     <form action="/shop" method="get" class="modern-search-box">
-                        <input type="text" name="search" class="modern-search-input" placeholder="ابحثي عن المنتجات، الماركات أو الفئات..." dir="rtl">
+                        <input type="text" name="search" class="modern-search-input" placeholder="ابحث عن المنتجات، الماركات أو الفئات..." dir="rtl">
                         <button type="submit" class="modern-search-btn">
                             <i class='bx bx-search' style="font-size: 18px;"></i>
                         </button>
@@ -590,8 +505,8 @@
                 </div>
 
                 <!-- Desktop Actions -->
-                <div class="d-none d-lg-flex align-items-center gap-3">
-                    <ul class="modern-nav-links navbar-nav align-items-center">
+                <div class="modern-desktop-actions d-none d-lg-flex align-items-center gap-3">
+                    <ul class="modern-nav-links align-items-center">
                         <li class="nav-item">
                             <a class="modern-nav-link {% if request.endpoint == 'shop.home' %}active{% endif %}" href="/">الرئيسية</a>
                         </li>
@@ -649,7 +564,7 @@
                 <div class="offcanvas offcanvas-end" id="bdNavbar" style="max-width: 320px;">
                     <div class="offcanvas-header" style="border-bottom: 1px solid #222;">
                         <a class="navbar-brand" href="/">
-                            <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" class="modern-logo logo" alt="Al Hamd Logo">
+                            <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" class="modern-logo logo" alt="شعار الحامد">
                         </a>
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                     </div>
@@ -657,7 +572,7 @@
                     <!-- Mobile Search -->
                     <div class="mobile-search-container d-lg-none">
                         <form action="/shop" method="get" class="modern-search-box">
-                            <input type="text" name="search" class="modern-search-input" placeholder="ابحثي عن المنتجات..." dir="rtl">
+                            <input type="text" name="search" class="modern-search-input" placeholder="ابحث عن المنتجات..." dir="rtl">
                             <button type="submit" class="modern-search-btn">
                                 <i class='bx bx-search' style="font-size: 18px;"></i>
                             </button>
@@ -888,39 +803,62 @@
             <div class="row">
                 <!-- About -->
                 <div class="col-lg-3 col-sm-6 pb-3">
-                    <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" alt="Al Hamd Logo" class="pb-3" style="width: 150px; border-radius: 12px;">
-                    <p>Welcome to Al Hamd, your ultimate destination for premium products.</p>
-                    <p>© 2025. <a href="/">Al Hamd</a></p>
+                    <img src="{{ url_for('static', filename='images/logo-alha.jpeg') }}" alt="شعار الحامد" class="pb-3" style="width: 150px; border-radius: 12px;">
+                    <p>مرحباً بكم في الحامد، وجهتكم المثالية للمنتجات الفاخرة والعناية بالجمال.</p>
+                </div>
+
+                <!-- Categories (Dynamic) -->
+                <div class="col-lg-2 col-sm-6 pb-3">
+                    <h5 class="widget-title pb-2">الأقسام</h5>
+                    <ul class="list-unstyled">
+                        {% for cat in all_categories %}
+                        <li><a href="/shop?category={{ cat.id }}"><i class='bx bx-chevron-left'></i> {{ cat.name }}</a></li>
+                        {% endfor %}
+                        <li><a href="/shop" style="color: #d32f2f;"><i class='bx bx-grid-alt'></i> عرض الكل</a></li>
+                    </ul>
                 </div>
 
                 <!-- Quick Links -->
                 <div class="col-lg-2 col-sm-6 pb-3">
-                    <h5 class="widget-title pb-2">Quick Links</h5>
+                    <h5 class="widget-title pb-2">روابط سريعة</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('shop.home') }}">Home</a></li>
-                        <li><a href="{{ url_for('shop.about') }}">About Us</a></li>
-                        <li><a href="{{ url_for('shop.list') }}">Our Products</a></li>
-                        <li><a href="{{ url_for('shop.cart') }}">Cart</a></li>
+                        <li><a href="{{ url_for('shop.home') }}"><i class='bx bx-chevron-left'></i> الرئيسية</a></li>
+                        <li><a href="{{ url_for('shop.about') }}"><i class='bx bx-chevron-left'></i> من نحن</a></li>
+                        <li><a href="{{ url_for('shop.list') }}"><i class='bx bx-chevron-left'></i> منتجاتنا</a></li>
+                        <li><a href="{{ url_for('shop.cart') }}"><i class='bx bx-chevron-left'></i> سلة التسوق</a></li>
                     </ul>
                 </div>
 
                 <!-- Social Links -->
                 <div class="col-lg-2 col-sm-6 pb-3">
-                    <h5 class="widget-title pb-2">Follow Us</h5>
+                    <h5 class="widget-title pb-2">تابعونا</h5>
                     <ul class="list-unstyled">
-                        <li><a href="https://www.facebook.com/share/15cWndCGap/?mibextid=wwXIfr">Facebook</a>
-                        </li>
-                        <li><a href="https://www.instagram.com/orfeee0?igsh=MXdybnNqbTdrZDNicw==">Instagram</a>
-                        </li>
-                        <li><a href="https://www.tiktok.com/@orfeee0?_t=ZS-8tYLp3QdQ9q&_r=1">TikTok</a></li>
+                        <li><a href="https://www.facebook.com/share/15cWndCGap/?mibextid=wwXIfr" target="_blank" rel="noopener">
+                            <i class='bx bxl-facebook-circle'></i> فيسبوك
+                        </a></li>
+                        <li><a href="https://www.instagram.com/orfeee0?igsh=MXdybnNqbTdrZDNicw==" target="_blank" rel="noopener">
+                            <i class='bx bxl-instagram'></i> إنستغرام
+                        </a></li>
+                        <li><a href="https://www.tiktok.com/@orfeee0?_t=ZS-8tYLp3QdQ9q&_r=1" target="_blank" rel="noopener">
+                            <i class='bx bxl-tiktok'></i> تيك توك
+                        </a></li>
                     </ul>
                 </div>
 
                 <!-- Contact -->
                 <div class="col-lg-3 col-sm-6">
-                    <h5 class="widget-title pb-2">Contact Us</h5>
-                    <p><a href="tel:+201030553029">+201030553029</a></p>
-                    <p><a href="mailto:info@alhamd-store.com">info@alhamd-store.com</a></p>
+                    <h5 class="widget-title pb-2">تواصل معنا</h5>
+                    <p><i class='bx bx-phone'></i> <a href="tel:+201030553029" dir="ltr">+20 103 055 3029</a></p>
+                    <p><i class='bx bx-envelope'></i> <a href="mailto:info@alhamd-store.com">info@alhamd-store.com</a></p>
+                    <p><i class='bx bx-map'></i> مصر</p>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="row mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <div class="col-12 text-center">
+                    <p style="margin: 0; opacity: 0.7;">© 2026. جميع الحقوق محفوظة. <a href="/" style="font-weight: 600;">الحامد</a></p>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; opacity: 0.5;">صُنع بـ <i class='bx bxs-heart' style="color: #d32f2f;"></i> في مصر</p>
                 </div>
             </div>
         </div>
