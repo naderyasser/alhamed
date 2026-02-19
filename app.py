@@ -1,4 +1,8 @@
 # pyright: reportMissingImports=false, reportCallIssue=false, reportAttributeAccessIssue=false, reportOptionalMemberAccess=false, reportArgumentType=false
+import os as _os
+from dotenv import load_dotenv as _load_dotenv
+_load_dotenv(_os.path.join(_os.path.dirname(__file__), '.env'))
+
 from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, session, Blueprint, send_file, abort
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, text as sa_text
