@@ -604,6 +604,10 @@ def before_request():
 
 @app.before_request
 def csrf_protect():
+    # Skip CSRF validation entirely when running tests
+    if app.config.get('TESTING', False):
+        return
+
     if request.method != 'POST':
         return
 

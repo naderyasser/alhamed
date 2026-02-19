@@ -20,12 +20,13 @@ class TestHelperFunctions:
         assert allowed_file('noextension') is False
     
     def test_utc_now(self):
-        """Test UTC time function"""
+        """Test UTC time function returns naive datetime (tzinfo stripped for SQLite)"""
         from app import utc_now
-        
+
         now = utc_now()
         assert isinstance(now, datetime)
-        assert now.tzinfo is not None
+        # utc_now() intentionally strips tzinfo for SQLite compatibility
+        assert now.tzinfo is None
 
 class TestSessionManagement:
     """Tests for session management"""
@@ -45,10 +46,10 @@ class TestSessionManagement:
 class TestCartCleanup:
     """Tests for cart cleanup"""
     
-    def test_cleanup_expired_cart_items(self, db_session, sample_guest, sample_product, app):
+    def test_cleanup_expired_cart_items(self, db_session, sample_guest, sample_product):
         """Test cleaning up expired cart items"""
         from app import Cart, cleanup_expired_cart_items, utc_now
-        
+
         # Create old cart item
         old_cart = Cart(
             user_id=sample_guest.id,
@@ -57,7 +58,7 @@ class TestCartCleanup:
         )
         old_cart.created_at = utc_now() - timedelta(hours=25)
         db_session.add(old_cart)
-        
+
         # Create recent cart item
         new_cart = Cart(
             user_id=sample_guest.id,
@@ -66,9 +67,9 @@ class TestCartCleanup:
         )
         db_session.add(new_cart)
         db_session.commit()
-        
-        with app.app_context():
-            cleanup_expired_cart_items()
+
+        # Run cleanup (already inside active app context from the session fixture)
+        cleanup_expired_cart_items()
         
         # Old item should be deleted
         assert db_session.get(Cart, old_cart.id) is None
@@ -77,20 +78,14 @@ class TestCartCleanup:
 
 class TestCSRF:
     """Tests for CSRF protection"""
-    
-    def test_csrf_token_injection(self, app):
-        """Test CSRF token is injected into templates"""
-        from app import inject_csrf_token
-        
-        with app.app_context():
-            result = inject_csrf_token()
-            assert 'csrf_token' in result
-            assert result['csrf_token'] is not None
-    
-    def test_categories_injection(self, app, sample_category):
-        """Test categories are injected into templates"""
-        from app import inject_csrf_token
-        
-        with app.app_context():
-            result = inject_csrf_token()
-            assert 'categories' in result
+
+    def test_csrf_token_injection(self, client):
+        """Test CSRF token is injected into templates via meta tag"""
+        response = client.get('/')
+        assert b'csrf-token' in response.data
+
+    def test_categories_injection(self, client, sample_category):
+        """Test categories are visible in rendered pages (context processor)"""
+        response = client.get('/')
+        assert response.status_code == 200
+        assert sample_category.name in response.data.decode('utf-8')

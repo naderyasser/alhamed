@@ -8,21 +8,18 @@ from app import app, db, Admins, Gusts, Category, Product, Cart, City, ShippingC
 
 
 def setup_module(module):
+    # Conftest's session-scoped 'app' fixture manages the database lifecycle.
+    # db.create_all() is idempotent: safe to call again if tables already exist.
     app.config.update(
         TESTING=True,
-        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
         WTF_CSRF_ENABLED=False,
     )
     with app.app_context():
-        db.drop_all()
         db.create_all()
 
 
-
 def teardown_module(module):
-    with app.app_context():
-        db.session.remove()
-        db.drop_all()
+    pass
 
 
 

@@ -4,6 +4,7 @@ Pytest configuration and fixtures for testing
 import pytest
 import os
 import sys
+import tempfile
 from datetime import datetime
 
 # Add parent directory to path
@@ -11,40 +12,66 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from app import app as flask_app, db
 from app import (
-    Category, Product, AdditionalImage, AdditionalData, 
+    Category, Product, AdditionalImage, AdditionalData,
     Cart, Order, OrderItem, Admins, Gusts, DropshipProduct
 )
 
+# Create a single temp file for the test database (shared by the whole session)
+_db_fd, _db_path = tempfile.mkstemp(suffix='.sqlite3', prefix='test_alhamed_')
+
+
 @pytest.fixture(scope='session')
 def app():
-    """Create application for testing"""
+    """Create application for testing with a file-based SQLite database.
+
+    Using a temp file instead of :memory: ensures all connections —
+    including those opened inside request handlers and helper app contexts —
+    share the same database.
+    """
     flask_app.config['TESTING'] = True
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{_db_path}'
+    flask_app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'connect_args': {'check_same_thread': False},
+    }
     flask_app.config['WTF_CSRF_ENABLED'] = False
     flask_app.config['SECRET_KEY'] = 'test-secret-key'
     flask_app.config['UPLOAD_FOLDER'] = 'static/uploads'
-    
+
     with flask_app.app_context():
         db.create_all()
         yield flask_app
         db.session.remove()
         db.drop_all()
 
+    # Clean up the temp file
+    os.close(_db_fd)
+    try:
+        os.unlink(_db_path)
+    except OSError:
+        pass
+
+
 @pytest.fixture(scope='function')
 def client(app):
     """Create test client"""
     return app.test_client()
 
+
 @pytest.fixture(scope='function')
 def db_session(app):
-    """Create database session for testing"""
-    with app.app_context():
-        yield db.session
-        db.session.rollback()
-        # Clean up all tables
-        for table in reversed(db.metadata.sorted_tables):
+    """Provide a clean DB session for each test function.
+
+    Cleans all rows after each test so tests remain independent.
+    """
+    yield db.session
+    db.session.rollback()
+    for table in reversed(db.metadata.sorted_tables):
+        try:
             db.session.execute(table.delete())
-        db.session.commit()
+        except Exception:
+            db.session.rollback()
+    db.session.commit()
+
 
 @pytest.fixture
 def sample_category(db_session):
@@ -53,6 +80,7 @@ def sample_category(db_session):
     db_session.add(category)
     db_session.commit()
     return category
+
 
 @pytest.fixture
 def sample_product(db_session, sample_category):
@@ -70,6 +98,7 @@ def sample_product(db_session, sample_category):
     db_session.commit()
     return product
 
+
 @pytest.fixture
 def sample_admin(db_session):
     """Create a sample admin user"""
@@ -83,6 +112,7 @@ def sample_admin(db_session):
     db_session.commit()
     return admin
 
+
 @pytest.fixture
 def sample_guest(db_session):
     """Create a sample guest user"""
@@ -95,6 +125,7 @@ def sample_guest(db_session):
     db_session.add(guest)
     db_session.commit()
     return guest
+
 
 @pytest.fixture
 def sample_order(db_session, sample_guest, sample_product):
@@ -112,7 +143,7 @@ def sample_order(db_session, sample_guest, sample_product):
     )
     db_session.add(order)
     db_session.commit()
-    
+
     order_item = OrderItem(
         order_id=order.id,
         product_id=sample_product.id,
@@ -120,8 +151,9 @@ def sample_order(db_session, sample_guest, sample_product):
     )
     db_session.add(order_item)
     db_session.commit()
-    
+
     return order
+
 
 @pytest.fixture
 def sample_dropship_product(db_session):
@@ -139,16 +171,18 @@ def sample_dropship_product(db_session):
     db_session.commit()
     return dropship
 
+
 @pytest.fixture
-def authenticated_client(client, sample_admin, app):
+def authenticated_client(client, sample_admin):
     """Create an authenticated admin client"""
-    with client.session_transaction() as session:
-        session['admin'] = sample_admin.id
+    with client.session_transaction() as sess:
+        sess['admin'] = sample_admin.id
     return client
+
 
 @pytest.fixture
 def guest_session(client):
     """Create a guest session"""
-    with client.session_transaction() as session:
-        session['user_id'] = 1
+    with client.session_transaction() as sess:
+        sess['user_id'] = 1
     return client

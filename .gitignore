@@ -85,3 +85,4 @@ htmlcov/
 
 # Claude AI
 .claude/
+static/uploads/*_test.*

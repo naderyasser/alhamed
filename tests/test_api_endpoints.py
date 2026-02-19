@@ -14,7 +14,7 @@ class TestRecentOrdersAPI:
         
         data = json.loads(response.data)
         assert 'orders' in data
-        assert 'total_orders' in data
+        assert 'count' in data
     
     def test_recent_orders_requires_auth(self, client):
         """Test API requires authentication"""

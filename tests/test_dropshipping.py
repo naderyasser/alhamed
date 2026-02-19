@@ -149,6 +149,7 @@ class TestScrapingFunction:
         
         mock_response = Mock()
         mock_response.status_code = 200
+        mock_response.url = 'https://example.com/product'
         mock_response.text = '''
             <html>
                 <head>
@@ -198,16 +199,17 @@ class TestScrapingFunction:
 class TestImageDownload:
     """Tests for image downloading"""
     
+    @patch('os.path.getsize', return_value=2048)
     @patch('requests.get')
     @patch('builtins.open', create=True)
-    def test_download_image_success(self, mock_open, mock_get, app):
+    def test_download_image_success(self, mock_open, mock_get, mock_getsize, app):
         """Test successful image download"""
         from app import download_image_from_url
         
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.headers = {'content-type': 'image/jpeg'}
-        mock_response.iter_content = lambda chunk_size: [b'fake image data']
+        mock_response.iter_content = lambda chunk_size: iter([b'fake image data'])
         mock_get.return_value = mock_response
         
         with app.app_context():
