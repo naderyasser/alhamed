@@ -117,7 +117,8 @@
 
                     <!-- Actions -->
                     <div class="flex gap-2 flex-wrap">
-                        <button onclick="openEditModal({{ b.id }}, {{ b.to_dict()|tojson }})"
+                        <button data-bid="{{ b.id }}" data-bdata='{{ b.to_dict()|tojson }}'
+                            onclick="openEditModalFromAttr(this)"
                             class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-3 rounded-lg transition flex items-center justify-center gap-1">
                             <i class='bx bx-edit text-base'></i> تعديل
                         </button>
@@ -323,6 +324,9 @@
 </div>
 
 <script>
+function openEditModalFromAttr(btn) {
+    openEditModal(btn.dataset.bid, JSON.parse(btn.dataset.bdata));
+}
 function openEditModal(id, data) {
     document.getElementById('editForm').action = '/admin/banners/edit/' + id;
     document.getElementById('edit_image_url').value  = data.image_url || '';
