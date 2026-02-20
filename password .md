@@ -1,2 +1,6 @@
-admin123
-admin@example.com
+# Admin Credentials
+
+Email:    admin@alhamed.com
+Password: AlhamedShop@2026#
+
+URL: /admin/login
