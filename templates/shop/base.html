@@ -110,7 +110,7 @@
     <style>
         .discount-banner {
             background: #0a0a0a;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #e0e0da;
             color: #f6f5f2;
             text-align: center;
             padding: 10px 20px;
@@ -239,8 +239,8 @@
     <style>
         /* Modern Header Styles */
         .modern-header {
-            background: #000000;
-            box-shadow: 0 1px 0 #222, 0 4px 16px rgba(0,0,0,0.4);
+            background: #ffffff;
+            box-shadow: 0 1px 0 #e0e0da, 0 4px 16px rgba(0,0,0,0.07);
             position: sticky;
             top: 0;
             z-index: 999;
@@ -248,7 +248,7 @@
         }
 
         .modern-header.scrolled {
-            box-shadow: 0 1px 0 #222, 0 6px 24px rgba(0,0,0,0.5);
+            box-shadow: 0 1px 0 #e0e0da, 0 6px 24px rgba(0,0,0,0.08);
         }
 
         .modern-navbar {
@@ -287,18 +287,18 @@
         .modern-search-input {
             width: 100%;
             padding: 0.7rem 3rem 0.7rem 1.2rem;
-            border: 2px solid #222;
+            border: 2px solid #e0e0da;
             border-radius: 50px;
             font-size: 0.95rem;
             transition: all 0.3s ease;
-            background: #111;
-            color: #fff;
+            background: #f5f5f0;
+            color: #1a1a1a;
         }
 
         .modern-search-input:focus {
             outline: none;
             border-color: #d32f2f;
-            background: #0a0a0a;
+            background: #ffffff;
             box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.12);
         }
 
@@ -344,7 +344,7 @@
         }
 
         .modern-nav-link {
-            color: #ffffff;
+            color: #1a1a1a;
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
@@ -374,8 +374,8 @@
 
         .modern-cart-btn {
             position: relative;
-            background: #111;
-            border: 1px solid #222;
+            background: #f5f5f0;
+            border: 1px solid #e0e0da;
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -398,7 +398,7 @@
 
         .modern-cart-icon {
             font-size: 22px;
-            color: #fff;
+            color: #1a1a1a;
             transition: color 0.3s ease;
         }
 
@@ -418,9 +418,9 @@
         }
 
         .mobile-menu-btn {
-            border: 2px solid #333;
-            background: #111;
-            color: #fff;
+            border: 2px solid #d0d0ca;
+            background: #f5f5f0;
+            color: #1a1a1a;
             padding: 0.5rem;
             border-radius: 10px;
             transition: all 0.3s ease;
@@ -428,12 +428,12 @@
 
         .mobile-menu-btn:hover {
             border-color: #d32f2f;
-            background: #1a1a1a;
+            background: #f0f0ea;
         }
 
         .mobile-search-container {
             padding: 1rem;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #e0e0da;
         }
 
         @media (min-width: 992px) {
@@ -627,10 +627,10 @@
             top: 100%;
             right: 0;
             min-width: 260px;
-            background: #0a0a0a;
-            border: 1px solid #222;
+            background: #ffffff;
+            border: 1px solid #e0e0da;
             border-radius: 16px;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.1);
             opacity: 0;
             visibility: hidden;
             transform: translateY(10px);
@@ -649,29 +649,29 @@
             align-items: center;
             gap: 10px;
             padding: 10px 18px;
-            color: #ccc;
+            color: #5a5a5a;
             text-decoration: none;
             font-size: 0.92rem;
             transition: all 0.2s;
         }
         .category-dropdown-item:hover {
-            background: #111;
+            background: #f5f5f0;
             color: #d32f2f;
             padding-right: 22px;
         }
-        .category-dropdown-item i { font-size: 1.1rem; color: #555; }
+        .category-dropdown-item i { font-size: 1.1rem; color: #9a9a9a; }
         .category-dropdown-item:hover i { color: #d32f2f; }
         .cat-count {
             margin-right: auto;
-            background: #1a1a1a;
-            color: #777;
+            background: #ebebea;
+            color: #8a8a8a;
             font-size: 0.72rem;
             padding: 2px 8px;
             border-radius: 10px;
             font-weight: 600;
         }
         .category-dropdown-footer {
-            border-top: 1px solid #222;
+            border-top: 1px solid #e0e0da;
             padding: 8px 18px;
         }
         .view-all-link {
@@ -691,14 +691,14 @@
             align-items: center;
             gap: 10px;
             padding: 12px 16px;
-            color: #ccc;
+            color: #5a5a5a;
             text-decoration: none;
             font-size: 0.95rem;
             border-radius: 12px;
             transition: all 0.2s;
         }
         .mobile-nav-item:hover, .mobile-nav-item.active {
-            background: #111;
+            background: #f5f5f0;
             color: #d32f2f;
         }
         .mobile-nav-item i { font-size: 1.2rem; }
@@ -715,18 +715,18 @@
             align-items: center;
             gap: 8px;
             padding: 9px 16px;
-            color: #aaa;
+            color: #6a6a6a;
             text-decoration: none;
             font-size: 0.88rem;
             border-radius: 8px;
             transition: all 0.2s;
         }
-        .mobile-cat-item:hover { background: #111; color: #d32f2f; }
-        .mobile-cat-item i { font-size: 0.95rem; color: #555; }
+        .mobile-cat-item:hover { background: #f5f5f0; color: #d32f2f; }
+        .mobile-cat-item i { font-size: 0.95rem; color: #9a9a9a; }
         .mobile-cat-count {
             margin-right: auto;
-            background: #1a1a1a;
-            color: #666;
+            background: #ebebea;
+            color: #8a8a8a;
             font-size: 0.7rem;
             padding: 1px 7px;
             border-radius: 8px;
@@ -904,9 +904,9 @@
             justify-content: space-around;
             align-items: center;
             padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom, 0px));
-            background: #0a0a0a;
-            border-top: 1px solid #222;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+            background: #ffffff;
+            border-top: 1px solid #e0e0da;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
         }

@@ -1,12 +1,12 @@
 {% extends "shop/base.html" %} {% block content %}
 <style>
-  .hero-section { background: #0a0a0a !important; border-bottom: 1px solid #222; }
-  .hero-section h1 { color: #fff !important; }
+  .hero-section { background: #fafaf8 !important; border-bottom: 1px solid #e0e0da; }
+  .hero-section h1 { color: #1a1a1a !important; }
   .breadcrumb-item a { color: #b0b0b0 !important; }
   .breadcrumb-item.active { color: #d32f2f !important; }
-  .card.shadow-sm { background: #0a0a0a !important; border: 1px solid #222 !important; }
+  .card.shadow-sm { background: #fafaf8 !important; border: 1px solid #e0e0da !important; }
   .card.shadow-sm img { border-radius: 8px; }
-  .order-items h6 { color: #fff !important; }
+  .order-items h6 { color: #1a1a1a !important; }
   .alert-success { background: rgba(211,47,47,0.08) !important; border-color: #d32f2f !important; color: #d32f2f !important; }
 
   /* Clickable payment cards */
@@ -17,13 +17,13 @@
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    background: #111;
+    background: #f5f5f0;
     transition: border-color .2s, box-shadow .2s, background .2s;
     height: 100%;
   }
   .payment-card-label:hover {
     border-color: #d32f2f55;
-    background: #1a1a1a;
+    background: #ebebea;
   }
   .payment-card-radio:checked + .payment-card-label {
     border-color: #d32f2f;
@@ -120,7 +120,7 @@
                                 <input type="radio" class="payment-card-radio" name="payment_method" id="cash_on_delivery" value="cash_on_delivery" required checked>
                                 <label class="payment-card-label" for="cash_on_delivery">
                                     <img src="{{ url_for('static', filename='images/cashOnD.png') }}" alt="الدفع عند الاستلام" class="img-fluid mb-2" width="60">
-                                    <div class="fw-bold" style="color:#fff;">الدفع عند الاستلام</div>
+                                    <div class="fw-bold" style="color:#1a1a1a;">الدفع عند الاستلام</div>
                                 </label>
                             </div>
                             <!-- محفظة إلكترونية -->
@@ -128,7 +128,7 @@
                                 <input type="radio" class="payment-card-radio" name="payment_method" id="vodafone_cash" value="vodafone_cash">
                                 <label class="payment-card-label" for="vodafone_cash">
                                     <img src="https://app.fawaterk.com/clients/payment_options/pay5png" alt="محفظة إلكترونية" class="img-fluid mb-2" width="100">
-                                    <div class="fw-bold" style="color:#fff;">محفظة إلكترونية</div>
+                                    <div class="fw-bold" style="color:#1a1a1a;">محفظة إلكترونية</div>
                                 </label>
                             </div>
                             <!-- الدفع بالفيزا -->
@@ -136,30 +136,30 @@
                                 <input type="radio" class="payment-card-radio" name="payment_method" id="visa" value="visa">
                                 <label class="payment-card-label" for="visa">
                                     <img src="https://app.fawaterk.com/clients/payment_options/Visa_mastercardpng" alt="فيزا" class="img-fluid mb-2" width="100">
-                                    <div class="fw-bold" style="color:#fff;">الدفع بالفيزا</div>
+                                    <div class="fw-bold" style="color:#1a1a1a;">الدفع بالفيزا</div>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Visa Credit Card Form (shown dynamically) -->
-                        <div id="visaForm" class="mt-4 p-3 rounded-3" style="background:#1a1a1a; border:1px solid #333;">
-                            <h6 class="mb-3" style="color:#fff;"><i class="bi bi-credit-card me-2"></i>بيانات البطاقة الائتمانية</h6>
+                        <div id="visaForm" class="mt-4 p-3 rounded-3" style="background:#ebebea; border:1px solid #333;">
+                            <h6 class="mb-3" style="color:#1a1a1a;"><i class="bi bi-credit-card me-2"></i>بيانات البطاقة الائتمانية</h6>
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label" style="color:#b0b0b0;">اسم حامل البطاقة</label>
-                                    <input type="text" class="form-control" id="card_holder" name="card_holder" placeholder="الاسم كما هو مكتوب على البطاقة" style="background:#111;color:#fff;border-color:#333;">
+                                    <input type="text" class="form-control" id="card_holder" name="card_holder" placeholder="الاسم كما هو مكتوب على البطاقة" style="background:#f5f5f0;color:#1a1a1a;border-color:#d0d0ca;">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label" style="color:#b0b0b0;">رقم البطاقة</label>
-                                    <input type="text" class="form-control" id="card_number" name="card_number" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" style="background:#111;color:#fff;border-color:#333;letter-spacing:.1em;">
+                                    <input type="text" class="form-control" id="card_number" name="card_number" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" style="background:#f5f5f0;color:#1a1a1a;border-color:#d0d0ca;letter-spacing:.1em;">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" style="color:#b0b0b0;">تاريخ الانتهاء</label>
-                                    <input type="text" class="form-control" id="card_expiry" name="card_expiry" placeholder="MM / YY" maxlength="7" style="background:#111;color:#fff;border-color:#333;">
+                                    <input type="text" class="form-control" id="card_expiry" name="card_expiry" placeholder="MM / YY" maxlength="7" style="background:#f5f5f0;color:#1a1a1a;border-color:#d0d0ca;">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" style="color:#b0b0b0;">CVV</label>
-                                    <input type="text" class="form-control" id="card_cvv" name="card_cvv" placeholder="***" maxlength="4" inputmode="numeric" style="background:#111;color:#fff;border-color:#333;">
+                                    <input type="text" class="form-control" id="card_cvv" name="card_cvv" placeholder="***" maxlength="4" inputmode="numeric" style="background:#f5f5f0;color:#1a1a1a;border-color:#d0d0ca;">
                                 </div>
                             </div>
                             <div class="mt-2 small" style="color:#888;"><i class="bi bi-lock-fill me-1"></i>معلوماتك محمية ومشفرة بالكامل</div>
@@ -169,20 +169,20 @@
 
                 <!-- Order Summary -->
                 <div class="col-lg-4">
-                    <div class="card p-4 shadow-sm" style="background: #111; border: 1px solid #222; border-radius: 18px;">
-                        <h4 class="pb-3 border-bottom" style="color: #fff; border-color: #222 !important;">ملخص الطلب</h4>
+                    <div class="card p-4 shadow-sm" style="background: #f5f5f0; border: 1px solid #e0e0da; border-radius: 18px;">
+                        <h4 class="pb-3 border-bottom" style="color: #1a1a1a; border-color: #222 !important;">ملخص الطلب</h4>
                         <div class="order-items my-4">
                             {% for item in cart_items %}
                             <div class="d-flex justify-content-between mb-2">
                                 <div>
-                                    <h6 class="mb-0" style="color: #fff;">{{ item.product.name }}</h6>
+                                    <h6 class="mb-0" style="color: #1a1a1a;">{{ item.product.name }}</h6>
                                     <small class="text-muted">الكمية: {{ item.quantity }}</small>
                                 </div>
-                                <span style="color: #fff;">{{ "%.2f"|format(item.product.price * item.quantity) }} ج.م</span>
+                                <span style="color: #1a1a1a;">{{ "%.2f"|format(item.product.price * item.quantity) }} ج.م</span>
                             </div>
                             {% endfor %}
                         </div>
-                        <table class="table" style="color: #fff;">
+                        <table class="table" style="color: #1a1a1a;">
                             <tbody>
                                 <tr class="subtotal">
                                     <th style="color: #b0b0b0;">المجموع الجزئي</th>
@@ -199,7 +199,7 @@
                                     <td class="text-end text-muted" id="shippingCost">يُحسب عند الدفع</td>
                                 </tr>
                                 <tr class="total border-top" style="border-color: #222 !important;">
-                                    <th style="color: #fff;">المجموع</th>
+                                    <th style="color: #1a1a1a;">المجموع</th>
                                     <td class="text-end fw-bold" id="totalValue">{{ "%.2f"|format(total) }} ج.م</td>
                                 </tr>
                             </tbody>
@@ -214,27 +214,27 @@
                         <div class="mt-3 pt-3" style="border-top:1px solid #222;">
                             <label class="form-label mb-1" style="color:#b0b0b0;font-size:.85rem;">كود الخصم (اختياري)</label>
                             <div class="input-group input-group-sm">
-                                <input type="text" id="promoInput" class="form-control" placeholder="أدخل الكود هنا" style="background:#111;color:#fff;border-color:#333;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
-                                <button type="button" id="applyPromoBtn" class="btn btn-sm" style="background:#333;color:#fff;border-color:#444;" onclick="applyPromo()">تطبيق</button>
+                                <input type="text" id="promoInput" class="form-control" placeholder="أدخل الكود هنا" style="background:#f5f5f0;color:#1a1a1a;border-color:#d0d0ca;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+                                <button type="button" id="applyPromoBtn" class="btn btn-sm" style="background:#333;color:#1a1a1a;border-color:#444;" onclick="applyPromo()">تطبيق</button>
                             </div>
                             <div id="promoResult"></div>
                             <input type="hidden" id="promoCodeField" name="promo_code" value="">
                         </div>
                         <!-- Promo discount row (hidden until code applied) -->
-                        <table id="promoDiscountTable" class="table mt-2 mb-0" style="color:#fff;display:none;">
+                        <table id="promoDiscountTable" class="table mt-2 mb-0" style="color:#1a1a1a;display:none;">
                             <tbody>
                                 <tr id="promoDiscountRow" class="text-success">
                                     <th><i class="bi bi-tag-fill me-1"></i>كود الخصم</th>
                                     <td class="text-end text-success" id="promoDiscountValue">-0.00 ج.م</td>
                                 </tr>
                                 <tr class="border-top" style="border-color:#222 !important;">
-                                    <th style="color:#fff;">المجموع بعد الخصم</th>
+                                    <th style="color:#1a1a1a;">المجموع بعد الخصم</th>
                                     <td class="text-end fw-bold" id="totalAfterPromo">{{ "%.2f"|format(total) }} ج.م</td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <button type="submit" class="btn w-100 mt-3" style="background: #d32f2f; color: #fff; border: none; border-radius: 12px; padding: 0.75rem;">تأكيد الطلب</button>
+                        <button type="submit" class="btn w-100 mt-3" style="background: #d32f2f; color: #1a1a1a; border: none; border-radius: 12px; padding: 0.75rem;">تأكيد الطلب</button>
                     </div>
                 </div>
             </div>

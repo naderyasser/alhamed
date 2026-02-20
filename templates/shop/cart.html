@@ -1,29 +1,29 @@
 {% extends "shop/base.html" %}
 {% block content %}
 <style>
-  .hero-section { background: #0a0a0a !important; border-bottom: 1px solid #222; }
-  .hero-section h1 { color: #fff !important; }
+  .hero-section { background: #fafaf8 !important; border-bottom: 1px solid #e0e0da; }
+  .hero-section h1 { color: #1a1a1a !important; }
   .breadcrumbs a { color: #b0b0b0 !important; }
   .breadcrumbs span { color: #d32f2f !important; }
   .cart-item img { border-radius: 12px; background: radial-gradient(ellipse at 50% 30%, #1e1e1e, #0d0d0d); }
-  .cart-table { background: #0a0a0a; border: 1px solid #222; border-radius: 18px; padding: 1.5rem; }
+  .cart-table { background: #ffffff; border: 1px solid #e0e0da; border-radius: 18px; padding: 1.5rem; }
   .text-danger { color: #d32f2f !important; }
-  .cart-total-box { background: #111 !important; border: 1px solid #222; border-radius: 18px; padding: 1.5rem; }
-  .cart-total-box h4 { color: #fff !important; border-color: #222 !important; }
-  .cart-total-box .table { color: #fff; }
+  .cart-total-box { background: #f5f5f0 !important; border: 1px solid #e0e0da; border-radius: 18px; padding: 1.5rem; }
+  .cart-total-box h4 { color: #1a1a1a !important; border-color: #222 !important; }
+  .cart-total-box .table { color: #1a1a1a; }
   .cart-total-box .table th { color: #b0b0b0; }
   .cart-total-box .text-muted { color: #777 !important; }
-  .cart-total-box .btn-outline-continue { border: 1px solid #333; color: #fff; background: transparent; }
+  .cart-total-box .btn-outline-continue { border: 1px solid #333; color: #1a1a1a; background: transparent; }
   .cart-total-box .btn-outline-continue:hover { background: #222; }
-  .cart-total-box .btn-checkout { background: #d32f2f; color: #fff; border: none; }
+  .cart-total-box .btn-checkout { background: #d32f2f; color: #1a1a1a; border: none; }
   .cart-total-box .btn-checkout:hover { background: #e53935; }
-  .cart-item h6, .cart-item .fw-bold { color: #fff !important; }
-  .last-orders-card { background: #111; border: 1px solid #222; border-radius: 18px; }
-  .last-orders-card .card-title { color: #fff; }
+  .cart-item h6, .cart-item .fw-bold { color: #1a1a1a !important; }
+  .last-orders-card { background: #f5f5f0; border: 1px solid #e0e0da; border-radius: 18px; }
+  .last-orders-card .card-title { color: #1a1a1a; }
   .last-orders-card .card-text { color: #b0b0b0 !important; }
   .last-orders-card .btn-primary { background: #d32f2f; border-color: #d32f2f; }
   .last-orders-card .btn-primary:hover { background: #e53935; }
-  section h2 { color: #fff; }
+  section h2 { color: #1a1a1a; }
 </style>
 <section class="hero-section d-flex align-items-center text-center">
       <div class="container">
@@ -62,7 +62,7 @@
                                                       <button class="btn btn-outline-secondary btn-sm"
                                                             onclick="location.href='{{ url_for('shop.change_quantity', action='minus', item_id=item.id) }}'">-</button>
                                                       <input type="number" class="form-control text-center mx-2"
-                                                            style="max-width: 50px; background: #111; color: #fff; border-color: #333;" value="{{ item.quantity }}" min="1"
+                                                            style="max-width: 50px; background: #f5f5f0; color: #1a1a1a; border-color: #d0d0ca;" value="{{ item.quantity }}" min="1"
                                                             max="{{ item.product.stock }}" readonly>
                                                       <button class="btn btn-outline-secondary btn-sm"
                                                             onclick="location.href='{{ url_for('shop.change_quantity', action='plus', item_id=item.id) }}'">+</button>
@@ -79,8 +79,8 @@
                               {% else %}
                               <div class="text-center py-5">
                                     <i class="bi bi-cart-x display-1 text-muted"></i>
-                                    <h3 class="my-4" style="color: #fff;">سلة التسوق فارغة</h3>
-                                    <a href="{{ url_for('shop.list') }}" class="btn" style="background: #d32f2f; color: #fff;">ابدأ التسوق</a>
+                                    <h3 class="my-4" style="color: #1a1a1a;">سلة التسوق فارغة</h3>
+                                    <a href="{{ url_for('shop.list') }}" class="btn" style="background: #d32f2f; color: #1a1a1a;">ابدأ التسوق</a>
                               </div>
                               {% endif %}
                         </div>

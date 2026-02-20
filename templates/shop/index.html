@@ -1,23 +1,22 @@
 {% extends "shop/base.html" %} {% block content %}
 <style>
-     :root {
         --alha-primary: #D32F2F;
         --alha-primary-dark: #B71C1C;
         --alha-primary-light: #E53935;
-        --alha-background: #000000;
-        --alha-text: #ffffff;
-        --alha-accent: #111111;
+        --alha-background: #fafaf8;
+        --alha-text: #1a1a1a;
+        --alha-accent: #f5f5f0;
     }
     /* Promotional Banner */
     
     .promo-banner {
-        background: linear-gradient(135deg, #0d0d0d 0%, #111111 100%);
+        background: linear-gradient(135deg, #1a1a1a 0%, #222222 100%);
         color: white;
         padding: 0;
         position: relative;
         overflow: hidden;
         z-index: 5;
-        border-bottom: 1px solid #222;
+        border-bottom: 1px solid #e0e0da;
     }
     
     .promo-container {
@@ -243,7 +242,7 @@
     .hero-description {
         font-size: 1.1rem;
         margin-bottom: 2rem;
-        color: #b0b0b0;
+        color: #5a5a5a;
         max-width: 90%;
         opacity: 0;
         transform: translateY(20px);
@@ -310,7 +309,7 @@
         align-items: center;
         gap: 1.5rem;
         background: rgba(10, 10, 10, 0.92);
-        border: 1px solid #222;
+        border: 1px solid #e0e0da;
         border-radius: 14px;
         padding: 1rem 1.5rem;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -347,7 +346,7 @@
     .product-old-price {
         font-size: 0.9rem;
         text-decoration: line-through;
-        color: #999;
+        color: #8a8a8a;
     }
     
     .product-current-price {
@@ -385,8 +384,8 @@
     .swiper-button-next {
         width: 50px;
         height: 50px;
-        background: #0a0a0a;
-        border: 1px solid #222;
+        background: #ffffff;
+        border: 1px solid #e0e0da;
         border-radius: 50%;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         display: flex;
@@ -399,7 +398,7 @@
     .swiper-button-prev:after,
     .swiper-button-next:after {
         font-size: 1.2rem;
-        color: #ffffff;
+        color: #1a1a1a;
     }
     
     .swiper-button-prev:hover,
@@ -485,7 +484,7 @@
     .about-section {
         position: relative;
         padding: 4rem 0;
-        background: linear-gradient(to right, #000000, #0a0a0a);
+        background: linear-gradient(135deg, #fafaf8, #f0f0ea);
         overflow: hidden;
     }
     
@@ -511,7 +510,7 @@
     .about-content {
         font-size: 1.1rem;
         line-height: 1.8;
-        color: #b0b0b0;
+        color: #5a5a5a;
     }
     
     @media (max-width: 767px) {
@@ -538,8 +537,8 @@
     }
     
     .featured-set-box {
-        background: #0a0a0a;
-        border: 1px solid #222;
+        background: #ffffff;
+        border: 1px solid #e0e0da;
         border-radius: 14px;
         overflow: hidden;
         box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
@@ -618,7 +617,7 @@
     }
     
     .featured-set-description {
-        color: #b0b0b0;
+        color: #5a5a5a;
         margin-bottom: 1.5rem;
         line-height: 1.6;
     }
@@ -633,7 +632,7 @@
     .featured-set-old-price {
         font-size: 1.2rem;
         text-decoration: line-through;
-        color: #999;
+        color: #8a8a8a;
         font-weight: 500;
     }
     
@@ -688,7 +687,7 @@
     .featured-set-includes h4 {
         font-size: 1rem;
         font-weight: 600;
-        color: #b0b0b0;
+        color: #5a5a5a;
         margin-bottom: 0.5rem;
     }
     
@@ -702,7 +701,7 @@
         display: flex;
         align-items: flex-start;
         gap: 0.5rem;
-        color: #b0b0b0;
+        color: #5a5a5a;
         margin-bottom: 0.6rem;
         font-size: 0.95rem;
     }
@@ -736,7 +735,7 @@
     /* Modern Reviews Section */
     
     .reviews-section {
-        background-color: #000000;
+        background-color: #fafaf8;
         padding: 5rem 0;
         position: relative;
         overflow: hidden;
@@ -787,14 +786,14 @@
     
     .reviews-subtitle {
         font-size: 1.1rem;
-        color: #b0b0b0;
+        color: #5a5a5a;
         max-width: 600px;
         margin: 1rem auto 0;
     }
     
     .rating-overview {
-        background: #0a0a0a;
-        border: 1px solid #222;
+        background: #ffffff;
+        border: 1px solid #e0e0da;
         border-radius: 12px;
         padding: 2rem;
         margin-bottom: 2.5rem;
@@ -806,7 +805,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border-right: 1px solid #222;
+        border-right: 1px solid #e0e0da;
     }
     
     .rating-number {
@@ -824,7 +823,7 @@
     
     .rating-total {
         font-size: 0.9rem;
-        color: #999;
+        color: #8a8a8a;
     }
     
     .rating-bars {
@@ -846,7 +845,7 @@
     .rating-bar-bg {
         flex-grow: 1;
         height: 8px;
-        background-color: #222;
+        background-color: #e8e8e2;
         border-radius: 4px;
         overflow: hidden;
         position: relative;
@@ -869,8 +868,8 @@
     }
     
     .review-card {
-        background: #0a0a0a;
-        border: 1px solid #222;
+        background: #ffffff;
+        border: 1px solid #e0e0da;
         border-radius: 12px;
         box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
         padding: 1.8rem;
@@ -927,13 +926,13 @@
     
     .review-name {
         font-weight: 600;
-        color: #ffffff;
+        color: #1a1a1a;
         font-size: 1.1rem;
         margin-bottom: 0.2rem;
     }
     
     .review-date {
-        color: #999;
+        color: #8a8a8a;
         font-size: 0.85rem;
     }
     
@@ -943,7 +942,7 @@
     }
     
     .review-text {
-        color: #b0b0b0;
+        color: #5a5a5a;
         line-height: 1.75;
         margin-bottom: 1.2rem;
         flex-grow: 1;
@@ -956,8 +955,8 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        background-color: #111111;
-        border: 1px solid #222;
+        background-color: #f5f5f0;
+        border: 1px solid #e0e0da;
         padding: 0.8rem;
         border-radius: 8px;
         margin-top: auto;
@@ -973,7 +972,7 @@
     .review-product-name {
         font-size: 0.9rem;
         font-weight: 500;
-        color: #ffffff;
+        color: #1a1a1a;
         margin: 0;
     }
     
@@ -1037,7 +1036,7 @@
     .btn-all-reviews {
         border: 2px solid var(--alha-primary);
         background: transparent;
-        color: #ffffff;
+        color: #1a1a1a;
         padding: 1rem 2rem;
         border-radius: 8px;
         font-weight: 600;
@@ -1051,17 +1050,17 @@
     .btn-all-reviews:hover {
         background: rgba(211, 47, 47, 0.1);
         transform: translateY(-3px);
-        color: #ffffff;
+        color: #1a1a1a;
     }
     /* Review Modal */
     
     #reviewModal .modal-content {
         border-radius: 16px;
-        border: 1px solid #222;
-        background: #0a0a0a;
+        border: 1px solid #e0e0da;
+        background: #ffffff;
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         overflow: hidden;
-        color: #ffffff;
+        color: #1a1a1a;
     }
     
     #reviewModal .modal-header {
@@ -1096,7 +1095,7 @@
     
     .rating-input .rating-star {
         font-size: 2.2rem;
-        color: #ddd;
+        color: #999;
         cursor: pointer;
         transition: all 0.2s ease;
     }
@@ -1109,11 +1108,11 @@
     
     #reviewModal .form-control,
     #reviewModal .form-select {
-        border: 1px solid #333;
+        border: 1px solid #d0d0ca;
         border-radius: 8px;
         padding: 0.8rem 1rem;
         box-shadow: none;
-        background: #111;
+        background: #f5f5f0;
         color: #fff;
     }
     
@@ -1125,7 +1124,7 @@
     
     #reviewModal .form-label {
         font-weight: 500;
-        color: #b0b0b0;
+        color: #5a5a5a;
     }
     
     #reviewModal .btn-primary {
@@ -1144,7 +1143,7 @@
     
     .product-showcase {
         padding: 5rem 0;
-        background: linear-gradient(135deg, #000000, #0a0a0a);
+        background: linear-gradient(135deg, #fafaf8, #f0f0ea);
         position: relative;
         overflow: hidden;
     }
@@ -1176,14 +1175,14 @@
     
     .showcase-subtitle {
         font-size: 1.2rem;
-        color: #b0b0b0;
+        color: #5a5a5a;
         max-width: 700px;
         margin: 0 auto;
     }
     
     .product-card {
-        background: #0a0a0a;
-        border: 1px solid #222;
+        background: #ffffff;
+        border: 1px solid #e0e0da;
         border-radius: 16px;
         overflow: hidden;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
@@ -1249,7 +1248,7 @@
     }
     
     .product-desc {
-        color: #b0b0b0;
+        color: #5a5a5a;
         margin-bottom: 1.5rem;
         line-height: 1.7;
         flex-grow: 1;
@@ -1277,7 +1276,7 @@
     .price-old {
         font-size: 1rem;
         text-decoration: line-through;
-        color: #999;
+        color: #8a8a8a;
     }
     
     .product-rating {
@@ -1293,18 +1292,18 @@
     
     .product-rating span {
         font-weight: 600;
-        color: #b0b0b0;
+        color: #5a5a5a;
     }
     
     .product-features {
         margin: 1.5rem 0;
         padding-top: 1.5rem;
-        border-top: 1px solid #222;
+        border-top: 1px solid #e0e0da;
     }
     
     .product-features h6 {
         font-weight: 600;
-        color: #b0b0b0;
+        color: #5a5a5a;
         margin-bottom: 1rem;
         font-size: 1rem;
     }
@@ -1323,7 +1322,7 @@
         align-items: center;
         gap: 0.5rem;
         font-size: 0.9rem;
-        color: #b0b0b0;
+        color: #5a5a5a;
         width: calc(50% - 0.75rem);
     }
     
@@ -1367,19 +1366,19 @@
     .btn-info {
         border: 2px solid var(--alha-primary);
         background: transparent;
-        color: #ffffff;
+        color: #1a1a1a;
     }
     
     .btn-info:hover {
         background: rgba(211, 47, 47, 0.1);
         transform: translateY(-3px);
-        color: #ffffff;
+        color: #1a1a1a;
     }
     
     @media (max-width: 991px) {
         .rating-overall {
             border-right: none;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #e0e0da;
             padding-bottom: 1.5rem;
             margin-bottom: 1.5rem;
         }
@@ -1417,6 +1416,14 @@
             flex-direction: column;
         }
     }
+
+    /* ── Hero overrides: text must be white on dark-overlay images ── */
+    .hero-title      { color: #ffffff !important; }
+    .hero-description{ color: rgba(255,255,255,0.85) !important; }
+    .btn-outline     { color: #ffffff !important; border-color: #ffffff !important; }
+    .btn-outline:hover { color: #ffffff !important; }
+    /* product-highlight card sits ON the dark hero overlay */
+    .product-highlight-title { color: #ffffff !important; }
 </style>
 
 
