@@ -164,7 +164,7 @@
                                 {% for img in product.additional_images %}
                                 <div class="relative rounded-lg overflow-hidden" style="border:1px solid #333;">
                                     <img src="/{{ img.image }}" alt="صورة إضافية" class="w-full h-24 object-cover">
-                                    <button type="button" onclick="removeAdditionalImage({{ img.id }})"
+                                    <button type="button" data-remove-img="{{ img.id }}"
                                             class="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors"
                                             style="background:#d32f2f; color:#fff;">×</button>
                                 </div>
@@ -258,7 +258,11 @@
         showEditPreview(file);
     });
 
-    // ── Remove additional image ──
+    // ── Remove additional image (delegated) ──
+    document.querySelectorAll('[data-remove-img]').forEach(btn => {
+        btn.addEventListener('click', () => removeAdditionalImage(btn.dataset.removeImg));
+    });
+
     function removeAdditionalImage(imageId) {
         if (!confirm('هل تريد حذف هذه الصورة؟')) return;
         fetch('/admin/delete_additional_image/' + imageId, {
