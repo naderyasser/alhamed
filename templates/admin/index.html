@@ -5,7 +5,7 @@
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold text-sage-700">فلتر حسب التاريخ</h2>
             <a href="{{ url_for('admin.home') }}" class="text-sage-600 hover:text-sage-800 transition-colors">
-                <i class="fas fa-sync-alt"></i> إعادة تعيين
+                <i class='bx bx-refresh'></i> إعادة تعيين
             </a>
         </div>
         <form method="GET" class="flex flex-wrap gap-4">
@@ -31,7 +31,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-all duration-200 border border-sage-100">
             <div class="flex items-center">
                 <div class="p-3 rounded-xl bg-sage-100 text-sage-600">
-                    <i class="fas fa-money-bill-wave text-2xl"></i>
+                    <i class='bx bx-money text-2xl'></i>
                 </div>
                 <div class="mr-4 flex-1">
                     <p class="text-sage-600 mb-1">إجمالي الإيرادات</p>
@@ -48,7 +48,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-all duration-200 border border-sage-100">
             <div class="flex items-center">
                 <div class="p-3 rounded-xl bg-sage-100 text-sage-600">
-                    <i class="fas fa-shopping-cart text-2xl"></i>
+                    <i class='bx bx-cart text-2xl'></i>
                 </div>
                 <div class="mr-4 flex-1">
                     <p class="text-sage-600 mb-1">الطلبات الموصلة</p>
@@ -65,7 +65,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-all duration-200 border border-sage-100">
             <div class="flex items-center">
                 <div class="p-3 rounded-xl bg-sage-100 text-sage-600">
-                    <i class="fas fa-chart-line text-2xl"></i>
+                    <i class='bx bx-line-chart text-2xl'></i>
                 </div>
                 <div class="mr-4 flex-1">
                     <p class="text-sage-600 mb-1">متوسط قيمة الطلب</p>
@@ -82,7 +82,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-all duration-200 border border-sage-100">
             <div class="flex items-center">
                 <div class="p-3 rounded-xl bg-sage-100 text-sage-600">
-                    <i class="fas fa-users text-2xl"></i>
+                    <i class='bx bx-group text-2xl'></i>
                 </div>
                 <div class="mr-4 flex-1">
                     <p class="text-sage-600 mb-1">العملاء</p>
@@ -102,7 +102,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6 border border-sage-100">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-bold text-sage-700">
-                    <i class="fas fa-chart-line ml-2 text-sage-600"></i> الإيرادات الشهرية
+                    <i class='bx bx-line-chart ml-2 text-sage-600'></i> الإيرادات الشهرية
                 </h2>
                 <div class="flex gap-2">
                     <button data-period="monthly" data-chart="revenueChart" class="px-4 py-2 bg-sage-100 text-sage-600 rounded-full text-sm hover:bg-sage-200 transition-colors">شهري</button>
@@ -121,7 +121,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6 border border-sage-100">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-bold text-sage-700">
-                    <i class="fas fa-shopping-cart ml-2 text-sage-600"></i> الطلبات الشهرية
+                    <i class='bx bx-cart ml-2 text-sage-600'></i> الطلبات الشهرية
                 </h2>
                 <div class="flex gap-2">
                     <button data-period="monthly" data-chart="ordersChart" class="px-4 py-2 bg-sage-100 text-sage-600 rounded-full text-sm hover:bg-sage-200 transition-colors">شهري</button>
@@ -248,7 +248,7 @@
                         <td class="py-4">
                             <div class="flex space-x-2">
                                 <a href="{{ url_for('admin.orders') }}?order_id={{ order.id }}" class="text-sage-600 hover:text-sage-800 transition-colors" title="عرض التفاصيل">
-                                    <i class="fas fa-eye"></i>
+                                    <i class='bx bx-show'></i>
                                 </a>
                             </div>
                         </td>
