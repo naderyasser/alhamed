@@ -144,7 +144,8 @@
 
                 <!-- Product Image -->
                 <div class="relative overflow-hidden bg-gradient-to-br from-sage-50 to-sage-100">
-                    <img src="/{{  product.image }}" alt="{{ product.name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" data-fallback="{{ url_for('static', filename='images/placeholder-product.png') }}">
+                    <img src="/{{ product.image }}" alt="{{ product.name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/placeholder-product.svg') }}';">
 
                     <!-- Stock Badge -->
                     {% if product.stock == 0 %}
@@ -325,19 +326,21 @@
                     <!-- Product Image -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">صورة المنتج <span class="text-red-500">*</span></label>
-                        <div class="border-2 border-dashed border-sage-200 rounded-xl p-8 text-center hover:border-sage-300 transition-colors">
+                        <div id="imageDropZone" class="border-2 border-dashed border-sage-200 rounded-xl p-8 text-center hover:border-sage-400 transition-all duration-200 cursor-pointer">
                             <div id="imagePreview" class="hidden">
                                 <img id="previewImg" src="" alt="معاينة" class="w-32 h-32 object-cover rounded-xl mx-auto mb-4">
+                                <button type="button" onclick="clearImagePreview()" class="text-xs text-red-500 hover:text-red-700 underline">إزالة الصورة</button>
                             </div>
                             <div id="uploadPlaceholder">
-                                <i class='bx bx-cloud-upload text-4xl text-sage-400 mb-4'></i>
-                                <p class="text-slate-600 mb-2">اسحب وأفلت الصورة هنا أو</p>
-                                <label for="productImage" class="bg-sage-100 hover:bg-sage-200 text-sage-700 px-4 py-2 rounded-lg cursor-pointer transition-colors">
-                                    اختر ملف
+                                <i class='bx bx-cloud-upload text-5xl text-sage-400 mb-3'></i>
+                                <p class="text-slate-700 font-medium mb-1">اسحب وأفلت الصورة هنا</p>
+                                <p class="text-slate-400 text-sm mb-3">أو</p>
+                                <label for="productImage" class="bg-sage-100 hover:bg-sage-200 text-sage-700 px-4 py-2 rounded-lg cursor-pointer transition-colors font-medium">
+                                    اختر ملفًا
                                 </label>
                             </div>
                             <input type="file" id="productImage" name="image" accept="image/*" required class="hidden">
-                            <p class="text-xs text-slate-500 mt-2">JPG, PNG أو GIF بحد أقصى 5MB</p>
+                            <p class="text-xs text-slate-400 mt-3">JPG، PNG أو GIF بحد أقصى 5MB</p>
                         </div>
                     </div>
 
@@ -627,8 +630,9 @@
 
     function editProduct(productId) {
         // Load edit form via AJAX
-        fetch(`/admin/product/${productId}/edit`)
-            .then(response => response.text())
+        fetch(`/admin/product/${productId}/edit`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })            .then(response => response.text())
             .then(html => {
                 document.getElementById('editProductForm').innerHTML = html;
                 document.getElementById('editProductModal').classList.remove('hidden');
@@ -653,7 +657,17 @@
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = `/admin/delete_product/${productId}`;
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/delete_product/${productId}`;
+                // Add CSRF token so the server-side check passes
+                const csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = 'csrf_token';
+                csrf.value = '{{ csrf_token }}';
+                form.appendChild(csrf);
+                document.body.appendChild(form);
+                form.submit();
             }
         });
     }
@@ -676,17 +690,88 @@
         });
     }
 
-    // Image preview for add product modal
-    document.getElementById('productImage').addEventListener('change', function(e) {
+    // ===== Image Upload & Drag-and-Drop =====
+    const dropZone = document.getElementById('imageDropZone');
+    const productImageInput = document.getElementById('productImage');
+
+    function showImagePreview(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('imagePreview').classList.remove('hidden');
+            document.getElementById('uploadPlaceholder').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearImagePreview() {
+        productImageInput.value = '';
+        document.getElementById('previewImg').src = '';
+        document.getElementById('imagePreview').classList.add('hidden');
+        document.getElementById('uploadPlaceholder').classList.remove('hidden');
+    }
+
+    // Click on drop zone opens file picker
+    dropZone.addEventListener('click', function(e) {
+        if (!e.target.closest('label') && !e.target.closest('button')) {
+            productImageInput.click();
+        }
+    });
+
+    // File input change event
+    productImageInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('previewImg').src = e.target.result;
-                document.getElementById('imagePreview').classList.remove('hidden');
-                document.getElementById('uploadPlaceholder').classList.add('hidden');
-            };
-            reader.readAsDataURL(file);
+        if (file) showImagePreview(file);
+    });
+
+    // Drag-and-drop events
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('border-sage-500', 'bg-sage-50', 'scale-[1.01]');
+        dropZone.classList.remove('border-sage-200');
+    });
+
+    dropZone.addEventListener('dragenter', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('border-sage-500', 'bg-sage-50', 'scale-[1.01]');
+        dropZone.classList.remove('border-sage-200');
+    });
+
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Only reset styles if the mouse truly left the drop zone (not entering a child)
+        if (!dropZone.contains(e.relatedTarget)) {
+            dropZone.classList.remove('border-sage-500', 'bg-sage-50', 'scale-[1.01]');
+            dropZone.classList.add('border-sage-200');
+        }
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('border-sage-500', 'bg-sage-50', 'scale-[1.01]');
+        dropZone.classList.add('border-sage-200');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                showNotification('يرجى رفع ملف صورة فقط (JPG، PNG، GIF)', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('حجم الصورة يتجاوز الحد الأقصى (5MB)', 'error');
+                return;
+            }
+            // Assign the dropped file to the input using DataTransfer
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            productImageInput.files = dt.files;
+            showImagePreview(file);
         }
     });
 
@@ -785,12 +870,7 @@
             }
         });
 
-        // Error handler for images
-        document.querySelectorAll('img[data-fallback]').forEach(img => {
-            img.addEventListener('error', function() {
-                this.src = this.dataset.fallback;
-            });
-        });
+        // Error handler for images — onerror=null prevents infinite loop
 
         // Add smooth scroll animation for cards
         const observer = new IntersectionObserver((entries) => {

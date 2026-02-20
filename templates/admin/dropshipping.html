@@ -87,7 +87,7 @@
                 <div class="lg:w-48 h-48 lg:h-auto flex-shrink-0 bg-dark-50 flex items-center justify-center overflow-hidden">
                     {% if item.image_url %}
                     <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-full h-full object-cover" 
-                         onerror="this.src='{{ url_for('static', filename='images/placeholder.png') }}'">
+                         onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg'">
                     {% else %}
                     <div class="text-center text-gray-600 p-4">
                         <i class='bx bx-image text-4xl'></i>

@@ -1424,16 +1424,66 @@
 <section class="hero-section">
     <div class="swiper hero-slider">
         <div class="swiper-wrapper">
-            {% set banners = [ {'image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'title': 'الحامد سبراي الشعر المتطور', 'subtitle': 'الحامد سبراي الشعر المتطور', 'description': 'احصلي على شعر أكثر كثافة وصحة مع سبراي الحجم المبتكر. مُركب من مكونات طبيعية لتعزيز كثافة الشعر واستعادة حيويته.', 'highlight_image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'highlight_title': 'الحامد سبراي الشعر المتطور', 'regular_price': '438', 'sale_price': '350', 'discount':
-            '20%'}, {'image': 'https://f.top4top.io/p_3399frbky2.jpg', 'title': 'الحامد زيت الشعر المتطور', 'subtitle': 'الحامد زيت الشعر المتطور', 'description': 'مُعزز بمستخلصات طبيعية قوية لتعزيز نمو الشعر وتقليل التساقط وإضافة لمعان مذهل لكل خصلة.', 'highlight_image': 'https://f.top4top.io/p_3399frbky2.jpg', 'highlight_title': 'الحامد زيت الشعر المتطور', 'regular_price': '469', 'sale_price': '375', 'discount': '20%'}, {'image':
-            'https://f.top4top.io/p_3396mbqvn1.jpg', 'title': 'الحامد سيروم الرموش والحواجب', 'subtitle': 'الحامد سيروم الرموش والحواجب', 'description': 'عززي جمالك الطبيعي مع سيروم النمو المتطور. مُثبت سريرياً لرموش أطول وأكثر كثافة وحواجب محددة.', 'highlight_image': 'https://f.top4top.io/p_3396mbqvn1.jpg', 'highlight_title': 'الحامد سيروم الرموش والحواجب', 'regular_price': '165', 'sale_price': '135', 'discount': '20%'} ] %} {% for banner in banners
-            %}
+            {# ── Use DB banners when available, fallback to hardcoded ── #}
+            {% if db_banners %}
+              {% for b in db_banners %}
+              <div class="swiper-slide">
+                  <div class="hero-slide">
+                      <div class="hero-bg">
+                          {% if b.image_url.startswith('static/') %}
+                            <img src="{{ url_for('static', filename=b.image_url[7:]) }}" alt="{{ b.title }}" loading="lazy">
+                          {% else %}
+                            <img src="{{ b.image_url }}" alt="{{ b.title }}" loading="lazy">
+                          {% endif %}
+                      </div>
+                      <div class="container">
+                          <div class="row">
+                              <div class="col-lg-7">
+                                  <div class="hero-content">
+                                      <p class="hero-subtitle">{{ b.subtitle }}</p>
+                                      <h1 class="hero-title">{{ b.title }}</h1>
+                                      <p class="hero-description">{{ b.description }}</p>
+                                      <div class="hero-buttons">
+                                          <a href="{{ b.link_url }}" class="btn-shop btn-primary">تسوقي الآن <i class="bx bx-right-arrow-alt"></i></a>
+                                          <a href="/shop" class="btn-shop btn-outline">اكتشفي المزيد</a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      {% if b.highlight_sale_price or b.highlight_regular_price %}
+                      <div class="product-highlight">
+                          {% if b.image_url.startswith('static/') %}
+                            <img src="{{ url_for('static', filename=b.image_url[7:]) }}" alt="{{ b.title }}" class="product-highlight-image">
+                          {% else %}
+                            <img src="{{ b.image_url }}" alt="{{ b.title }}" class="product-highlight-image">
+                          {% endif %}
+                          <div class="product-highlight-content">
+                              <h3 class="product-highlight-title">{{ b.title }}</h3>
+                              <div class="product-highlight-price">
+                                  {% if b.highlight_regular_price %}<span class="product-old-price">{{ b.highlight_regular_price }} ج.م</span>{% endif %}
+                                  {% if b.highlight_sale_price %}<span class="product-current-price">{{ b.highlight_sale_price }} ج.م</span>{% endif %}
+                                  {% if b.highlight_discount %}<span class="product-discount">-{{ b.highlight_discount }}</span>{% endif %}
+                              </div>
+                          </div>
+                      </div>
+                      {% endif %}
+                  </div>
+              </div>
+              {% endfor %}
+            {% else %}
+            {# ── Hardcoded fallback ── #}
+            {% set banners = [
+              {'image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'title': 'الحامد سبراي الشعر المتطور', 'subtitle': 'الحامد سبراي الشعر المتطور', 'description': 'احصلي على شعر أكثر كثافة وصحة مع سبراي الحجم المبتكر.', 'highlight_image': 'https://e.top4top.io/p_3399y42yj1.jpg', 'highlight_title': 'الحامد سبراي الشعر المتطور', 'regular_price': '438', 'sale_price': '350', 'discount': '20%'},
+              {'image': 'https://f.top4top.io/p_3399frbky2.jpg', 'title': 'الحامد زيت الشعر المتطور', 'subtitle': 'الحامد زيت الشعر المتطور', 'description': 'مُعزز بمستخلصات طبيعية قوية لتعزيز نمو الشعر.', 'highlight_image': 'https://f.top4top.io/p_3399frbky2.jpg', 'highlight_title': 'الحامد زيت الشعر المتطور', 'regular_price': '469', 'sale_price': '375', 'discount': '20%'},
+              {'image': 'https://f.top4top.io/p_3396mbqvn1.jpg', 'title': 'الحامد سيروم الرموش والحواجب', 'subtitle': 'الحامد سيروم الرموش والحواجب', 'description': 'عززي جمالك الطبيعي مع سيروم النمو المتطور.', 'highlight_image': 'https://f.top4top.io/p_3396mbqvn1.jpg', 'highlight_title': 'الحامد سيروم الرموش والحواجب', 'regular_price': '165', 'sale_price': '135', 'discount': '20%'}
+            ] %}
+            {% for banner in banners %}
             <div class="swiper-slide">
                 <div class="hero-slide">
                     <div class="hero-bg">
                         <img src="{{ banner.image }}" alt="{{ banner.title }}" loading="lazy">
                     </div>
-
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-7">
@@ -1442,19 +1492,13 @@
                                     <h1 class="hero-title">{{ banner.title }}</h1>
                                     <p class="hero-description">{{ banner.description }}</p>
                                     <div class="hero-buttons">
-                                        <a href="/shop" class="btn-shop btn-primary">
-                      تسوقي الآن
-                      <i class="bx bx-right-arrow-alt"></i>
-                    </a>
-                                        <a href="/shop" class="btn-shop btn-outline">
-                      اكتشفي المزيد
-                    </a>
+                                        <a href="/shop" class="btn-shop btn-primary">تسوقي الآن <i class="bx bx-right-arrow-alt"></i></a>
+                                        <a href="/shop" class="btn-shop btn-outline">اكتشفي المزيد</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="product-highlight">
                         <img src="{{ banner.highlight_image }}" alt="{{ banner.highlight_title }}" class="product-highlight-image">
                         <div class="product-highlight-content">
@@ -1469,6 +1513,7 @@
                 </div>
             </div>
             {% endfor %}
+            {% endif %}
         </div>
 
         <div class="swiper-button-prev"></div>
@@ -1478,60 +1523,54 @@
 </section>
 
 <!-- Featured Product Set Section -->
+{% if sale_products %}
 <section class="featured-set-section">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
                 <h2 class="display-4 mb-3" style="font-weight: 800; color: var(--alha-text);">عرض لفترة محدودة</h2>
-                <p class="lead text-muted">اكتشفي مجموعة الحامد الكاملة للعناية بالجمال في باقة حصرية</p>
+                <p class="lead text-muted">منتجات مختارة بخصومات حصرية — لفترة محدودة!</p>
             </div>
+        </div>
 
-            <div class="col-lg-6">
-                <div class="featured-set-img mb-4 mb-lg-0">
-                    <img src="https://j.top4top.io/p_341638uh21.png" alt="مجموعة الحامد الكاملة للعناية بالشعر والرموش" class="img-fluid rounded-4 shadow">
-                    <span class="limited-badge">عرض لفترة محدودة</span>
-                    <div class="countdown-badge">
-                        <i class="bx bx-time"></i>
-                        <span id="featured-countdown">وقت محدود</span>
+        <div class="row g-4">
+            {% for prod in sale_products %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+                    {% set img_src = prod.image %}
+                    {% if img_src %}
+                      {% if img_src.startswith('http') %}
+                        <img src="{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy">
+                      {% elif img_src.startswith('static/') %}
+                        <img src="{{ url_for('static', filename=img_src[7:]) }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy">
+                      {% else %}
+                        <img src="/{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy">
+                      {% endif %}
+                    {% else %}
+                      <div class="d-flex align-items-center justify-content-center bg-secondary" style="height:180px;"><i class="bx bx-image text-white" style="font-size:3rem;"></i></div>
+                    {% endif %}
+
+                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 rounded-pill">-{{ prod.discount|int }}%</span>
+                    <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2 rounded-pill" style="font-size:0.65rem;">⏳ عرض</span>
+
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title fw-bold mb-1" style="font-size:0.9rem;line-height:1.3;">{{ prod.name }}</h6>
+                        <div class="mt-auto">
+                            {% set sale_p = prod.price * (1 - prod.discount / 100) %}
+                            <span class="text-muted text-decoration-line-through small">{{ prod.price|int }} ج.م</span>
+                            <span class="text-danger fw-bold ms-1">{{ sale_p|int }} ج.م</span>
+                        </div>
+                        <a href="/product/{{ prod.id }}" class="btn btn-sm btn-outline-danger w-100 mt-2 rounded-pill">
+                            <i class="bx bx-cart-add me-1"></i>اشتري الآن
+                        </a>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-6">
-                <div class="featured-set-box h-100">
-                    <div class="featured-set-content">
-                        <div>
-                            <h3 class="featured-set-title">مجموعة الحامد الكاملة للعناية بالشعر والرموش</h3>
-                            <p class="featured-set-description">اكتشفي القوة الكاملة لمنتجات الحامد الفاخرة للعناية بالجمال مع هذه المجموعة الحصرية. مصممة لتحويل شعرك ورموشك، هذا الحل الشامل يقدم نتائج بجودة الصالونات في المنزل.</p>
-
-                            <div class="featured-set-includes">
-                                <h4>المجموعة تشمل:</h4>
-                                <ul>
-                                    <li><i class="bx bx-check-circle"></i> الحامد سبراي الشعر المتطور</li>
-                                    <li><i class="bx bx-check-circle"></i> الحامد زيت الشعر المتطور</li>
-                                    <li><i class="bx bx-check-circle"></i> الحامد سيروم الرموش والحواجب</li>
-
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="featured-set-price">
-                                <span class="featured-set-old-price">1072 ج.م</span>
-                                <span class="featured-set-current-price">860 ج.م</span>
-                                <span class="featured-set-discount">-20%</span>
-                            </div>
-
-                            <a href="/4" class="featured-set-btn">
-                                <i class="bx bx-cart-add"></i> أضف للسلة
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
+{% endif %}
 
 <!-- Improved About Us Section -->
 <section class="about-section">

@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from app import app as flask_app, db
 from app import (
     Category, Product, AdditionalImage, AdditionalData,
-    Cart, Order, OrderItem, Admins, Gusts, DropshipProduct
+    Cart, Order, OrderItem, Admins, Gusts, DropshipProduct, BannerSlide
 )
 
 # Create a single temp file for the test database (shared by the whole session)
@@ -39,6 +39,10 @@ def app():
 
     with flask_app.app_context():
         db.create_all()
+        # Replicate the startup seed so tests that need a default category work
+        if Category.query.count() == 0:
+            db.session.add(Category(name='عام', description='تصنيف عام'))
+            db.session.commit()
         yield flask_app
         db.session.remove()
         db.drop_all()

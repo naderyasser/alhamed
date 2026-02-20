@@ -336,24 +336,24 @@ class Product(db.Model):
     image = db.Column(db.String(100), nullable=False)
     views = db.Column(db.Integer, nullable=False, default=0)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    additional_images = db.relationship('AdditionalImage', backref='product', lazy=True)
-    additional_data = db.relationship('AdditionalData', backref='product', lazy=True)
+    additional_images = db.relationship('AdditionalImage', backref='product', lazy=True, cascade='all, delete-orphan')
+    additional_data = db.relationship('AdditionalData', backref='product', lazy=True, cascade='all, delete-orphan')
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class AdditionalImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     image = db.Column(db.String(100), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class AdditionalData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(100), nullable=False)
     value = db.Column(db.String(100), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('gusts.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
     
@@ -386,7 +386,7 @@ class Order(db.Model):
 class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, nullable=False)
-    product_id = db.Column(db.Integer, nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='SET NULL'), nullable=True)
     quantity = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
 
@@ -470,6 +470,35 @@ class DropshipProduct(db.Model):
     imported_product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
     error_message = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+
+class BannerSlide(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    image_url = db.Column(db.String(500), nullable=False)
+    title = db.Column(db.String(200), nullable=False, default='')
+    subtitle = db.Column(db.String(200), nullable=False, default='')
+    description = db.Column(db.Text, nullable=False, default='')
+    link_url = db.Column(db.String(200), nullable=False, default='/shop')
+    highlight_regular_price = db.Column(db.String(50), nullable=False, default='')
+    highlight_sale_price = db.Column(db.String(50), nullable=False, default='')
+    highlight_discount = db.Column(db.String(20), nullable=False, default='')
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+    sort_order = db.Column(db.Integer, nullable=False, default=0)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'image_url': self.image_url or '',
+            'title': self.title or '',
+            'subtitle': self.subtitle or '',
+            'description': self.description or '',
+            'link_url': self.link_url or '/shop',
+            'highlight_regular_price': self.highlight_regular_price or '',
+            'highlight_sale_price': self.highlight_sale_price or '',
+            'highlight_discount': self.highlight_discount or '',
+            'is_active': self.is_active,
+            'sort_order': self.sort_order,
+        }
 
 # changShippingCostFromcity_idIsIdToCityId()
 
@@ -636,18 +665,27 @@ def date_format(value):
     return value.strftime('%Y-%m-%d %I:%M %p')
 @shop.route('/')
 def home():
-
     check_session()
     categories = Category.query.all()
     last_products = Product.query.order_by(Product.created_at.desc()).limit(8).all()
     trending_products = Product.query.order_by(Product.views.desc()).limit(8).all()
-    return render_template("shop/index.html", 
-                           last_products=last_products, 
+    # Products with an active discount for "Limited Time Offer" section
+    sale_products = Product.query.filter(
+        Product.discount > 0, Product.stock > 0
+    ).order_by(Product.discount.desc()).limit(6).all()
+    # Hero banners from DB, fallback to hardcoded if none exist
+    banners = BannerSlide.query.filter_by(is_active=True).order_by(
+        BannerSlide.sort_order.asc(), BannerSlide.id.asc()
+    ).all()
+    return render_template("shop/index.html",
+                           last_products=last_products,
                            most_viewed=trending_products,
                            categories=categories,
                            section_id="featured-products",
                            section_title="Our Featured Products",
-                           products=last_products)
+                           products=last_products,
+                           sale_products=sale_products,
+                           db_banners=banners)
 
 @shop.route('/shop')
 def list():
@@ -869,7 +907,19 @@ def checkout():
     if not user:
         flash('يرجى تحديث الصفحة', 'danger')
         return redirect(url_for('shop.home'))
-    cart_items = Cart.query.filter_by(user_id=user.id).all()
+    
+    # استخدام LEFT JOIN للتعامل مع المنتجات المحذوفة
+    cart_items_query = db.session.query(Cart).outerjoin(Product).filter(Cart.user_id == user.id).all()
+    
+    # تصفية العناصر التي منتجاتها محذوفة
+    cart_items = [item for item in cart_items_query if item.product is not None]
+    
+    # حذف عناصر السلة للمنتجات المحذوفة
+    deleted_items = [item.id for item in cart_items_query if item.product is None]
+    if deleted_items:
+        Cart.query.filter(Cart.id.in_(deleted_items)).delete(synchronize_session=False)
+        db.session.commit()
+    
     if not cart_items:
         flash('سلة التسوق فارغة', 'danger')
         return redirect(url_for('shop.cart'))
@@ -1218,7 +1268,7 @@ def send_discord_notification(order, order_items):
 def place_order():
     try:
         # 1. Validate required fields
-        required_fields = ['name', 'phone', 'address', 'city', 'zone_id', 'district_id', 'total', 'payment_method']
+        required_fields = ['name', 'phone', 'address', 'city', 'zone_id', 'total', 'payment_method']
         missing_fields = [field for field in required_fields if field not in request.form]
         if missing_fields:
             flash(f'الحقول التالية مطلوبة: {", ".join(missing_fields)}', 'danger')
@@ -1264,6 +1314,16 @@ def place_order():
         else:
             product_total = product_subtotal
 
+        # Apply promo code discount if provided
+        promo_code_input = (request.form.get('promo_code') or '').strip().upper()
+        if promo_code_input:
+            promo_code_obj = PromoCode.query.filter_by(code=promo_code_input).first()
+            if promo_code_obj and promo_code_obj.count > 0:
+                promo_code_discount = product_total * (promo_code_obj.discount / 100)
+                product_total -= promo_code_discount
+                promo_code_obj.count -= 1
+                app.logger.info(f"Promo code '{promo_code_input}' applied: {promo_code_obj.discount}% off")
+
         # 6. Check stock availability
         for cart_item in cart_items:
             product = db.session.get(Product, cart_item.product_id)
@@ -1307,7 +1367,7 @@ def place_order():
             address=request.form['address'],
             city=request.form['city'],
             zone_id=request.form['zone_id'],
-            district_id=request.form['district_id'],
+            district_id=request.form.get('district_id', ''),
             cod_amount=total_amount,  # This now reflects the correct amount with any shipping discount
             payment_method=payment_method,
             status='pending'
@@ -1516,14 +1576,36 @@ def get_shipping_cost_api():
 
     return jsonify(cost=shipping_cost.price)
 
+@shop.route('/api/validate_promo', methods=['POST'])
+def validate_promo():
+    """Validate a promo code and return its discount percentage."""
+    data = request.get_json(silent=True) or {}
+    code = (data.get('code') or '').strip().upper()
+    if not code:
+        return jsonify({'valid': False, 'message': 'الرجاء إدخال كود الخصم'}), 400
+    promo = PromoCode.query.filter_by(code=code).first()
+    if not promo:
+        return jsonify({'valid': False, 'message': 'كود الخصم غير صحيح'}), 404
+    if promo.count <= 0:
+        return jsonify({'valid': False, 'message': 'كود الخصم منتهي الصلاحية'}), 410
+    return jsonify({'valid': True, 'discount': promo.discount, 'message': f'تم تطبيق خصم {promo.discount:.0f}%!'})
+
 @shop.route('/cart')
 def cart():
     user = Gusts.query.filter_by(session=session['session']).first()
     if not user:
         flash('يرجى تحديث الصفحة', 'danger')
         return redirect(url_for('shop.home'))
-    # Change the query to use correct relationship between Cart and Product
-    cart_query_result = db.session.query(Cart, Product).join(Product).filter(Cart.user_id == user.id).all()
+    # استخدام LEFT JOIN للتعامل مع المنتجات المحذوفة
+    cart_query_result = db.session.query(Cart, Product).outerjoin(Product).filter(Cart.user_id == user.id).all()
+    
+    # حذف عناصر السلة للمنتجات المحذوفة
+    deleted_items = [item.Cart.id for item in cart_query_result if item.Product is None]
+    if deleted_items:
+        Cart.query.filter(Cart.id.in_(deleted_items)).delete(synchronize_session=False)
+        db.session.commit()
+        cart_query_result = [item for item in cart_query_result if item.Product is not None]
+    
     total = sum(item.Product.price * item.Cart.quantity for item in cart_query_result)
     all_last_orders = Order.query.filter_by(user_id=user.id).order_by(Order.id.desc()).limit(10).all()
     cart_items = [
@@ -2023,13 +2105,10 @@ def delete_product(product_id):
     product = db.session.get(Product, product_id)
     if not product:
         abort(404)
-    additional_images = AdditionalImage.query.filter_by(product_id=product_id).all()
-    additional_data = AdditionalData.query.filter_by(product_id=product_id).all()
-    for image in additional_images:
-        db.session.delete(image)
-    for data in additional_data:
-        db.session.delete(data)
-
+    
+    # حذف Cart items فقط (CASCADE هيتعامل مع الباقي)
+    Cart.query.filter_by(product_id=product_id).delete()
+    
     db.session.delete(product)
     db.session.commit()
     flash('تم حذف المنتج بنجاح!', 'success')
@@ -2038,13 +2117,18 @@ def delete_product(product_id):
 @admin.route('/product/<int:product_id>/edit', methods=['GET'])
 @admin_required
 def get_edit_product_form(product_id):
-    """Return the edit product form HTML for AJAX loading"""
+    """Return the edit product form — full page for direct access, fragment for AJAX"""
     product = db.session.get(Product, product_id)
     if not product:
         abort(404)
     categories = Category.query.all()
-    
-    return render_template('admin/edit_product.html', product=product, categories=categories)
+
+    # If loaded via AJAX (modal), return just the form fragment
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render_template('admin/edit_product.html', product=product, categories=categories)
+
+    # Direct browser navigation → full styled page
+    return render_template('admin/edit_product_page.html', product=product, categories=categories)
 
 @admin.route('/edit_product/<int:product_id>', methods=['POST'])
 @admin_required
@@ -2158,6 +2242,58 @@ def categories():
         flash('حدث خطأ أثناء تحميل التصنيفات!', 'error')
         return render_template('admin/categories.html', categories=[])
 
+@admin.route('/bulk_delete_categories', methods=['POST'])
+@admin_required
+def bulk_delete_categories():
+    category_ids = request.form.getlist('category_ids[]')
+    if not category_ids:
+        flash('لم يتم تحديد أي تصنيفات', 'error')
+        return redirect(url_for('admin.categories'))
+    deleted = 0
+    skipped = 0
+    for cid in category_ids:
+        try:
+            category = db.session.get(Category, int(cid))
+            if not category:
+                continue
+            if category.products:
+                skipped += 1
+                continue
+            db.session.delete(category)
+            deleted += 1
+        except Exception:
+            continue
+    db.session.commit()
+    if deleted:
+        flash(f'تم حذف {deleted} تصنيف بنجاح!', 'success')
+    if skipped:
+        flash(f'تم تخطي {skipped} تصنيف لاحتوائها على منتجات', 'error')
+    return redirect(url_for('admin.categories'))
+
+@admin.route('/sync_bosta_cities', methods=['POST'])
+@admin_required
+def sync_bosta_cities():
+    """Fetch cities, zones and districts from Bosta API and sync to local DB."""
+    try:
+        cities_data = bosta_service.get_cities()
+        synced = 0
+        for city_info in cities_data:
+            bosta_city_id = str(city_info.get('_id') or city_info.get('id', ''))
+            city_name = city_info.get('name') or city_info.get('nameEn', '')
+            if not bosta_city_id or not city_name:
+                continue
+            existing = City.query.filter_by(city_id=bosta_city_id).first()
+            if not existing:
+                city = City(name=city_name, city_id=bosta_city_id)
+                db.session.add(city)
+            synced += 1
+        db.session.commit()
+        flash(f'تمت مزامنة {synced} مدينة من Bosta بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'خطأ في المزامنة: {str(e)}', 'error')
+    return redirect(url_for('admin.categories'))
+
 @admin.route('/delete_category/<int:category_id>', methods=['POST'])
 @admin_required
 def delete_category(category_id):
@@ -2215,7 +2351,39 @@ def scrape_product_data(url):
         is_amazon = 'amazon' in source_site
         is_noon = 'noon.com' in source_site
         is_jumia = 'jumia' in source_site
-        
+
+        # ── JSON-LD structured data (server-rendered, works on most sites) ──
+        ld_name = ld_price = ld_desc = ld_image = None
+        for script in soup.find_all('script', type='application/ld+json'):
+            try:
+                import json as _json
+                raw = script.string or ''
+                ld = _json.loads(raw)
+                if isinstance(ld, list):
+                    ld = next((x for x in ld if isinstance(x, dict) and x.get('@type') in ('Product', 'product')), ld[0] if ld else {})
+                if isinstance(ld, dict) and ld.get('@type', '').lower() == 'product':
+                    ld_name = ld.get('name', '') or ''
+                    ld_desc = ld.get('description', '') or ''
+                    offers = ld.get('offers', {})
+                    if isinstance(offers, list):
+                        offers = offers[0] if offers else {}
+                    if isinstance(offers, dict):
+                        try:
+                            ld_price = float(str(offers.get('price', '') or '').replace(',', '') or 0) or None
+                        except (ValueError, TypeError):
+                            pass
+                    imgs = ld.get('image', '')
+                    if isinstance(imgs, str):
+                        ld_image = imgs or None
+                    elif isinstance(imgs, list):
+                        ld_image = imgs[0] if imgs else None
+                    elif isinstance(imgs, dict):
+                        ld_image = imgs.get('url') or imgs.get('contentUrl')
+                    if ld_name:
+                        break
+            except Exception:
+                pass
+
         # ── Extract product name ──
         name = None
         if is_amazon:
@@ -2358,10 +2526,10 @@ def scrape_product_data(url):
         
         return {
             'success': True,
-            'name': name or 'منتج بدون اسم',
-            'price': price or 0,
-            'description': description,
-            'image_url': image_url or '',
+            'name': name or ld_name or 'منتج بدون اسم',
+            'price': price or ld_price or 0,
+            'description': description or ld_desc or '',
+            'image_url': image_url or ld_image or '',
             'additional_images': additional_imgs,
             'source_site': source_site
         }
@@ -2442,11 +2610,22 @@ def dropshipping_scrape():
     if not url.startswith(('http://', 'https://')):
         url = 'https://' + url
     
-    # Check if URL already scraped
+    # Check if URL already scraped AND still exists (not deleted)
     existing = DropshipProduct.query.filter_by(source_url=url).first()
     if existing:
-        flash('هذا المنتج تم استيراده مسبقاً', 'warning')
-        return redirect(url_for('admin.dropshipping'))
+        # Only block if the imported product still exists in the shop
+        if existing.imported_product_id:
+            product_still_exists = db.session.get(Product, existing.imported_product_id) is not None
+            if product_still_exists:
+                flash('هذا المنتج تم استيراده مسبقاً وهو موجود في المتجر', 'warning')
+                return redirect(url_for('admin.dropshipping'))
+            else:
+                # Product was deleted — remove stale record and re-scrape
+                db.session.delete(existing)
+                db.session.commit()
+        elif existing.status in ('imported',):
+            flash('هذا الرابط تمت معالجته مسبقاً', 'warning')
+            return redirect(url_for('admin.dropshipping'))
     
     result = scrape_product_data(url)
     
@@ -2501,12 +2680,12 @@ def dropshipping_import(item_id):
         main_image_filename = None
         if item.image_url:
             main_image_filename = download_image_from_url(item.image_url)
-        
-        if not main_image_filename:
-            main_image_filename = 'static/images/placeholder.png'
+
+        if main_image_filename:
+            image_path = f"static/uploads/{main_image_filename}"
         else:
-            main_image_filename = f"static/uploads/{main_image_filename}"
-        
+            image_path = 'static/images/placeholder-product.svg'
+
         # Create product
         new_product = Product(
             name=name,
@@ -2514,7 +2693,7 @@ def dropshipping_import(item_id):
             price=price,
             discount=discount,
             stock=stock,
-            image=main_image_filename,
+            image=image_path,
             category_id=category_id
         )
         db.session.add(new_product)
@@ -2554,9 +2733,14 @@ def dropshipping_delete(item_id):
     item = db.session.get(DropshipProduct, item_id)
     if not item:
         abort(404)
+    # Also delete the associated Product if it was imported
+    if item.imported_product_id:
+        product = db.session.get(Product, item.imported_product_id)
+        if product:
+            db.session.delete(product)
     db.session.delete(item)
     db.session.commit()
-    flash('تم حذف المنتج من قائمة الدروب شوبينج', 'success')
+    flash('تم حذف المنتج من قائمة الدروب شوبينج والمتجر', 'success')
     return redirect(url_for('admin.dropshipping'))
 
 
@@ -2718,6 +2902,40 @@ def delete_city(id):
         
     return redirect(url_for('admin.shipping'))
 
+@admin.route('/add_city', methods=['POST'])
+@admin_required
+def add_city():
+    try:
+        name = request.form.get('name', '').strip()
+        city_id = request.form.get('city_id', '').strip()
+        shipping_price = float(request.form.get('shipping_price', 100) or 100)
+
+        if not name:
+            flash('اسم المدينة مطلوب', 'error')
+            return redirect(url_for('admin.shipping'))
+
+        if not city_id:
+            from uuid import uuid4 as _uuid4
+            city_id = _uuid4().hex[:16]
+
+        if City.query.filter_by(city_id=city_id).first():
+            flash('مدينة بهذا المعرف موجودة مسبقاً', 'error')
+            return redirect(url_for('admin.shipping'))
+
+        city = City(name=name, city_id=city_id)
+        db.session.add(city)
+        db.session.flush()  # get city in session
+
+        shipping = ShippingCost(city_id=city_id, price=shipping_price)
+        db.session.add(shipping)
+        db.session.commit()
+        flash(f'تمت إضافة المدينة "{name}" بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'Error adding city: {e}')
+        flash('حدث خطأ أثناء إضافة المدينة', 'error')
+    return redirect(url_for('admin.shipping'))
+
 @admin.route('/update_shipping_cost', methods=['POST'])
 @admin_required
 def update_shipping_cost():
@@ -2746,6 +2964,126 @@ def update_shipping_cost():
         flash('حدث خطأ أثناء تحديث تكلفة الشحن', 'error')
         
     return redirect(url_for('admin.shipping'))
+
+
+# ─────────────────── Banner Slides Admin ───────────────────
+
+@admin.route('/banners')
+@admin_required
+def banners():
+    all_banners = BannerSlide.query.order_by(BannerSlide.sort_order.asc(), BannerSlide.id.asc()).all()
+    return render_template('admin/banners.html', banners=all_banners)
+
+
+@admin.route('/banners/add', methods=['POST'])
+@admin_required
+def banner_add():
+    try:
+        image_url = request.form.get('image_url', '').strip()
+        title = request.form.get('title', '').strip()
+        subtitle = request.form.get('subtitle', '').strip()
+        description = request.form.get('description', '').strip()
+        link_url = request.form.get('link_url', '/shop').strip() or '/shop'
+        regular_price = request.form.get('highlight_regular_price', '').strip()
+        sale_price = request.form.get('highlight_sale_price', '').strip()
+        discount = request.form.get('highlight_discount', '').strip()
+        sort_order = int(request.form.get('sort_order', 0) or 0)
+        is_active = request.form.get('is_active') == 'on'
+
+        # Support uploaded image file
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            saved = save_uploaded_file(uploaded_file)
+            if saved:
+                image_url = f"static/uploads/{saved}"
+
+        if not image_url:
+            flash('يجب توفير صورة للبانر', 'error')
+            return redirect(url_for('admin.banners'))
+
+        banner = BannerSlide(
+            image_url=image_url,
+            title=title,
+            subtitle=subtitle,
+            description=description,
+            link_url=link_url,
+            highlight_regular_price=regular_price,
+            highlight_sale_price=sale_price,
+            highlight_discount=discount,
+            sort_order=sort_order,
+            is_active=is_active,
+        )
+        db.session.add(banner)
+        db.session.commit()
+        flash('تمت إضافة البانر بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'banner_add error: {e}')
+        flash('حدث خطأ أثناء إضافة البانر', 'error')
+    return redirect(url_for('admin.banners'))
+
+
+@admin.route('/banners/edit/<int:banner_id>', methods=['POST'])
+@admin_required
+def banner_edit(banner_id):
+    banner = db.session.get(BannerSlide, banner_id)
+    if not banner:
+        abort(404)
+    try:
+        banner.title = request.form.get('title', '').strip()
+        banner.subtitle = request.form.get('subtitle', '').strip()
+        banner.description = request.form.get('description', '').strip()
+        banner.link_url = request.form.get('link_url', '/shop').strip() or '/shop'
+        banner.highlight_regular_price = request.form.get('highlight_regular_price', '').strip()
+        banner.highlight_sale_price = request.form.get('highlight_sale_price', '').strip()
+        banner.highlight_discount = request.form.get('highlight_discount', '').strip()
+        banner.sort_order = int(request.form.get('sort_order', 0) or 0)
+        banner.is_active = request.form.get('is_active') == 'on'
+
+        new_image_url = request.form.get('image_url', '').strip()
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            saved = save_uploaded_file(uploaded_file)
+            if saved:
+                new_image_url = f"static/uploads/{saved}"
+        if new_image_url:
+            banner.image_url = new_image_url
+
+        db.session.commit()
+        flash('تم تحديث البانر بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'banner_edit error: {e}')
+        flash('حدث خطأ أثناء تحديث البانر', 'error')
+    return redirect(url_for('admin.banners'))
+
+
+@admin.route('/banners/delete/<int:banner_id>', methods=['POST'])
+@admin_required
+def banner_delete(banner_id):
+    banner = db.session.get(BannerSlide, banner_id)
+    if not banner:
+        abort(404)
+    db.session.delete(banner)
+    db.session.commit()
+    flash('تم حذف البانر', 'success')
+    return redirect(url_for('admin.banners'))
+
+
+@admin.route('/banners/toggle/<int:banner_id>', methods=['POST'])
+@admin_required
+def banner_toggle(banner_id):
+    banner = db.session.get(BannerSlide, banner_id)
+    if not banner:
+        abort(404)
+    banner.is_active = not banner.is_active
+    db.session.commit()
+    state = 'مفعّل' if banner.is_active else 'مخفي'
+    flash(f'البانر الآن {state}', 'info')
+    return redirect(url_for('admin.banners'))
+
+
+# ─────────────────────────────────────────────────────────────
 
 @admin.route('/orders')
 @admin_required
@@ -2917,10 +3255,10 @@ def order_detail(order_id):
         shipping_cost = ShippingCost.query.filter_by(city_id=order.city).first()
         shipping_price = shipping_cost.price if shipping_cost else 0
         
-        # Get order items with product details
+        # Get order items with product details (LEFT JOIN للتعامل مع المنتجات المحذوفة)
         order_items_with_product = (
             db.session.query(OrderItem, Product)
-            .join(Product, OrderItem.product_id == Product.id)
+            .outerjoin(Product, OrderItem.product_id == Product.id)
             .filter(OrderItem.order_id == order_id)
             .all()
         )
@@ -2929,21 +3267,37 @@ def order_detail(order_id):
         subtotal = 0
         order_items = []
         for order_item, product in order_items_with_product:
-            item_total = product.price * order_item.quantity
-            subtotal += item_total
-            
-            item_data = {
-                'order_item': order_item,
-                'product': {
-                    'id': product.id,
-                    'image': product.image,
-                    'name': product.name,
-                    'price': product.price,
-                    'stock': product.stock,
-                    'category': product.category.name if product.category else "غير معروف"
-                },
-                'item_total': item_total
-            }
+            # التعامل مع المنتجات المحذوفة
+            if product:
+                item_total = product.price * order_item.quantity
+                subtotal += item_total
+                
+                item_data = {
+                    'order_item': order_item,
+                    'product': {
+                        'id': product.id,
+                        'image': product.image,
+                        'name': product.name,
+                        'price': product.price,
+                        'stock': product.stock,
+                        'category': product.category.name if product.category else "غير معروف"
+                    },
+                    'item_total': item_total
+                }
+            else:
+                # منتج محذوف
+                item_data = {
+                    'order_item': order_item,
+                    'product': {
+                        'id': None,
+                        'image': 'default.jpg',
+                        'name': 'منتج محذوف',
+                        'price': 0,
+                        'stock': 0,
+                        'category': 'غير متوفر'
+                    },
+                    'item_total': 0
+                }
             order_items.append(item_data)
         
         # Calculate final totals
@@ -3839,6 +4193,18 @@ def backup_project():
 
 app.register_blueprint(shop)
 app.register_blueprint(admin , url_prefix='/admin')
+
+# Ensure all tables exist on every startup (incl. gunicorn/wsgi)
+with app.app_context():
+    db.create_all()
+    # Seed a default category so Add Product form works out-of-the-box
+    try:
+        if Category.query.count() == 0:
+            db.session.add(Category(name='عام', description='تصنيف عام'))
+            db.session.commit()
+    except Exception:
+        db.session.rollback()
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("shop/400.html"), 404

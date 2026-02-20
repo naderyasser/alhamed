@@ -6,30 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token }}">
     <title>{% block title %}لوحة التحكم{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'dark': {
-                            50: '#1a1a1a',
-                            100: '#161616',
-                            200: '#111111',
-                            300: '#0a0a0a',
-                            400: '#080808',
-                            500: '#050505',
-                        },
-                        'accent': {
-                            400: '#e53935',
-                            500: '#d32f2f',
-                            600: '#b71c1c',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS — pre-built via CLI (no CDN JIT warning) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/tailwind.css') }}">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <link rel="icon" href="{{ url_for('static', filename='images/logo-alha.jpeg') }}" type="image/png" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -253,6 +231,10 @@
                 <a href="/admin/dropshipping" class="nav-link {{ 'active' if request.endpoint == 'admin.dropshipping' }}">
                     <i class='bx bx-link-external'></i>
                     <span>دروب شوبينج</span>
+                </a>
+                <a href="/admin/banners" class="nav-link {{ 'active' if request.endpoint == 'admin.banners' }}">
+                    <i class='bx bx-image-alt'></i>
+                    <span>البانرات</span>
                 </a>
 
                 <!-- Reports Section -->
