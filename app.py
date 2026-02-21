@@ -1628,6 +1628,49 @@ def about():
     admin_phone = os.getenv('ADMIN_PHONE', '201050188516')
     return render_template('shop/about.html', admin_phone=admin_phone)
 
+
+@shop.route('/product/<int:product_id>')
+def product_redirect(product_id):
+    """Redirect old /product/<id> links to correct /<id> route (SEO-friendly 301)"""
+    return redirect(url_for('shop.product', product_id=product_id), code=301)
+
+
+@shop.route('/products')
+def products_redirect():
+    """Redirect /products to /shop with any query string preserved"""
+    query_string = request.query_string.decode('utf-8')
+    target = '/shop'
+    if query_string:
+        target = f'/shop?{query_string}'
+    return redirect(target, code=301)
+
+
+@app.route('/robots.txt')
+def robots_txt():
+    """Serve robots.txt for SEO crawlers"""
+    content = """User-agent: *
+Allow: /
+Allow: /shop
+Allow: /about
+Allow: /return-policy
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /payment/
+Disallow: /api/
+
+Sitemap: https://alhamed.educore.software/sitemap.xml
+"""
+    from flask import Response
+    return Response(content, mimetype='text/plain')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon"""
+    return redirect(url_for('static', filename='images/logo-alha.jpeg'), code=301)
+
+
 # chang-quantity/plus/1
 @shop.route('/cart/change-quantity/<action>/<int:item_id>')
 def change_quantity(action, item_id):

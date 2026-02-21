@@ -1548,11 +1548,11 @@
                     {% set img_src = prod.image %}
                     {% if img_src %}
                       {% if img_src.startswith('http') %}
-                        <img src="{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy">
+                        <a href="/{{ prod.id }}"><img src="{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy"></a>
                       {% elif img_src.startswith('static/') %}
-                        <img src="{{ url_for('static', filename=img_src[7:]) }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy">
+                        <a href="/{{ prod.id }}"><img src="{{ url_for('static', filename=img_src[7:]) }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy"></a>
                       {% else %}
-                        <img src="/{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy">
+                        <a href="/{{ prod.id }}"><img src="/{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy"></a>
                       {% endif %}
                     {% else %}
                       <div class="d-flex align-items-center justify-content-center bg-secondary" style="height:180px;"><i class="bx bx-image text-white" style="font-size:3rem;"></i></div>
@@ -1568,7 +1568,7 @@
                             <span class="text-muted text-decoration-line-through small">{{ prod.price|int }} ج.م</span>
                             <span class="text-danger fw-bold ms-1">{{ sale_p|int }} ج.م</span>
                         </div>
-                        <a href="/product/{{ prod.id }}" class="btn btn-sm btn-outline-danger w-100 mt-2 rounded-pill">
+                        <a href="/{{ prod.id }}" class="btn btn-sm btn-outline-danger w-100 mt-2 rounded-pill">
                             <i class="bx bx-cart-add me-1"></i>اشتري الآن
                         </a>
                     </div>
