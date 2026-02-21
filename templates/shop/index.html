@@ -1638,6 +1638,57 @@
         </div>
 
         <div class="row">
+        {# ── Use DB showcase items when available, fallback to hardcoded ── #}
+        {% if showcase_items %}
+          {% for item in showcase_items %}
+          <div class="col-lg-4 col-md-6 mb-4">
+              <div class="product-card">
+                  <div class="product-image">
+                      {% if item.image_url.startswith('http') %}
+                        <img src="{{ item.image_url }}" alt="{{ item.title }}">
+                      {% else %}
+                        <img src="/{{ item.image_url }}" alt="{{ item.title }}">
+                      {% endif %}
+                      {% if item.badge_text %}<span class="product-tag">{{ item.badge_text }}</span>{% endif %}
+                  </div>
+                  <div class="product-content">
+                      <h3 class="product-name">{{ item.title }}</h3>
+                      <p class="product-desc">{{ item.description }}</p>
+                      {% if item.features_list %}
+                      <div class="product-features">
+                          <h6>المكونات الرئيسية:</h6>
+                          <ul class="features-list">
+                              {% for feat in item.features_list %}
+                              <li><i class="bx bx-check-circle"></i> {{ feat }}</li>
+                              {% endfor %}
+                          </ul>
+                      </div>
+                      {% endif %}
+                      <div class="product-meta">
+                          <div class="product-price">
+                              {% if item.current_price %}<span class="price-current">{{ item.current_price }} ج.م</span>{% endif %}
+                              {% if item.old_price %}<span class="price-old">{{ item.old_price }} ج.م</span>{% endif %}
+                          </div>
+                          <div class="product-rating">
+                              <i class="bx bxs-star"></i><i class="bx bxs-star"></i><i class="bx bxs-star"></i>
+                              <i class="bx bxs-star"></i><i class="bx bxs-star"></i>
+                              <span>5.0</span>
+                          </div>
+                      </div>
+                      <div class="product-actions">
+                          <a href="{{ item.link_url }}" class="btn-product btn-buy">
+                              <i class="bx bx-cart-add"></i> أضف للسلة
+                          </a>
+                          <a href="{{ item.link_url }}" class="btn-product btn-info">
+                              <i class="bx bx-info-circle"></i> التفاصيل
+                          </a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+        {% else %}
+        {# ── Hardcoded fallback ── #}
             <!-- Hair Spray Product -->
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card">
@@ -1650,7 +1701,6 @@
                         <p class="product-desc">
                             قوي مصمم لتعزيز نمو الشعر، وزيادة كثافته، وتقليل تساقطه. يتميز بتركيبته غير الدهنية سريعة الامتصاص، مثالي للاستخدام اليومي.
                         </p>
-
                         <div class="product-features">
                             <h6>المكونات الرئيسية:</h6>
                             <ul class="features-list">
@@ -1662,34 +1712,23 @@
                                 <li><i class="bx bx-check-circle"></i> أوراق السدر</li>
                             </ul>
                         </div>
-
                         <div class="product-meta">
                             <div class="product-price">
                                 <span class="price-current">350 ج.م</span>
                                 <span class="price-old">438 ج.م</span>
                             </div>
                             <div class="product-rating">
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <span>5.0</span>
+                                <i class="bx bxs-star"></i><i class="bx bxs-star"></i><i class="bx bxs-star"></i>
+                                <i class="bx bxs-star"></i><i class="bx bxs-star"></i><span>5.0</span>
                             </div>
                         </div>
-
                         <div class="product-actions">
-                            <a href="/1" class="btn-product btn-buy">
-                                <i class="bx bx-cart-add"></i> أضف للسلة
-                            </a>
-                            <a href="/1" class="btn-product btn-info">
-                                <i class="bx bx-info-circle"></i> التفاصيل
-                            </a>
+                            <a href="/1" class="btn-product btn-buy"><i class="bx bx-cart-add"></i> أضف للسلة</a>
+                            <a href="/1" class="btn-product btn-info"><i class="bx bx-info-circle"></i> التفاصيل</a>
                         </div>
                     </div>
                 </div>
             </div>
-
             <!-- Hair Oil Product -->
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card">
@@ -1702,7 +1741,6 @@
                         <p class="product-desc">
                             تركيبة غنية بالمغذيات مصممة لتغذية بصيلات الشعر وتنعيم الأطراف المتقصفة وترطيب فروة الرأس الجافة، مع تحفيز نمو الشعر.
                         </p>
-
                         <div class="product-features">
                             <h6>المكونات الرئيسية:</h6>
                             <ul class="features-list">
@@ -1714,34 +1752,23 @@
                                 <li><i class="bx bx-check-circle"></i> الكافيين</li>
                             </ul>
                         </div>
-
                         <div class="product-meta">
                             <div class="product-price">
                                 <span class="price-current">375 ج.م</span>
                                 <span class="price-old">469 ج.م</span>
                             </div>
                             <div class="product-rating">
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star-half"></i>
-                                <span>4.7</span>
+                                <i class="bx bxs-star"></i><i class="bx bxs-star"></i><i class="bx bxs-star"></i>
+                                <i class="bx bxs-star"></i><i class="bx bxs-star-half"></i><span>4.7</span>
                             </div>
                         </div>
-
                         <div class="product-actions">
-                            <a href="/2" class="btn-product btn-buy">
-                                <i class="bx bx-cart-add"></i> أضف للسلة
-                            </a>
-                            <a href="/2" class="btn-product btn-info">
-                                <i class="bx bx-info-circle"></i> التفاصيل
-                            </a>
+                            <a href="/2" class="btn-product btn-buy"><i class="bx bx-cart-add"></i> أضف للسلة</a>
+                            <a href="/2" class="btn-product btn-info"><i class="bx bx-info-circle"></i> التفاصيل</a>
                         </div>
                     </div>
                 </div>
             </div>
-
             <!-- Lashes & Eyebrow Serum Product -->
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="product-card">
@@ -1754,7 +1781,6 @@
                         <p class="product-desc">
                             تركيبة متطورة تعزز كثافة وقوة الحواجب والرموش بفضل مزيج فريد من المكونات الطبيعية المغذية لمظهر أكثر امتلاءً وصحة.
                         </p>
-
                         <div class="product-features">
                             <h6>المكونات الرئيسية:</h6>
                             <ul class="features-list">
@@ -1766,33 +1792,24 @@
                                 <li><i class="bx bx-check-circle"></i> مستخلص الجزر</li>
                             </ul>
                         </div>
-
                         <div class="product-meta">
                             <div class="product-price">
                                 <span class="price-current">135 ج.م</span>
                                 <span class="price-old">165 ج.م</span>
                             </div>
                             <div class="product-rating">
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <i class="bx bxs-star"></i>
-                                <span>5.0</span>
+                                <i class="bx bxs-star"></i><i class="bx bxs-star"></i><i class="bx bxs-star"></i>
+                                <i class="bx bxs-star"></i><i class="bx bxs-star"></i><span>5.0</span>
                             </div>
                         </div>
-
                         <div class="product-actions">
-                            <a href="/3" class="btn-product btn-buy">
-                                <i class="bx bx-cart-add"></i> أضف للسلة
-                            </a>
-                            <a href="/3" class="btn-product btn-info">
-                                <i class="bx bx-info-circle"></i> التفاصيل
-                            </a>
+                            <a href="/3" class="btn-product btn-buy"><i class="bx bx-cart-add"></i> أضف للسلة</a>
+                            <a href="/3" class="btn-product btn-info"><i class="bx bx-info-circle"></i> التفاصيل</a>
                         </div>
                     </div>
                 </div>
             </div>
+        {% endif %}
         </div>
     </div>
 </section>

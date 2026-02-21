@@ -500,6 +500,44 @@ class BannerSlide(db.Model):
             'sort_order': self.sort_order,
         }
 
+
+class HomeShowcase(db.Model):
+    """Items in the 'مجموعة العناية المتطورة' product-showcase section on homepage."""
+    __tablename__ = 'home_showcase'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False, default='')
+    image_url = db.Column(db.String(500), nullable=False)
+    badge_text = db.Column(db.String(50), nullable=False, default='')   # e.g. الأكثر مبيعاً
+    description = db.Column(db.Text, nullable=False, default='')
+    features = db.Column(db.Text, nullable=False, default='')           # newline-separated
+    current_price = db.Column(db.String(20), nullable=False, default='')
+    old_price = db.Column(db.String(20), nullable=False, default='')
+    link_url = db.Column(db.String(200), nullable=False, default='/shop')
+    sort_order = db.Column(db.Integer, nullable=False, default=0)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+
+    @property
+    def features_list(self):
+        """Return features as a list, filtering empty lines."""
+        return [f.strip() for f in (self.features or '').split('\n') if f.strip()]
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title or '',
+            'image_url': self.image_url or '',
+            'badge_text': self.badge_text or '',
+            'description': self.description or '',
+            'features': self.features or '',
+            'current_price': self.current_price or '',
+            'old_price': self.old_price or '',
+            'link_url': self.link_url or '/shop',
+            'sort_order': self.sort_order,
+            'is_active': self.is_active,
+        }
+
+
 # changShippingCostFromcity_idIsIdToCityId()
 
 shop = Blueprint('shop', __name__)
@@ -677,6 +715,10 @@ def home():
     banners = BannerSlide.query.filter_by(is_active=True).order_by(
         BannerSlide.sort_order.asc(), BannerSlide.id.asc()
     ).all()
+    # Product showcase section ('مجموعة العناية المتطورة') from DB
+    showcase_items = HomeShowcase.query.filter_by(is_active=True).order_by(
+        HomeShowcase.sort_order.asc(), HomeShowcase.id.asc()
+    ).all()
     return render_template("shop/index.html",
                            last_products=last_products,
                            most_viewed=trending_products,
@@ -685,7 +727,8 @@ def home():
                            section_title="Our Featured Products",
                            products=last_products,
                            sale_products=sale_products,
-                           db_banners=banners)
+                           db_banners=banners,
+                           showcase_items=showcase_items)
 
 @shop.route('/shop')
 def list():
@@ -3152,6 +3195,107 @@ def banner_toggle(banner_id):
     state = 'مفعّل' if banner.is_active else 'مخفي'
     flash(f'البانر الآن {state}', 'info')
     return redirect(url_for('admin.banners'))
+
+
+# ─── Homepage Showcase Section ────────────────────────────────
+
+@admin.route('/showcase')
+@admin_required
+def showcase():
+    items = HomeShowcase.query.order_by(HomeShowcase.sort_order.asc(), HomeShowcase.id.asc()).all()
+    return render_template('admin/showcase.html', items=items)
+
+
+@admin.route('/showcase/add', methods=['POST'])
+@admin_required
+def showcase_add():
+    try:
+        image_url = request.form.get('image_url', '').strip()
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            saved = save_uploaded_file(uploaded_file)
+            if saved:
+                image_url = f"static/uploads/{saved}"
+        if not image_url:
+            flash('يجب توفير صورة للبطاقة', 'error')
+            return redirect(url_for('admin.showcase'))
+        item = HomeShowcase(
+            title=request.form.get('title', '').strip(),
+            image_url=image_url,
+            badge_text=request.form.get('badge_text', '').strip(),
+            description=request.form.get('description', '').strip(),
+            features=request.form.get('features', '').strip(),
+            current_price=request.form.get('current_price', '').strip(),
+            old_price=request.form.get('old_price', '').strip(),
+            link_url=request.form.get('link_url', '/shop').strip() or '/shop',
+            sort_order=int(request.form.get('sort_order', 0) or 0),
+            is_active=request.form.get('is_active') == 'on',
+        )
+        db.session.add(item)
+        db.session.commit()
+        flash('تمت إضافة البطاقة بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'showcase_add error: {e}')
+        flash('حدث خطأ أثناء الإضافة', 'error')
+    return redirect(url_for('admin.showcase'))
+
+
+@admin.route('/showcase/edit/<int:item_id>', methods=['POST'])
+@admin_required
+def showcase_edit(item_id):
+    item = db.session.get(HomeShowcase, item_id)
+    if not item:
+        abort(404)
+    try:
+        item.title = request.form.get('title', '').strip()
+        item.badge_text = request.form.get('badge_text', '').strip()
+        item.description = request.form.get('description', '').strip()
+        item.features = request.form.get('features', '').strip()
+        item.current_price = request.form.get('current_price', '').strip()
+        item.old_price = request.form.get('old_price', '').strip()
+        item.link_url = request.form.get('link_url', '/shop').strip() or '/shop'
+        item.sort_order = int(request.form.get('sort_order', 0) or 0)
+        item.is_active = request.form.get('is_active') == 'on'
+        new_image_url = request.form.get('image_url', '').strip()
+        uploaded_file = request.files.get('image_file')
+        if uploaded_file and uploaded_file.filename:
+            saved = save_uploaded_file(uploaded_file)
+            if saved:
+                new_image_url = f"static/uploads/{saved}"
+        if new_image_url:
+            item.image_url = new_image_url
+        db.session.commit()
+        flash('تم تعديل البطاقة بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'showcase_edit error: {e}')
+        flash('حدث خطأ أثناء التعديل', 'error')
+    return redirect(url_for('admin.showcase'))
+
+
+@admin.route('/showcase/delete/<int:item_id>', methods=['POST'])
+@admin_required
+def showcase_delete(item_id):
+    item = db.session.get(HomeShowcase, item_id)
+    if not item:
+        abort(404)
+    db.session.delete(item)
+    db.session.commit()
+    flash('تم حذف البطاقة', 'success')
+    return redirect(url_for('admin.showcase'))
+
+
+@admin.route('/showcase/toggle/<int:item_id>', methods=['POST'])
+@admin_required
+def showcase_toggle(item_id):
+    item = db.session.get(HomeShowcase, item_id)
+    if not item:
+        abort(404)
+    item.is_active = not item.is_active
+    db.session.commit()
+    flash('تم تغيير الحالة', 'info')
+    return redirect(url_for('admin.showcase'))
 
 
 # ─────────────────────────────────────────────────────────────
