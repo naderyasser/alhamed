@@ -49,8 +49,8 @@ CSS STRUCTURE:
 
 /* Fonts */
 :root {
-  --body-font: 'Cairo', system-ui, -apple-system, sans-serif;
-  --heading-font: 'Cairo', system-ui, -apple-system, sans-serif;
+  --body-font: 'Inter', 'Cairo', system-ui, -apple-system, sans-serif;
+  --heading-font: 'Inter', 'Cairo', system-ui, -apple-system, sans-serif;
 }
 
 /*----------------------------------------------*/
