@@ -1671,6 +1671,34 @@ def favicon():
     return redirect(url_for('static', filename='images/logo-alha.jpeg'), code=301)
 
 
+@app.route('/sitemap.xml')
+def sitemap():
+    """Generate XML sitemap for SEO"""
+    from flask import Response
+    from datetime import datetime
+    products = Product.query.with_entities(Product.id).all()
+    base = 'https://alhamed.educore.software'
+    today = datetime.utcnow().strftime('%Y-%m-%d')
+    urls = [
+        f'  <url><loc>{base}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>',
+        f'  <url><loc>{base}/shop</loc><changefreq>daily</changefreq><priority>0.9</priority></url>',
+        f'  <url><loc>{base}/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>',
+        f'  <url><loc>{base}/return-policy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>',
+    ]
+    for p in products:
+        urls.append(f'  <url><loc>{base}/{p.id}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    xml += '\n'.join(urls)
+    xml += '\n</urlset>'
+    return Response(xml, mimetype='application/xml')
+
+
+@shop.route('/contact')
+def contact():
+    """Contact page - redirect to homepage contact section"""
+    return redirect('/#contact', code=301)
+
+
 # chang-quantity/plus/1
 @shop.route('/cart/change-quantity/<action>/<int:item_id>')
 def change_quantity(action, item_id):

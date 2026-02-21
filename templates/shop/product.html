@@ -302,15 +302,15 @@
             <div class="col-lg-6">
                 <div class="product-image-section">
                     <div class="main-product-image">
-                        <img src="{{ product.image }}" alt="{{ product.name }}" id="mainImage">
+                        <img src="/{{ product.image }}" alt="{{ product.name }}" id="mainImage">
                     </div>
                     {% if product.additional_images %}
                     <div class="row g-2">
                         {% for img in product.additional_images[:4] %}
                         <div class="col-3">
                             <div style="cursor: pointer; border: 2px solid transparent; border-radius: 10px; overflow: hidden; padding: 0.5rem; background: #f5f5f5;"
-                                 onclick="changeImage('{{ img.image }}')">
-                                <img src="{{ img.image }}" alt="صورة مصغرة" style="width: 100%; border-radius: 8px;">
+                                 onclick="changeImage('/{{ img.image }}')">
+                                <img src="/{{ img.image }}" alt="صورة مصغرة" style="width: 100%; border-radius: 8px;">
                             </div>
                         </div>
                         {% endfor %}
