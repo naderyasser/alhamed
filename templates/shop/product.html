@@ -333,30 +333,17 @@
                             <i class='bx bxs-star'></i>
                             <i class='bx bxs-star-half'></i>
                         </div>
-                        <span class="rating-text">(4.5 من 5) - {{ product.views }} مشاهدة</span>
+                        <span class="rating-text">(4.5 من 5)</span>
                     </div>
 
                     <!-- Price -->
-                    <!-- Price -->
                     <div class="modern-price-section">
-                        {% if product.price == 135 %}
-                        <span class="discount-badge-modern">خصم 18%</span>
-                        <span class="old-price-modern">165 ج.م</span>
-                        <span class="current-price-modern">{{ product.price }} ج.م</span>
-                        {% elif product.price == 375 %}
-                        <span class="discount-badge-modern">خصم 20%</span>
-                        <span class="old-price-modern">469 ج.م</span>
-                        <span class="current-price-modern">{{ product.price }} ج.م</span>
-                        {% elif product.price == 350 %}
-                        <span class="discount-badge-modern">خصم 20%</span>
-                        <span class="old-price-modern">438 ج.م</span>
-                        <span class="current-price-modern">{{ product.price }} ج.م</span>
-                        {% elif product.price == 860 %}
-                        <span class="discount-badge-modern">خصم 35%</span>
-                        <span class="old-price-modern">1072 ج.م</span>
-                        <span class="current-price-modern">{{ product.price }} ج.م</span>
+                        {% if product.discount > 0 %}
+                        <span class="discount-badge-modern">خصم {{ product.discount|int }}%</span>
+                        <span class="old-price-modern">{{ product.price|int }} ج.م</span>
+                        <span class="current-price-modern">{{ (product.price * (1 - product.discount / 100))|int }} ج.م</span>
                         {% else %}
-                        <span class="current-price-modern">{{ product.price }} ج.م</span>
+                        <span class="current-price-modern">{{ product.price|int }} ج.م</span>
                         {% endif %}
                     </div>
 

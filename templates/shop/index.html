@@ -482,51 +482,7 @@
     }
     /* About Section Improvements */
     
-    .about-section {
-        position: relative;
-        padding: 4rem 0;
-        background: linear-gradient(135deg, #fafaf8, #f0f0ea);
-        overflow: hidden;
-    }
-    
-    .about-section .title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--alha-text);
-        position: relative;
-        margin-bottom: 1.5rem;
-        display: inline-block;
-    }
-    
-    .about-section .title:after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 0;
-        width: 50px;
-        height: 3px;
-        background: var(--alha-primary);
-    }
-    
-    .about-content {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: #5a5a5a;
-    }
-    
-    @media (max-width: 767px) {
-        .about-section {
-            padding: 3rem 0;
-            text-align: center;
-        }
-        .about-section .title {
-            font-size: 2rem;
-        }
-        .about-section .title:after {
-            left: 50%;
-            transform: translateX(-50%);
-        }
-    }
+
     /* Featured Set Section */
     
     .featured-set-section {
@@ -1580,52 +1536,7 @@
 </section>
 {% endif %}
 
-<!-- Improved About Us Section -->
-<section class="about-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6 mb-4 mb-md-0">
-                <h2 class="title">عن الحامد</h2>
-                <div class="about-content">
-                    <p>في الحامد، نؤمن بقوة الجمال الطبيعي المعزز بالعلم. التزامنا بالجودة والابتكار والاستدامة يقود كل منتج نصنعه.</p>
-                    <p>تأسسنا بشغف لمساعدة الناس على الشعور بالثقة في بشرتهم، وأصبح الحامد بسرعة اسماً موثوقاً في العناية بالجمال في مصر وخارجها. نجمع بين المكونات التقليدية والتركيبات المتطورة لتقديم نتائج حقيقية يمكنك رؤيتها والشعور بها.</p>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="row g-4">
-                    <div class="col-6">
-                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-leaf mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
-                            <h5>مكونات طبيعية</h5>
-                            <p class="small text-muted mb-0">مُركب من أفضل المستخلصات الطبيعية</p>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-check-shield mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
-                            <h5>مختبر من أطباء الجلدية</h5>
-                            <p class="small text-muted mb-0">آمن وفعال لجميع أنواع البشرة</p>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-test-tube mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
-                            <h5>مدعوم علمياً</h5>
-                            <p class="small text-muted mb-0">نتائج مثبتة سريرياً</p>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
-                            <i class="bx bx-world mb-3" style="font-size: 2.5rem; color: var(--alha-primary);"></i>
-                            <h5>خالٍ من التجارب على الحيوانات</h5>
-                            <p class="small text-muted mb-0">لم يُختبر على الحيوانات أبداً</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 
 
 {% include "shop/components/product_section.html" with context %}
