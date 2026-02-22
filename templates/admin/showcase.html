@@ -79,7 +79,8 @@
 
                     <!-- Actions -->
                     <div class="flex gap-2">
-                        <button onclick="openEditModal({{ item.id }}, this)"
+                        <button onclick="openEditModal(this)"
+                                data-id="{{ item.id }}"
                                 data-item="{{ item.to_dict()|tojson|forceescape }}"
                                 class="flex-1 bg-blue-900/30 hover:bg-blue-900/50 text-blue-400 border border-blue-800/50 py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1 transition-all">
                             <i class='bx bx-edit'></i> تعديل
@@ -312,7 +313,8 @@
 </div>
 
 <script>
-function openEditModal(id, btn) {
+function openEditModal(btn) {
+    const id = btn.dataset.id;
     const item = JSON.parse(btn.dataset.item);
     const form = document.getElementById('editForm');
     form.action = `/admin/showcase/edit/${id}`;
