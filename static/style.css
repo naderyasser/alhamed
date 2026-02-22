@@ -156,6 +156,7 @@ a:hover {
 }
 
 @media only screen and (max-width: 768px) {
+
   .margin-small,
   .margin-medium,
   .margin-large {
@@ -427,13 +428,13 @@ h5 {
   color: var(--bs-dark);
 }
 
-.pseudo-text-effect > span {
+.pseudo-text-effect>span {
   display: inline-block;
   transform: translateY(0%);
   transition: inherit;
 }
 
-.pseudo-text-effect:hover > span {
+.pseudo-text-effect:hover>span {
   transform: translateY(-100%);
 }
 
@@ -496,13 +497,13 @@ h5 {
   transition: inherit;
 }
 
-.link-effect a > span {
+.link-effect a>span {
   display: inline-block;
   transform: translateY(0%);
   transition: inherit;
 }
 
-.link-effect:hover a > span {
+.link-effect:hover a>span {
   transform: translateY(-100%);
 }
 
@@ -559,7 +560,7 @@ h5 {
   transition: 2.4s;
 }
 
-.icon-box-effect:hover > .product-card .social-links button {
+.icon-box-effect:hover>.product-card .social-links button {
   bottom: 200px;
   opacity: 1;
 }
@@ -783,14 +784,12 @@ h5 {
   transition: transform 0.3s ease-out;
 }
 
-.swiper-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet,
-.swiper-pagination-horizontal.swiper-pagination-bullets
-  .swiper-pagination-bullet {
+.swiper-horizontal>.swiper-pagination-bullets .swiper-pagination-bullet,
+.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
   margin: 0 10px !important;
 }
 
-.swiper-pagination
-  span.swiper-pagination-bullet.swiper-pagination-bullet-active:after,
+.swiper-pagination span.swiper-pagination-bullet.swiper-pagination-bullet-active:after,
 .swiper-pagination span.swiper-pagination-bullet:hover:after {
   transform: scale(2);
 }
@@ -840,7 +839,7 @@ h5 {
 
 /* 4. Featured Product
 /*----------------------------------------------*/
-.product-store .swiper-horizontal > .swiper-pagination-bullets,
+.product-store .swiper-horizontal>.swiper-pagination-bullets,
 .product-store .swiper-pagination-bullets.swiper-pagination-horizontal,
 .product-store .swiper-pagination-custom,
 .product-store .swiper-pagination-fraction {

@@ -724,7 +724,7 @@ def home():
                            most_viewed=trending_products,
                            categories=categories,
                            section_id="featured-products",
-                           section_title="Our Featured Products",
+                           section_title="أحدث المنتجات",
                            products=last_products,
                            sale_products=sale_products,
                            db_banners=banners,

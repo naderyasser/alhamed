@@ -1159,6 +1159,7 @@
     .product-image {
         position: relative;
         overflow: hidden;
+        padding-bottom: 75%;
     }
     
     .product-image img {
@@ -1488,7 +1489,7 @@
 
 <!-- Featured Product Set Section -->
 {% if sale_products %}
-<section class="featured-set-section">
+<section class="featured-set-section" dir="rtl">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
@@ -1497,36 +1498,60 @@
             </div>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-3">
             {% for prod in sale_products %}
             <div class="col-6 col-md-4 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
-                    {% set img_src = prod.image %}
-                    {% if img_src %}
-                      {% if img_src.startswith('http') %}
-                        <a href="/{{ prod.id }}"><img src="{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy"></a>
-                      {% elif img_src.startswith('static/') %}
-                        <a href="/{{ prod.id }}"><img src="{{ url_for('static', filename=img_src[7:]) }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy"></a>
-                      {% else %}
-                        <a href="/{{ prod.id }}"><img src="/{{ img_src }}" class="card-img-top" alt="{{ prod.name }}" style="height:180px;object-fit:cover;" loading="lazy"></a>
-                      {% endif %}
-                    {% else %}
-                      <div class="d-flex align-items-center justify-content-center bg-secondary" style="height:180px;"><i class="bx bx-image text-white" style="font-size:3rem;"></i></div>
-                    {% endif %}
+                <div class="product-card-modern">
+                    <!-- Discount Badge -->
+                    <div class="product-badge-modern">-{{ prod.discount|int }}%</div>
 
-                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 rounded-pill">-{{ prod.discount|int }}%</span>
-                    <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2 rounded-pill" style="font-size:0.65rem;">⏳ عرض</span>
+                    <!-- Wishlist Button -->
+                    <a href="/{{ prod.id }}" class="product-wishlist-btn" title="المفضلة">
+                        <i class='bx bx-heart'></i>
+                    </a>
 
-                    <div class="card-body d-flex flex-column">
-                        <h6 class="card-title fw-bold mb-1" style="font-size:0.9rem;line-height:1.3;">{{ prod.name }}</h6>
-                        <div class="mt-auto">
-                            {% set orig_p = prod.price / (1 - prod.discount / 100) %}
-                            <span class="text-muted text-decoration-line-through small">{{ orig_p|int }} ج.م</span>
-                            <span class="text-danger fw-bold ms-1">{{ prod.price|int }} ج.م</span>
-                        </div>
-                        <a href="/{{ prod.id }}" class="btn btn-sm btn-outline-danger w-100 mt-2 rounded-pill">
-                            <i class="bx bx-cart-add me-1"></i>اشتري الآن
+                    <!-- Image -->
+                    <div class="product-img-wrapper">
+                        <a href="/{{ prod.id }}">
+                            {% set img_src = prod.image %}
+                            {% if img_src %}
+                              {% if img_src.startswith('http') %}
+                                <img src="{{ img_src }}" alt="{{ prod.name }}"
+                                     onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg'" loading="lazy">
+                              {% elif img_src.startswith('static/') %}
+                                <img src="{{ url_for('static', filename=img_src[7:]) }}" alt="{{ prod.name }}"
+                                     onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg'" loading="lazy">
+                              {% else %}
+                                <img src="/{{ img_src }}" alt="{{ prod.name }}"
+                                     onerror="this.onerror=null; this.src='/static/images/placeholder-product.svg'" loading="lazy">
+                              {% endif %}
+                            {% else %}
+                                <img src="/static/images/placeholder-product.svg" alt="{{ prod.name }}">
+                            {% endif %}
                         </a>
+                        <div class="product-overlay">
+                            <a href="/{{ prod.id }}" class="overlay-btn" title="عرض التفاصيل">
+                                <i class='bx bx-show'></i>
+                            </a>
+                            <a href="/{{ prod.id }}" class="overlay-btn add-cart-accent" title="أضيفي للسلة">
+                                <i class='bx bx-cart-add'></i>
+                                <span>أضف للسلة</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="product-info-modern">
+                        <div class="product-cat">{{ prod.category.name if prod.category else 'منتجات' }}</div>
+                        <h3 class="product-title-modern">
+                            <a href="/{{ prod.id }}">{{ prod.name|truncate(50, true) }}</a>
+                        </h3>
+
+                        <div class="price-wrapper">
+                            <span class="current-price">{{ "%.0f"|format(prod.price) }} ج.م</span>
+                            <span class="old-price">{{ "%.0f"|format(prod.price / (1 - prod.discount / 100)) }} ج.م</span>
+                            <span class="discount-pill">وفّري {{ prod.discount|int }}%</span>
+                        </div>
                     </div>
                 </div>
             </div>
