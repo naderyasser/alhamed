@@ -30,14 +30,8 @@
                             </div>
 
                             <!-- Discount badge -->
-                            {% if product.price == 135 %}
-                            <span class="discount-badge">-18%</span> 
-                            {% elif product.price == 375 or product.price == 350 %}
-                            <span class="discount-badge">-20%</span> 
-                            {% elif product.price == 860 %}
-                            <span class="discount-badge">-20%</span> 
-                            {% elif product.id == 5 %}
-                            <span class="discount-badge">-18%</span>
+                            {% if product.discount > 0 %}
+                            <span class="discount-badge">-{{ product.discount|int }}%</span>
                             {% endif %}
 
                             <!-- Add to cart quick action -->
@@ -58,23 +52,11 @@
                         </h3>
 
                         <div class="product-price">
-                            {% if product.price == 135 %}
-                            <span class="old-price">165 L.E</span>
-                            <span class="current-price">{{ product.price }} L.E</span> 
-                            {% elif product.price == 375 %}
-                            <span class="old-price">469 L.E</span>
-                            <span class="current-price">{{ product.price }} L.E</span> 
-                            {% elif product.price == 350 %}
-                            <span class="old-price">438 L.E</span>
-                            <span class="current-price">{{ product.price }} L.E</span> 
-                            {% elif product.price == 860 %}
-                            <span class="old-price">1072 L.E</span>
-                            <span class="current-price">{{ product.price }} L.E</span> 
-                            {% elif product.id == 5 %}
-                            <span class="old-price">225 L.E</span>
-                            <span class="current-price">{{ product.price }} L.E</span>
+                            {% if product.discount > 0 %}
+                            <span class="old-price">{{ (product.price / (1 - product.discount / 100))|int }} ج.م</span>
+                            <span class="current-price">{{ product.price|int }} ج.م</span>
                             {% else %}
-                            <span class="current-price">{{ product.price }} L.E</span> 
+                            <span class="current-price">{{ product.price|int }} ج.م</span>
                             {% endif %}
                         </div>
 

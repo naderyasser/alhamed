@@ -340,8 +340,8 @@
                     <div class="modern-price-section">
                         {% if product.discount > 0 %}
                         <span class="discount-badge-modern">خصم {{ product.discount|int }}%</span>
-                        <span class="old-price-modern">{{ product.price|int }} ج.م</span>
-                        <span class="current-price-modern">{{ (product.price * (1 - product.discount / 100))|int }} ج.م</span>
+                        <span class="old-price-modern">{{ (product.price / (1 - product.discount / 100))|int }} ج.م</span>
+                        <span class="current-price-modern">{{ product.price|int }} ج.م</span>
                         {% else %}
                         <span class="current-price-modern">{{ product.price|int }} ج.م</span>
                         {% endif %}

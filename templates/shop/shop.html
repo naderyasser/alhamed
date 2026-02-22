@@ -607,9 +607,9 @@
                             <div class="price-wrapper">
                                 {% if product.discount > 0 %}
                                     <span class="current-price">
-                                        {{ "%.0f"|format(product.price * (1 - product.discount / 100)) }} ج.م
+                                        {{ "%.0f"|format(product.price) }} ج.م
                                     </span>
-                                    <span class="old-price">{{ "%.0f"|format(product.price) }} ج.م</span>
+                                    <span class="old-price">{{ "%.0f"|format(product.price / (1 - product.discount / 100)) }} ج.م</span>
                                     <span class="discount-pill">وفّري {{ product.discount }}%</span>
                                 {% else %}
                                     <span class="current-price">{{ "%.0f"|format(product.price) }} ج.م</span>
